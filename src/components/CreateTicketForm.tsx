@@ -8,9 +8,9 @@ import type { Ticket, TicketPriority } from "../types/ticket"
 
 interface CreateTicketFormProps {
     onCreated: (ticket: Ticket) => void
-    }
+}
 
-    function CreateTicketForm({ onCreated }: CreateTicketFormProps) {
+function CreateTicketForm({ onCreated }: CreateTicketFormProps) {
     const { token } = useAuth()
 
     const [categories, setCategories] = useState<Category[]>([])
@@ -23,19 +23,19 @@ interface CreateTicketFormProps {
 
     useEffect(() => {
         if (!token) {
-            return
+        return
         }
 
         const currentToken = token
 
         async function loadCategories() {
-            try {
-                const data = await getCategories(currentToken)
+        try {
+            const data = await getCategories(currentToken)
 
-                setCategories(data.filter((category) => category.is_active))
-            } catch {
-                setError("Não foi possível carregar as categorias.")
-            }
+            setCategories(data.filter((category) => category.is_active))
+        } catch {
+            setError("Não foi possível carregar as categorias.")
+        }
         }
 
         void loadCategories()
@@ -73,33 +73,35 @@ interface CreateTicketFormProps {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-        <h2>Novo chamado</h2>
-
-        <div>
+        <form className="ticket-form" onSubmit={handleSubmit}>
+        <div className="form-field">
             <label htmlFor="title">Título</label>
             <input
             id="title"
+            type="text"
             value={title}
             onChange={(event) => setTitle(event.target.value)}
             minLength={3}
             maxLength={150}
+            placeholder="Ex: Computador não liga"
             required
             />
         </div>
 
-        <div>
+        <div className="form-field">
             <label htmlFor="description">Descrição</label>
             <textarea
             id="description"
             value={description}
             onChange={(event) => setDescription(event.target.value)}
             minLength={10}
+            placeholder="Descreva o problema com detalhes..."
+            rows={5}
             required
             />
         </div>
 
-        <div>
+        <div className="form-field">
             <label htmlFor="priority">Prioridade</label>
             <select
             id="priority"
@@ -115,7 +117,7 @@ interface CreateTicketFormProps {
             </select>
         </div>
 
-        <div>
+        <div className="form-field">
             <label htmlFor="category">Categoria</label>
             <select
             id="category"
@@ -123,7 +125,7 @@ interface CreateTicketFormProps {
             onChange={(event) => setCategoryId(event.target.value)}
             required
             >
-            <option value="">Selecione</option>
+            <option value="">Selecione uma categoria</option>
 
             {categories.map((category) => (
                 <option key={category.id} value={category.id}>
@@ -133,9 +135,13 @@ interface CreateTicketFormProps {
             </select>
         </div>
 
-        {error && <p>{error}</p>}
+        {error && <p className="form-error">{error}</p>}
 
-        <button type="submit" disabled={isSubmitting}>
+        <button
+            className="submit-button"
+            type="submit"
+            disabled={isSubmitting}
+        >
             {isSubmitting ? "Criando..." : "Criar chamado"}
         </button>
         </form>

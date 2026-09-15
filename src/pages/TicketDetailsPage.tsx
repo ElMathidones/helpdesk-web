@@ -45,7 +45,7 @@ function TicketDetailsPage() {
 
     async function handleAssign() {
         if (!token || !ticket) {
-            return
+        return
         }
 
         setError("")
@@ -55,41 +55,44 @@ function TicketDetailsPage() {
         const updatedTicket = await assignTicket(token, ticket.id)
         setTicket(updatedTicket)
         } catch {
-            setError("Não foi possível assumir o chamado.")
+        setError("Não foi possível assumir o chamado.")
         } finally {
-            setIsAssigning(false)
+        setIsAssigning(false)
         }
     }
 
     async function handleStatusChange(status: TicketStatus) {
         if (!token || !ticket) {
-            return
+        return
         }
 
         setError("")
         setIsUpdatingStatus(true)
 
         try {
-            const updatedTicket = await updateTicketStatus(
+        const updatedTicket = await updateTicketStatus(
             token,
             ticket.id,
             status,
-            )
+        )
 
-            setTicket(updatedTicket)
+        setTicket(updatedTicket)
         } catch {
-            setError("Não foi possível alterar o status do chamado.")
+        setError("Não foi possível alterar o status do chamado.")
         } finally {
-            setIsUpdatingStatus(false)
+        setIsUpdatingStatus(false)
         }
     }
 
     if (!isValidTicketId) {
         return (
-        <section>
-            <p>Chamado inválido.</p>
-            <Link to="/tickets">Voltar para chamados</Link>
-        </section>
+        <div className="ticket-details-page">
+            <div className="feedback-card">
+            <strong>Chamado inválido</strong>
+            <p>O identificador informado não é válido.</p>
+            <Link to="/tickets">← Voltar para chamados</Link>
+            </div>
+        </div>
         )
     }
 
@@ -99,95 +102,217 @@ function TicketDetailsPage() {
 
     if (error || !ticket) {
         return (
-        <section>
+        <div className="ticket-details-page">
+            <div className="feedback-card">
+            <strong>Não foi possível abrir o chamado</strong>
             <p>{error || "Chamado não encontrado."}</p>
-            <Link to="/tickets">Voltar para chamados</Link>
-        </section>
+            <Link to="/tickets">← Voltar para chamados</Link>
+            </div>
+        </div>
         )
     }
 
+    const canManage =
+        user?.role === "admin" || user?.role === "technician"
+
     return (
-        <section>
-        <Link to="/tickets">← Voltar para chamados</Link>
+        <div className="ticket-details-page">
+        <Link className="back-link" to="/tickets">
+            ← Voltar para chamados
+        </Link>
 
-        <h1>{ticket.title}</h1>
+        <div className="ticket-details-header">
+            <div>
+            <span className="ticket-details-id">Chamado #{ticket.id}</span>
+            <h1>{ticket.title}</h1>
+            </div>
 
-        <p>{ticket.description}</p>
-
-        <dl>
-            <dt>ID</dt>
-            <dd>{ticket.id}</dd>
-
-            <dt>Prioridade</dt>
-            <dd>{ticket.priority}</dd>
-
-            <dt>Status</dt>
-            <dd>{ticket.status}</dd>
-
-            <dt>Categoria</dt>
-            <dd>{ticket.category_id}</dd>
-
-            <dt>Criado por</dt>
-            <dd>{ticket.creator_id}</dd>
-
-            <dt>Responsável</dt>
-            <dd>{ticket.assignee_id ?? "Não atribuído"}</dd>
-
-            <dt>Criado em</dt>
-            <dd>{new Date(ticket.created_at).toLocaleString("pt-BR")}</dd>
-
-            {ticket.closed_at && (
-                <>
-                    <dt>Fechado em</dt>
-                    <dd>{new Date(ticket.closed_at).toLocaleString("pt-BR")}</dd>
-                </>
-            )}
-        </dl>
-
-        {(user?.role === "admin" || user?.role === "technician") &&
-            ticket.assignee_id === null && (
-            <button
-                type="button"
-                onClick={handleAssign}
-                disabled={isAssigning}
+            <div className="ticket-badges">
+            <span
+                className={`priority-badge priority-${ticket.priority}`}
             >
-                {isAssigning ? "Assumindo..." : "Assumir chamado"}
-            </button>
-        )}
+                {formatPriority(ticket.priority)}
+            </span>
 
-        {(user?.role === "admin" || user?.role === "technician") &&
-            ticket.status === "in_progress" && (
-                <button
-                    type="button"
-                    onClick={() => void handleStatusChange("resolved")}
-                    disabled={isUpdatingStatus}
-                >
-                    {isUpdatingStatus ? "Atualizando..." : "Marcar como resolvido"}
-                </button>
-        )}
+            <span className={`status-badge status-${ticket.status}`}>
+                {formatStatus(ticket.status)}
+            </span>
+            </div>
+        </div>
 
-        {(user?.role === "admin" || user?.role === "technician") &&
-            ticket.status === "resolved" && (
-                <>
-                <button
-                    type="button"
-                    onClick={() => void handleStatusChange("in_progress")}
-                    disabled={isUpdatingStatus}
-                >
-                    Reabrir chamado
-                </button>
+        {error && <p className="error-message">{error}</p>}
 
-                <button
-                    type="button"
-                    onClick={() => void handleStatusChange("closed")}
-                    disabled={isUpdatingStatus}
-                >
-                    Fechar chamado
-                </button>
-                </>
-        )}
-        </section>
+        <div className="ticket-details-grid">
+            <div className="ticket-details-main">
+            <section className="details-card">
+                <div className="details-card-header">
+                <h2>Descrição</h2>
+                </div>
+
+                <div className="details-card-content">
+                <p className="full-description">{ticket.description}</p>
+                </div>
+            </section>
+
+            {canManage && (
+                <section className="details-card">
+                <div className="details-card-header">
+                    <h2>Ações do chamado</h2>
+                </div>
+
+                <div className="details-card-content">
+                    <div className="ticket-actions">
+                    {ticket.assignee_id === null && (
+                        <button
+                        className="action-button action-primary"
+                        type="button"
+                        onClick={handleAssign}
+                        disabled={isAssigning}
+                        >
+                        {isAssigning
+                            ? "Assumindo..."
+                            : "Assumir chamado"}
+                        </button>
+                    )}
+
+                    {ticket.status === "in_progress" && (
+                        <button
+                        className="action-button action-success"
+                        type="button"
+                        onClick={() =>
+                            void handleStatusChange("resolved")
+                        }
+                        disabled={isUpdatingStatus}
+                        >
+                        {isUpdatingStatus
+                            ? "Atualizando..."
+                            : "Marcar como resolvido"}
+                        </button>
+                    )}
+
+                    {ticket.status === "resolved" && (
+                        <>
+                        <button
+                            className="action-button action-secondary"
+                            type="button"
+                            onClick={() =>
+                            void handleStatusChange("in_progress")
+                            }
+                            disabled={isUpdatingStatus}
+                        >
+                            Reabrir chamado
+                        </button>
+
+                        <button
+                            className="action-button action-danger"
+                            type="button"
+                            onClick={() =>
+                            void handleStatusChange("closed")
+                            }
+                            disabled={isUpdatingStatus}
+                        >
+                            Fechar chamado
+                        </button>
+                        </>
+                    )}
+
+                    {ticket.assignee_id !== null &&
+                        ticket.status !== "in_progress" &&
+                        ticket.status !== "resolved" && (
+                        <p className="no-actions-message">
+                            Não há ações disponíveis para o status atual.
+                        </p>
+                        )}
+                    </div>
+                </div>
+                </section>
+            )}
+            </div>
+
+            <aside className="ticket-info-card">
+            <h2>Informações</h2>
+
+            <dl className="ticket-info-list">
+                <div>
+                <dt>Prioridade</dt>
+                <dd>{formatPriority(ticket.priority)}</dd>
+                </div>
+
+                <div>
+                <dt>Status</dt>
+                <dd>{formatStatus(ticket.status)}</dd>
+                </div>
+
+                <div>
+                <dt>Categoria</dt>
+                <dd>#{ticket.category_id}</dd>
+                </div>
+
+                <div>
+                <dt>Criado por</dt>
+                <dd>Usuário #{ticket.creator_id}</dd>
+                </div>
+
+                <div>
+                <dt>Responsável</dt>
+                <dd>
+                    {ticket.assignee_id
+                    ? `Usuário #${ticket.assignee_id}`
+                    : "Não atribuído"}
+                </dd>
+                </div>
+
+                <div>
+                <dt>Criado em</dt>
+                <dd>
+                    {new Date(ticket.created_at).toLocaleString("pt-BR")}
+                </dd>
+                </div>
+
+                <div>
+                <dt>Atualizado em</dt>
+                <dd>
+                    {new Date(ticket.updated_at).toLocaleString("pt-BR")}
+                </dd>
+                </div>
+
+                {ticket.closed_at && (
+                <div>
+                    <dt>Fechado em</dt>
+                    <dd>
+                    {new Date(ticket.closed_at).toLocaleString("pt-BR")}
+                    </dd>
+                </div>
+                )}
+            </dl>
+            </aside>
+        </div>
+        </div>
     )
+}
+
+function formatPriority(priority: Ticket["priority"]) {
+    const labels: Record<Ticket["priority"], string> = {
+        low: "Baixa",
+        medium: "Média",
+        high: "Alta",
+        critical: "Crítica",
+    }
+
+    return labels[priority]
+}
+
+function formatStatus(status: Ticket["status"]) {
+    const labels: Record<Ticket["status"], string> = {
+        open: "Aberto",
+        under_review: "Em análise",
+        in_progress: "Em andamento",
+        resolved: "Resolvido",
+        closed: "Fechado",
+        canceled: "Cancelado",
+    }
+
+    return labels[status]
 }
 
 export default TicketDetailsPage

@@ -6,26 +6,58 @@ function AppLayout() {
     const { user, logout } = useAuth()
 
     return (
-        <div>
-        <header>
+        <div className="app-layout">
+        <aside className="sidebar">
+            <div className="sidebar-brand">
+            <div className="brand-icon">H</div>
+
             <div>
-            <strong>Help Desk</strong>
+                <strong>Help Desk</strong>
+                <span>Support Center</span>
+            </div>
             </div>
 
-            <nav>
-            <NavLink to="/dashboard">Dashboard</NavLink>
-            <NavLink to="/tickets">Tickets</NavLink>
+            <nav className="sidebar-nav">
+            <NavLink
+                to="/dashboard"
+                className={({ isActive }) =>
+                `nav-link ${isActive ? "nav-link-active" : ""}`
+                }
+            >
+                <span className="nav-icon">▦</span>
+                Dashboard
+            </NavLink>
+
+            <NavLink
+                to="/tickets"
+                className={({ isActive }) =>
+                `nav-link ${isActive ? "nav-link-active" : ""}`
+                }
+            >
+                <span className="nav-icon">▤</span>
+                Chamados
+            </NavLink>
             </nav>
 
-            <div>
-            <span>{user?.name}</span>
-            <button type="button" onClick={logout}>
+            <div className="sidebar-user">
+            <div className="user-info">
+                <div className="user-avatar">
+                {user?.name?.charAt(0).toUpperCase() ?? "U"}
+                </div>
+
+                <div className="user-details">
+                <strong>{user?.name}</strong>
+                <span>{user?.role}</span>
+                </div>
+            </div>
+
+            <button className="logout-button" type="button" onClick={logout}>
                 Sair
             </button>
             </div>
-        </header>
+        </aside>
 
-        <main>
+        <main className="main-content">
             <Outlet />
         </main>
         </div>
