@@ -243,24 +243,14 @@ function TicketDetailsPage() {
                 <dd>{formatStatus(ticket.status)}</dd>
                 </div>
 
-                <div>
                 <dt>Categoria</dt>
-                <dd>#{ticket.category_id}</dd>
-                </div>
+                <dd>{ticket.category.name}</dd>
 
-                <div>
                 <dt>Criado por</dt>
-                <dd>Usuário #{ticket.creator_id}</dd>
-                </div>
+                <dd>{ticket.creator.name}</dd>
 
-                <div>
                 <dt>Responsável</dt>
-                <dd>
-                    {ticket.assignee_id
-                    ? `Usuário #${ticket.assignee_id}`
-                    : "Não atribuído"}
-                </dd>
-                </div>
+                <dd>{ticket.assignee?.name ?? "Não atribuído"}</dd>
 
                 <div>
                 <dt>Criado em</dt>

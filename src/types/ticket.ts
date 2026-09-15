@@ -8,15 +8,31 @@ export type TicketStatus =
     | "closed"
     | "canceled"
 
+export interface TicketCategory {
+    id: number
+    name: string
+}
+
+export interface TicketUser {
+    id: number
+    name: string
+}
+
 export interface Ticket {
     id: number
     title: string
     description: string
     priority: TicketPriority
     status: TicketStatus
+
     category_id: number
     creator_id: number
     assignee_id: number | null
+
+    category: TicketCategory
+    creator: TicketUser
+    assignee: TicketUser | null
+
     created_at: string
     updated_at: string
     closed_at: string | null
