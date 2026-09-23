@@ -6,6 +6,16 @@ import { createTicket } from "../services/tickets"
 import type { Category } from "../types/category"
 import type { Ticket, TicketPriority } from "../types/ticket"
 
+const CATEGORY_ORDER = [
+    "Hardware",
+    "Software",
+    "Rede",
+    "Acesso e Contas",
+    "E-mail",
+    "Impressoras",
+    "Outros",
+]
+
 interface CreateTicketFormProps {
     onCreated: (ticket: Ticket) => void
 }
@@ -23,19 +33,27 @@ function CreateTicketForm({ onCreated }: CreateTicketFormProps) {
 
     useEffect(() => {
         if (!token) {
-        return
+            return
         }
 
         const currentToken = token
 
         async function loadCategories() {
-        try {
-            const data = await getCategories(currentToken)
+            try {
+                const data = await getCategories(currentToken)
 
-            setCategories(data.filter((category) => category.is_active))
-        } catch {
-            setError("Não foi possível carregar as categorias.")
-        }
+                const activeCategories = data
+                    .filter((category) => category.is_active)
+                    .sort(
+                        (a, b) =>
+                            CATEGORY_ORDER.indexOf(a.name) -
+                            CATEGORY_ORDER.indexOf(b.name),
+                    )
+
+                setCategories(activeCategories)
+            } catch {
+                setError("Não foi possível carregar as categorias.")
+            }
         }
 
         void loadCategories()
@@ -45,18 +63,18 @@ function CreateTicketForm({ onCreated }: CreateTicketFormProps) {
         event.preventDefault()
 
         if (!token || !categoryId) {
-        return
+            return
         }
 
         setError("")
         setIsSubmitting(true)
 
         try {
-        const ticket = await createTicket(token, {
-            title,
-            description,
-            priority,
-            category_id: Number(categoryId),
+            const ticket = await createTicket(token, {
+                title,
+                description,
+                priority,
+                category_id: Number(categoryId),
         })
 
         onCreated(ticket)
