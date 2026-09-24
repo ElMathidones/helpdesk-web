@@ -7,59 +7,82 @@ function AppLayout() {
 
     return (
         <div className="app-layout">
-        <aside className="sidebar">
-            <div className="sidebar-brand">
-            <div className="brand-icon">H</div>
+            <aside className="sidebar">
+                <div className="sidebar-brand">
+                    <div className="brand-icon">H</div>
 
-            <div>
-                <strong>Help Desk</strong>
-                <span>Support Center</span>
-            </div>
-            </div>
-
-            <nav className="sidebar-nav">
-            <NavLink
-                to="/dashboard"
-                className={({ isActive }) =>
-                `nav-link ${isActive ? "nav-link-active" : ""}`
-                }
-            >
-                <span className="nav-icon">▦</span>
-                Dashboard
-            </NavLink>
-
-            <NavLink
-                to="/tickets"
-                className={({ isActive }) =>
-                `nav-link ${isActive ? "nav-link-active" : ""}`
-                }
-            >
-                <span className="nav-icon">▤</span>
-                Chamados
-            </NavLink>
-            </nav>
-
-            <div className="sidebar-user">
-            <div className="user-info">
-                <div className="user-avatar">
-                {user?.name?.charAt(0).toUpperCase() ?? "U"}
+                    <div>
+                        <strong>Help Desk</strong>
+                        <span>Support Center</span>
+                    </div>
                 </div>
 
-                <div className="user-details">
-                <strong>{user?.name}</strong>
-                <span>{user?.role}</span>
+                <nav className="sidebar-nav">
+                    <NavLink
+                        to="/dashboard"
+                        className={({ isActive }) =>
+                            `nav-link ${isActive ? "nav-link-active" : ""}`
+                        }
+                    >
+                        <span className="nav-icon">▦</span>
+                        Dashboard
+                    </NavLink>
+
+                    <NavLink
+                        to="/tickets"
+                        className={({ isActive }) =>
+                            `nav-link ${isActive ? "nav-link-active" : ""}`
+                        }
+                    >
+                        <span className="nav-icon">▤</span>
+                        Chamados
+                    </NavLink>
+
+                    <div className="nav-section-title">Análises</div>
+
+                    <div className="nav-link nav-link-disabled">
+                        <span className="nav-icon">◔</span>
+                        Relatórios
+                    </div>
+
+                    <div className="nav-link nav-link-disabled">
+                        <span className="nav-icon">▥</span>
+                        Analytics
+                    </div>
+
+                    <div className="nav-section-title">Sistema</div>
+
+                    <div className="nav-link nav-link-disabled">
+                        <span className="nav-icon">⚙</span>
+                        Configurações
+                    </div>
+                </nav>
+
+                <div className="sidebar-user">
+                    <div className="user-info">
+                        <div className="user-avatar">
+                            {user?.name?.charAt(0).toUpperCase() ?? "U"}
+                        </div>
+
+                        <div className="user-details">
+                            <strong>{user?.name}</strong>
+                            <span>{user?.role}</span>
+                        </div>
+                    </div>
+
+                    <button
+                        className="logout-button"
+                        type="button"
+                        onClick={logout}
+                    >
+                        Sair
+                    </button>
                 </div>
-            </div>
+            </aside>
 
-            <button className="logout-button" type="button" onClick={logout}>
-                Sair
-            </button>
-            </div>
-        </aside>
-
-        <main className="main-content">
-            <Outlet />
-        </main>
+            <main className="main-content">
+                <Outlet />
+            </main>
         </div>
     )
 }
