@@ -66,6 +66,38 @@ function DashboardPage() {
         [tickets],
     )
 
+    const statusStatistics = useMemo(() => {
+        const statuses: Ticket["status"][] = [
+            "open",
+            "under_review",
+            "in_progress",
+            "resolved",
+            "closed",
+            "canceled",
+        ]
+
+        return statuses.map((status) => ({
+            status,
+            label: formatStatus(status),
+            total: tickets.filter((ticket) => ticket.status === status).length,
+        }))
+    }, [tickets])
+
+    const priorityStatistics = useMemo(() => {
+        const priorities: Ticket["priority"][] = [
+            "low",
+            "medium",
+            "high",
+            "critical",
+        ]
+
+        return priorities.map((priority) => ({
+            priority,
+            label: formatPriority(priority),
+            total: tickets.filter((ticket) => ticket.priority === priority).length,
+        }))
+    }, [tickets])
+
     if (isLoading) {
         return <p>Carregando dashboard...</p>
     }
@@ -164,6 +196,82 @@ function DashboardPage() {
             </div>
             )}
         </section>
+
+        <section className="dashboard-chart-section">
+            <div className="dashboard-charts-grid">
+                <section className="dashboard-chart-section">
+                    <div className="section-header">
+                        <div>
+                            <h2>Chamados por status</h2>
+                            <p>Distribuição dos chamados no sistema.</p>
+                        </div>
+                    </div>
+
+                    <div className="status-chart">
+                        {statusStatistics.map((item) => (
+                            <div className="status-chart-row" key={item.status}>
+                                <div className="status-chart-label">
+                                    <div>
+                                        <span>{item.label}</span>
+                                        <small>{item.total}</small>
+                                    </div>
+
+                                    <strong>{formatPercentage(item.total, statistics.total)}</strong>
+                                </div>
+
+                                <div className="status-chart-bar">
+                                    <div
+                                        className={`status-chart-fill status-${item.status}`}
+                                        style={{
+                                            width:
+                                                statistics.total > 0
+                                                    ? `${(item.total / statistics.total) * 100}%`
+                                                    : "0%",
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
+                <section className="dashboard-chart-section">
+                    <div className="section-header">
+                        <div>
+                            <h2>Chamados por prioridade</h2>
+                            <p>Distribuição por nível de prioridade.</p>
+                        </div>
+                    </div>
+
+                    <div className="status-chart">
+                        {priorityStatistics.map((item) => (
+                            <div className="status-chart-row" key={item.priority}>
+                                <div className="status-chart-label">
+                                    <div>
+                                        <span>{item.label}</span>
+                                        <small>{item.total}</small>
+                                    </div>
+
+                                    <strong>{formatPercentage(item.total, statistics.total)}</strong>
+                                </div>
+
+                                <div className="status-chart-bar">
+                                    <div
+                                        className={`status-chart-fill priority-${item.priority}`}
+                                        style={{
+                                            width:
+                                                statistics.total > 0
+                                                    ? `${(item.total / statistics.total) * 100}%`
+                                                    : "0%",
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            </div>
+        </section>
         </div>
     )
 }
@@ -190,6 +298,14 @@ function formatStatus(status: Ticket["status"]) {
     }
 
     return labels[status]
+}
+
+function formatPercentage(value: number, total: number) {
+    if (total === 0) {
+        return "0%"
+    }
+
+    return `${Math.round((value / total) * 100)}%`
 }
 
 export default DashboardPage
