@@ -6,11 +6,12 @@ import { getTickets } from "../services/tickets"
 import type { Ticket } from "../types/ticket"
 
 function DashboardPage() {
-    const { token, user } = useAuth()
+    const { token } = useAuth()
 
     const [tickets, setTickets] = useState<Ticket[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState("")
+    const [period, setPeriod] = useState("this_week")
 
     useEffect(() => {
         if (!token) return
@@ -31,28 +32,98 @@ function DashboardPage() {
         void loadTickets()
     }, [token])
 
+    const filteredTickets = useMemo(() => {
+        if (period === "all") {
+            return tickets
+        }
+
+        const now = new Date()
+        const start = new Date(now)
+        const end = new Date(now)
+
+        if (period === "today") {
+            start.setHours(0, 0, 0, 0)
+            end.setDate(end.getDate() + 1)
+            end.setHours(0, 0, 0, 0)
+        }
+
+        if (period === "this_week") {
+            const dayOfWeek = start.getDay()
+
+            start.setDate(
+                start.getDate() -
+                    (dayOfWeek === 0 ? 6 : dayOfWeek - 1),
+            )
+            start.setHours(0, 0, 0, 0)
+
+            end.setDate(start.getDate() + 7)
+            end.setHours(0, 0, 0, 0)
+        }
+
+        if (period === "last_week") {
+            const dayOfWeek = start.getDay()
+
+            start.setDate(
+                start.getDate() -
+                    (dayOfWeek === 0 ? 6 : dayOfWeek - 1) -
+                    7,
+            )
+            start.setHours(0, 0, 0, 0)
+
+            end.setTime(start.getTime())
+            end.setDate(end.getDate() + 7)
+        }
+
+        if (period === "this_month") {
+            start.setDate(1)
+            start.setHours(0, 0, 0, 0)
+
+            end.setMonth(end.getMonth() + 1, 1)
+            end.setHours(0, 0, 0, 0)
+        }
+
+        if (period === "last_month") {
+            start.setDate(1)
+            start.setMonth(start.getMonth() - 1)
+            start.setHours(0, 0, 0, 0)
+
+            end.setDate(1)
+            end.setHours(0, 0, 0, 0)
+        }
+
+        if (period === "last_30_days") {
+            start.setDate(start.getDate() - 30)
+        }
+
+        return tickets.filter((ticket) => {
+            const createdAt = new Date(ticket.created_at)
+
+            return createdAt >= start && createdAt < end
+        })
+    }, [tickets, period])
+
     const statistics = useMemo(() => {
-        const open = tickets.filter(
+        const open = filteredTickets.filter(
         (ticket) =>
             ticket.status === "open" || ticket.status === "under_review",
         ).length
 
-        const inProgress = tickets.filter(
+        const inProgress = filteredTickets.filter(
         (ticket) => ticket.status === "in_progress",
         ).length
 
-        const resolved = tickets.filter(
+        const resolved = filteredTickets.filter(
         (ticket) =>
             ticket.status === "resolved" || ticket.status === "closed",
         ).length
 
         return {
-        total: tickets.length,
+        total: filteredTickets.length,
         open,
         inProgress,
         resolved,
         }
-    }, [tickets])
+    }, [filteredTickets])
 
     const recentTickets = useMemo(
         () =>
@@ -79,9 +150,9 @@ function DashboardPage() {
         return statuses.map((status) => ({
             status,
             label: formatStatus(status),
-            total: tickets.filter((ticket) => ticket.status === status).length,
+            total: filteredTickets.filter((ticket) => ticket.status === status).length,
         }))
-    }, [tickets])
+    }, [filteredTickets])
 
     const priorityStatistics = useMemo(() => {
         const priorities: Ticket["priority"][] = [
@@ -94,9 +165,9 @@ function DashboardPage() {
         return priorities.map((priority) => ({
             priority,
             label: formatPriority(priority),
-            total: tickets.filter((ticket) => ticket.priority === priority).length,
+            total: filteredTickets.filter((ticket) => ticket.priority === priority).length,
         }))
-    }, [tickets])
+    }, [filteredTickets])
 
     if (isLoading) {
         return <p>Carregando dashboard...</p>
@@ -104,17 +175,28 @@ function DashboardPage() {
 
     return (
         <div className="dashboard-page">
-        <div className="page-header">
+        <div className="dashboard-header">
             <div>
-            <h1>Dashboard</h1>
-            <p>
-                Olá, {user?.name}. Acompanhe uma visão geral dos seus chamados.
-            </p>
+                <h1>Dashboard</h1>
+                <p>Visão geral dos chamados.</p>
             </div>
 
-            <Link className="primary-button" to="/tickets">
-            Ver chamados
-            </Link>
+            <label className="dashboard-period-filter">
+                <span>Período</span>
+
+                <select
+                    value={period}
+                    onChange={(event) => setPeriod(event.target.value)}
+                >
+                    <option value="today">Hoje</option>
+                    <option value="this_week">Esta semana</option>
+                    <option value="last_week">Semana passada</option>
+                    <option value="this_month">Este mês</option>
+                    <option value="last_month">Mês passado</option>
+                    <option value="last_30_days">Últimos 30 dias</option>
+                    <option value="all">Todos</option>
+                </select>
+            </label>
         </div>
 
         {error && <p className="error-message">{error}</p>}
