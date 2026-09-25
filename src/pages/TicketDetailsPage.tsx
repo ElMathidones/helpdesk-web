@@ -29,7 +29,61 @@ function TicketDetailsPage() {
     const [error, setError] = useState("")
     const [isAssigning, setIsAssigning] = useState(false)
     const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
+
     const commentInputRef = useRef<HTMLTextAreaElement | null>(null)
+    const websocketRef = useRef<WebSocket | null>(null)
+
+    useEffect(() => {
+        if (!token || !ticket) {
+            return
+        }
+
+        const websocketUrl = import.meta.env.VITE_API_URL.replace(
+            /^http/,
+            "ws",
+        )
+
+        const websocket = new WebSocket(
+            `${websocketUrl}/ws/tickets/${ticket.id}?token=${encodeURIComponent(token)}`,
+        )
+
+        websocketRef.current = websocket
+
+        websocket.onopen = () => {
+            console.log("WebSocket do chamado conectado")
+        }
+
+        websocket.onmessage = (event) => {
+            const message = JSON.parse(event.data)
+
+            if (message.type !== "comment_created") {
+                return
+            }
+
+            const newComment = message.comment as Comment
+
+            setComments((currentComments) => {
+                if (
+                    currentComments.some(
+                        (comment) => comment.id === newComment.id,
+                    )
+                ) {
+                    return currentComments
+                }
+
+                return [...currentComments, newComment]
+            })
+        }
+
+        websocket.onclose = () => {
+            console.log("WebSocket do chamado desconectado")
+        }
+
+        return () => {
+            websocket.close()
+            websocketRef.current = null
+        }
+    }, [ticket, token])
 
     useEffect(() => {
         if (!token || !isValidTicketId) {
@@ -138,10 +192,17 @@ function TicketDetailsPage() {
                 commentContent.trim(),
             )
 
-            setComments((currentComments) => [
-                ...currentComments,
-                newComment,
-            ])
+            setComments((currentComments) => {
+                if (
+                    currentComments.some(
+                        (comment) => comment.id === newComment.id,
+                    )
+                ) {
+                    return currentComments
+                }
+
+                return [...currentComments, newComment]
+            })
 
             setCommentContent("")
 
