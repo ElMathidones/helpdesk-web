@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react"
 import { Navigate, useNavigate } from "react-router-dom"
 
 import { useAuth } from "../hooks/useAuth"
+import { useTheme } from "../contexts/useTheme"
 
 function LoginPage() {
     const navigate = useNavigate()
@@ -11,6 +12,7 @@ function LoginPage() {
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
     const [isLoading, setIsLoading] = useState(false)
+    const { theme, toggleTheme } = useTheme()
 
     if (isAuthenticated) {
         return <Navigate to="/dashboard" replace />
@@ -90,6 +92,27 @@ function LoginPage() {
                 disabled={isLoading}
             >
                 {isLoading ? "Entrando..." : "Entrar"}
+            </button>
+
+            <button
+                type="button"
+                className="login-theme-toggle"
+                onClick={toggleTheme}
+                aria-label={
+                    theme === "light"
+                        ? "Ativar modo escuro"
+                        : "Ativar modo claro"
+                }
+            >
+                <span>
+                    {theme === "light" ? "🌙" : "☀️"}
+                </span>
+
+                <span>
+                    {theme === "light"
+                        ? "Modo escuro"
+                        : "Modo claro"}
+                </span>
             </button>
             </form>
         </section>
