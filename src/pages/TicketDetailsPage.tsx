@@ -11,8 +11,11 @@ import {
     createComment,
     getComments,
 } from "../services/comments"
+import { getTicketHistory } from "../services/ticketHistory"
+
 import type { Ticket, TicketStatus } from "../types/ticket"
 import type { Comment } from "../types/comment"
+import type { TicketHistory } from "../types/ticketHistory"
 
 function TicketDetailsPage() {
     const { id } = useParams()
@@ -23,6 +26,7 @@ function TicketDetailsPage() {
 
     const [ticket, setTicket] = useState<Ticket | null>(null)
     const [comments, setComments] = useState<Comment[]>([])
+    const [history, setHistory] = useState<TicketHistory[]>([])
     const [commentContent, setCommentContent] = useState("")
     const [isCreatingComment, setIsCreatingComment] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
@@ -94,13 +98,15 @@ function TicketDetailsPage() {
 
         async function loadTicket() {
             try {
-                const [ticketData, commentsData] = await Promise.all([
+                const [ticketData, commentsData, historyData] = await Promise.all([
                     getTicket(currentToken, ticketId),
                     getComments(currentToken, ticketId),
+                    getTicketHistory(currentToken, ticketId),
                 ])
 
                 setTicket(ticketData)
                 setComments(commentsData)
+                setHistory(historyData)
             } catch {
                 setError("Não foi possível carregar o chamado.")
             } finally {
@@ -122,6 +128,10 @@ function TicketDetailsPage() {
         try {
             const updatedTicket = await assignTicket(token, ticket.id)
             setTicket(updatedTicket)
+
+            const updatedHistory = await getTicketHistory(token, ticket.id)
+
+            setHistory(updatedHistory)
         } catch {
             setError("Não foi possível assumir o chamado.")
         } finally {
@@ -145,6 +155,9 @@ function TicketDetailsPage() {
         )
 
         setTicket(updatedTicket)
+
+        const updatedHistory = await getTicketHistory(token, ticket.id)
+        setHistory(updatedHistory)
         } catch {
             setError("Não foi possível alterar o status do chamado.")
         } finally {
@@ -374,6 +387,44 @@ function TicketDetailsPage() {
 
                     <section className="details-card">
                         <div className="details-card-header">
+                            <h2>Histórico</h2>
+                        </div>
+
+                        <div className="details-card-content">
+                            {history.length === 0 ? (
+                                <p>Nenhum evento registrado.</p>
+                            ) : (
+                                <div className="ticket-history">
+                                    {history.map((event) => (
+                                        <div className="ticket-history-item" key={event.id}>
+                                            <div className="ticket-history-marker" />
+
+                                            <div className="ticket-history-content">
+                                                <strong>{formatHistoryEvent(event.event_type)}</strong>
+
+                                                <p className="ticket-history-meta">
+                                                    {event.user?.name ?? "Sistema"} •{" "}
+                                                    {new Date(event.created_at).toLocaleString("pt-BR")}
+                                                </p>
+
+                                                {event.event_type === "status_changed" &&
+                                                    event.old_value !== null &&
+                                                    event.new_value !== null && (
+                                                        <p className="ticket-history-change">
+                                                            {formatStatus(event.old_value as TicketStatus)} →{" "}
+                                                            {formatStatus(event.new_value as TicketStatus)}
+                                                        </p>
+                                                    )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </section>
+
+                    <section className="details-card">
+                        <div className="details-card-header">
                             <h2>Chat</h2>
                         </div>
 
@@ -526,6 +577,16 @@ function formatStatus(status: Ticket["status"]) {
     }
 
     return labels[status]
+}
+
+function formatHistoryEvent(eventType: string) {
+    const labels: Record<string, string> = {
+        ticket_created: "Chamado criado",
+        assignee_changed: "Responsável alterado",
+        status_changed: "Status alterado",
+    }
+
+    return labels[eventType] ?? eventType
 }
 
 export default TicketDetailsPage
