@@ -40,17 +40,21 @@ function AppLayout() {
                         Chamados
                     </NavLink>
 
-                    <div className="nav-section-title">Análises</div>
+                    {(user?.role === "admin" || user?.role === "technician") && (
+                        <>
+                            <div className="nav-section-title">ANÁLISES</div>
 
-                    <div className="nav-link nav-link-disabled">
-                        <span className="nav-icon">◔</span>
-                        Relatórios
-                    </div>
-
-                    <div className="nav-link nav-link-disabled">
-                        <span className="nav-icon">▥</span>
-                        Analytics
-                    </div>
+                            <NavLink
+                                to="/reports"
+                                className={({ isActive }) =>
+                                    `nav-link ${isActive ? "nav-link-active" : ""}`
+                                }
+                            >
+                                <span className="nav-icon">◔</span>
+                                Relatórios
+                            </NavLink>
+                        </>
+                    )}
 
                     <div className="nav-section-title">Sistema</div>
 
