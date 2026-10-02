@@ -1,11 +1,10 @@
 import { NavLink, Outlet } from "react-router-dom"
 
 import { useAuth } from "../hooks/useAuth"
-import { useTheme } from "../contexts/useTheme"
+import { getAvatarUrl } from "../services/users"
 
 function AppLayout() {
     const { user, logout } = useAuth()
-    const { theme, toggleTheme } = useTheme()
 
     return (
         <div className="app-layout">
@@ -58,16 +57,28 @@ function AppLayout() {
 
                     <div className="nav-section-title">Sistema</div>
 
-                    <div className="nav-link nav-link-disabled">
+                    <NavLink
+                        to="/settings"
+                        className={({ isActive }) =>
+                            `nav-link ${isActive ? "nav-link-active" : ""}`
+                        }
+                    >
                         <span className="nav-icon">⚙</span>
                         Configurações
-                    </div>
+                    </NavLink>
                 </nav>
 
                 <div className="sidebar-user">
                     <div className="user-info">
                         <div className="user-avatar">
-                            {user?.name?.charAt(0).toUpperCase() ?? "U"}
+                            {user?.avatar_filename ? (
+                                <img
+                                    src={getAvatarUrl(user.avatar_filename)}
+                                    alt=""
+                                />
+                            ) : (
+                                user?.name?.trim().charAt(0).toUpperCase()
+                            )}
                         </div>
 
                         <div className="user-details">
@@ -75,22 +86,6 @@ function AppLayout() {
                             <span>{user?.role}</span>
                         </div>
                     </div>
-
-                    <button
-                        type="button"
-                        className="theme-toggle"
-                        onClick={toggleTheme}
-                    >
-                        <span>
-                            {theme === "light" ? "🌙" : "☀️"}
-                        </span>
-
-                        <span>
-                            {theme === "light"
-                                ? "Modo escuro"
-                                : "Modo claro"}
-                        </span>
-                    </button>
 
                     <button
                         className="logout-button"

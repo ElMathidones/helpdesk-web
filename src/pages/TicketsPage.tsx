@@ -154,24 +154,10 @@ function TicketsPage() {
                     >
                         <option value="">Todas</option>
 
-                        {categories
-                            .sort((a, b) => {
-                                const order = [
-                                    "Hardware",
-                                    "Software",
-                                    "Rede",
-                                    "Acesso e Contas",
-                                    "E-mail",
-                                    "Impressoras",
-                                    "Outros",
-                                ]
-
-                                return order.indexOf(a.name) - order.indexOf(b.name)
-                            })
-                            .map((category) => (
-                                <option key={category.id} value={category.id}>
-                                    {category.name}
-                                </option>
+                        {categories.map((category) => (
+                            <option key={category.id} value={category.id}>
+                                {category.name}
+                            </option>
                         ))}
                     </select>
             </div>

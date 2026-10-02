@@ -68,6 +68,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setIsLoading(false)
     }
 
+    async function refreshUser() {
+        if (!token) return
+
+        const currentUser = await getCurrentUser(token)
+        setUser(currentUser)
+    }
+
     return (
         <AuthContext.Provider
         value={{
@@ -77,6 +84,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             isLoading,
             login,
             logout,
+            refreshUser,
         }}
         >
         {children}

@@ -8,6 +8,7 @@ import LoginPage from "./pages/LoginPage"
 import ReportsPage from "./pages/ReportsPage"
 import TicketsPage from "./pages/TicketsPage"
 import TicketDetailsPage from "./pages/TicketDetailsPage"
+import SettingsPage from "./pages/SettingsPage"
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             }
           >
             <Route path="/reports" element={<ReportsPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
           </Route>
         </Route>
       </Route>

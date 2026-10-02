@@ -10,6 +10,7 @@ export interface AuthContextData {
     isLoading: boolean
     login: (credentials: LoginCredentials) => Promise<void>
     logout: () => void
+    refreshUser: () => Promise<void>
 }
 
 export const AuthContext = createContext<AuthContextData | undefined>(undefined)

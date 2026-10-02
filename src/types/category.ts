@@ -3,5 +3,15 @@ export interface Category {
     name: string
     description: string | null
     is_active: boolean
-    created_at: string
+    sort_order: number
+}
+
+export interface CategoryCreate {
+    name: string
+    description: string | null
+}
+
+export interface CategoryUpdate {
+    name?: string
+    description?: string | null
 }

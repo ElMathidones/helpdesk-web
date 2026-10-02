@@ -12,6 +12,7 @@ import {
     getComments,
 } from "../services/comments"
 import { getTicketHistory } from "../services/ticketHistory"
+import { formatDateTime } from "../utils/date"
 
 import type { Ticket, TicketStatus } from "../types/ticket"
 import type { Comment } from "../types/comment"
@@ -404,7 +405,7 @@ function TicketDetailsPage() {
 
                                                 <p className="ticket-history-meta">
                                                     {event.user?.name ?? "Sistema"} •{" "}
-                                                    {new Date(event.created_at).toLocaleString("pt-BR")}
+                                                    {formatDateTime(event.created_at)}
                                                 </p>
 
                                                 {event.event_type === "status_changed" &&
@@ -451,9 +452,7 @@ function TicketDetailsPage() {
                                                     <strong>{comment.author.name}</strong>
 
                                                     <time dateTime={comment.created_at}>
-                                                        {new Date(
-                                                            comment.created_at,
-                                                        ).toLocaleString("pt-BR")}
+                                                        {formatDateTime(comment.created_at)}
                                                     </time>
                                                 </div>
 
@@ -523,18 +522,14 @@ function TicketDetailsPage() {
                         <div>
                             <dt>Criado em</dt>
                             <dd>
-                                {new Date(
-                                    ticket.created_at,
-                                ).toLocaleString("pt-BR")}
+                                {formatDateTime(ticket.created_at)}
                             </dd>
                         </div>
 
                         <div>
                             <dt>Atualizado em</dt>
                             <dd>
-                                {new Date(
-                                    ticket.updated_at,
-                                ).toLocaleString("pt-BR")}
+                                {formatDateTime(ticket.updated_at)}
                             </dd>
                         </div>
 
@@ -542,9 +537,7 @@ function TicketDetailsPage() {
                             <div>
                                 <dt>Fechado em</dt>
                                 <dd>
-                                    {new Date(
-                                        ticket.closed_at,
-                                    ).toLocaleString("pt-BR")}
+                                    {formatDateTime(ticket.closed_at)}
                                 </dd>
                             </div>
                         )}

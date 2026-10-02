@@ -6,6 +6,5 @@ export interface User {
     email: string
     role: UserRole
     is_active: boolean
-    created_at: string
-    updated_at: string
+    avatar_filename: string | null
 }
