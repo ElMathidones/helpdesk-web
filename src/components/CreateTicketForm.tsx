@@ -19,6 +19,7 @@ function CreateTicketForm({ onCreated }: CreateTicketFormProps) {
     const descriptionRef = useRef<HTMLTextAreaElement>(null)
     const [priority, setPriority] = useState<TicketPriority>("medium")
     const [categoryId, setCategoryId] = useState("")
+    const [sendEmailCopy, setSendEmailCopy] = useState(false)
     const [error, setError] = useState("")
     const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -62,6 +63,7 @@ function CreateTicketForm({ onCreated }: CreateTicketFormProps) {
                 description,
                 priority,
                 category_id: Number(categoryId),
+                send_email_copy: sendEmailCopy,
         })
 
         onCreated(ticket)
@@ -70,6 +72,7 @@ function CreateTicketForm({ onCreated }: CreateTicketFormProps) {
         setDescription("")
         setPriority("medium")
         setCategoryId("")
+        setSendEmailCopy(false)
         } catch {
             setError("Não foi possível criar o chamado.")
         } finally {
@@ -161,6 +164,18 @@ function CreateTicketForm({ onCreated }: CreateTicketFormProps) {
                     </option>
                 ))}
                 </select>
+            </div>
+
+            <div className="ticket-email-option">
+                <label>
+                    <input
+                        type="checkbox"
+                        checked={sendEmailCopy}
+                        onChange={(event) => setSendEmailCopy(event.target.checked)}
+                    />
+
+                    <span>Enviar uma cópia deste chamado para meu e-mail</span>
+                </label>
             </div>
 
             {error && <p className="form-error">{error}</p>}

@@ -1,5 +1,5 @@
 /* ====================================================================
-   01. Theme & global foundation
+    01. Theme & global foundation
    ==================================================================== */
 
 :root {
@@ -82,7 +82,7 @@ p {
 
 
 /* ====================================================================
-   02. App layout & sidebar
+    02. App layout & sidebar
    ==================================================================== */
 
 .app-layout {
@@ -266,7 +266,7 @@ p {
 
 
 /* ====================================================================
-   03. Dashboard - overview
+    03. Dashboard - overview
    ==================================================================== */
 
 .dashboard-page {
@@ -446,7 +446,7 @@ p {
 
 
 /* ====================================================================
-   04. Shared badges, states & feedback
+    04. Shared badges, states & feedback
    ==================================================================== */
 
 .status-badge,
@@ -568,7 +568,7 @@ html[data-theme="dark"] .error-message {
 
 
 /* ====================================================================
-   05. Tickets - list & cards
+    05. Tickets - list & cards
    ==================================================================== */
 
 .tickets-page {
@@ -712,7 +712,7 @@ html[data-theme="dark"] .error-message {
 
 
 /* ====================================================================
-   06. Tickets - creation form
+    06. Tickets - creation form
    ==================================================================== */
 
 .ticket-form {
@@ -771,6 +771,79 @@ html[data-theme="dark"] .error-message {
     box-shadow: 0 0 0 3px rgb(99 102 241 / 12%);
 }
 
+.ticket-email-option label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 13px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text-secondary);
+    background: var(--color-surface-secondary);
+    font-size: 13px;
+    line-height: 1.5;
+    cursor: pointer;
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.ticket-email-option label:hover {
+    border-color: #6366f1;
+}
+
+.ticket-email-option input[type="checkbox"] {
+    appearance: none;
+    display: grid;
+    width: 18px;
+    height: 18px;
+    margin: 1px 0 0;
+    flex-shrink: 0;
+    place-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    background: var(--color-surface);
+    cursor: pointer;
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.ticket-email-option input[type="checkbox"]::after {
+    content: "✓";
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1;
+    transform: scale(0);
+    transition: transform 0.15s ease;
+}
+
+.ticket-email-option input[type="checkbox"]:checked {
+    border-color: #4f46e5;
+    background: #4f46e5;
+}
+
+.ticket-email-option input[type="checkbox"]:checked::after {
+    transform: scale(1);
+}
+
+.ticket-email-option input[type="checkbox"]:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(99 102 241 / 18%);
+}
+
+.ticket-email-option label:has(input:checked) {
+    border-color: #6366f1;
+    background: rgb(99 102 241 / 7%);
+}
+
+html[data-theme="dark"] .ticket-email-option label:has(input:checked) {
+    background: rgb(99 102 241 / 12%);
+}
+
 .submit-button {
     display: inline-flex;
     width: 100%;
@@ -814,7 +887,7 @@ html[data-theme="dark"] .form-error {
 
 
 /* ====================================================================
-   07. Ticket details & actions
+    07. Ticket details & actions
    ==================================================================== */
 
 .ticket-details-page {
@@ -1064,7 +1137,7 @@ html[data-theme="dark"] .form-error {
 
 
 /* ====================================================================
-   08. Login
+    08. Login
    ==================================================================== */
 
 .login-page {
@@ -1375,9 +1448,37 @@ html[data-theme="dark"] .form-error {
     }
 }
 
+.login-account-switch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: var(--color-text-muted);
+    font-size: 12px;
+}
+
+.login-account-switch button {
+    padding: 0;
+    border: 0;
+    color: #4f46e5;
+    background: transparent;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.login-account-switch button:hover:not(:disabled) {
+    text-decoration: underline;
+}
+
+.login-account-switch button:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
 
 /* ====================================================================
-   09. Dashboard - charts & period filters
+    09. Dashboard - charts & period filters
    ==================================================================== */
 
 .dashboard-chart-section {
@@ -1620,7 +1721,7 @@ html[data-theme="dark"] .form-error {
 
 
 /* ====================================================================
-   10. Tickets - search & filters
+    10. Tickets - search & filters
    ==================================================================== */
 
 .tickets-toolbar {
@@ -1730,7 +1831,7 @@ html[data-theme="dark"] .form-error {
 
 
 /* ====================================================================
-   11. Ticket chat
+    11. Ticket chat
    ==================================================================== */
 
 .comments-list {
@@ -1862,7 +1963,7 @@ html[data-theme="dark"] .form-error {
 
 
 /* ====================================================================
-   12. Sidebar secondary controls
+    12. Sidebar secondary controls
    ==================================================================== */
 
 .theme-toggle {
@@ -1893,7 +1994,7 @@ html[data-theme="dark"] .form-error {
 
 
 /* ====================================================================
-   13. Ticket history
+    13. Ticket history
    ==================================================================== */
 
 .ticket-history {
@@ -1954,7 +2055,7 @@ html[data-theme="dark"] .form-error {
 
 
 /* ====================================================================
-   14. Reports & analytics
+    14. Reports & analytics
    ==================================================================== */
 
 .reports-page {
@@ -2320,7 +2421,7 @@ html[data-theme="dark"] .reports-filter-field input {
 
 
 /* ====================================================================
-   15. Settings - base, account, appearance & categories
+    15. Settings - base, account, appearance & categories
    ==================================================================== */
 
 .settings-page {
@@ -2722,7 +2823,7 @@ html[data-theme="dark"] .settings-success-message {
 
 
 /* ====================================================================
-   16. Tickets - adaptive description field
+    16. Tickets - adaptive description field
    ==================================================================== */
 
 .form-field textarea.ticket-description-input {
@@ -2735,7 +2836,7 @@ html[data-theme="dark"] .settings-success-message {
 
 
 /* ====================================================================
-   17. Settings - category ordering
+    17. Settings - category ordering
    ==================================================================== */
 
 .settings-drag-handle {
@@ -2814,7 +2915,7 @@ html[data-theme="dark"] .settings-success-message {
 
 
 /* ====================================================================
-   18. Shared custom selects
+    18. Shared custom selects
    ==================================================================== */
 
 .form-field select,
@@ -2831,7 +2932,7 @@ html[data-theme="dark"] .settings-success-message {
 
 
 /* ====================================================================
-   19. Settings - category activation
+    19. Settings - category activation
    ==================================================================== */
 
 .settings-danger-button,
@@ -2875,7 +2976,7 @@ html[data-theme="dark"] .settings-success-message {
 
 
 /* ====================================================================
-   20. Settings - avatar
+    20. Settings - avatar
    ==================================================================== */
 
 .settings-avatar-row {

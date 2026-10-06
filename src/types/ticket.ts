@@ -20,6 +20,7 @@ export interface TicketUser {
 
 export interface Ticket {
     id: number
+    creator_ticket_number: number
     title: string
     description: string
     priority: TicketPriority

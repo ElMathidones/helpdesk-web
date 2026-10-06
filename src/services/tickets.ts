@@ -7,6 +7,7 @@ interface CreateTicketData {
     description: string
     priority: TicketPriority
     category_id: number
+    send_email_copy: boolean
 }
 
 export async function createTicket(
@@ -60,6 +61,26 @@ export async function getTicket(
     return response.json() as Promise<Ticket>
 }
 
+export async function getMyTicket(
+    token: string,
+    creatorTicketNumber: number,
+): Promise<Ticket> {
+    const response = await fetch(
+        `${API_URL}/tickets/my/${creatorTicketNumber}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        },
+    )
+
+    if (!response.ok) {
+        throw new Error("Unable to load ticket")
+    }
+
+    return response.json() as Promise<Ticket>
+}
+
 export async function assignTicket(
     token: string,
     ticketId: number,
@@ -97,4 +118,24 @@ export async function updateTicketStatus(
     }
 
     return response.json() as Promise<Ticket>
+}
+
+export async function deleteTicket(
+    token: string,
+    ticketId: number,
+): Promise<void> {
+    const response = await fetch(`${API_URL}/tickets/${ticketId}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    })
+
+    if (response.status === 404) {
+        throw new Error("Chamado não encontrado.")
+    }
+
+    if (!response.ok) {
+        throw new Error("Não foi possível excluir o chamado.")
+    }
 }

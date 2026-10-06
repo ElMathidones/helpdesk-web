@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 
 import { useAuth } from "../hooks/useAuth"
 import {
     assignTicket,
+    deleteTicket,
+    getMyTicket,
     getTicket,
     updateTicketStatus,
 } from "../services/tickets"
@@ -19,11 +21,18 @@ import type { Comment } from "../types/comment"
 import type { TicketHistory } from "../types/ticketHistory"
 
 function TicketDetailsPage() {
-    const { id } = useParams()
+    const { id, number } = useParams()
     const { token, user } = useAuth()
+    const navigate = useNavigate()
 
-    const ticketId = Number(id)
-    const isValidTicketId = Boolean(id) && !Number.isNaN(ticketId)
+    const ticketReference = Number(number ?? id)
+
+    const isCustomerNumberRoute = number !== undefined
+
+    const isValidTicketReference =
+        Boolean(number ?? id) &&
+        Number.isInteger(ticketReference) &&
+        ticketReference > 0
 
     const [ticket, setTicket] = useState<Ticket | null>(null)
     const [comments, setComments] = useState<Comment[]>([])
@@ -34,6 +43,7 @@ function TicketDetailsPage() {
     const [error, setError] = useState("")
     const [isAssigning, setIsAssigning] = useState(false)
     const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
 
     const commentInputRef = useRef<HTMLTextAreaElement | null>(null)
     const websocketRef = useRef<WebSocket | null>(null)
@@ -91,19 +101,35 @@ function TicketDetailsPage() {
     }, [ticket, token])
 
     useEffect(() => {
-        if (!token || !isValidTicketId) {
-        return
+        if (!token || !isValidTicketReference) {
+            return
         }
 
         const currentToken = token
 
         async function loadTicket() {
             try {
-                const [ticketData, commentsData, historyData] = await Promise.all([
-                    getTicket(currentToken, ticketId),
-                    getComments(currentToken, ticketId),
-                    getTicketHistory(currentToken, ticketId),
-                ])
+                const ticketData = isCustomerNumberRoute
+                    ? await getMyTicket(
+                        currentToken,
+                        ticketReference,
+                    )
+                    : await getTicket(
+                        currentToken,
+                        ticketReference,
+                    )
+
+                const [commentsData, historyData] =
+                    await Promise.all([
+                        getComments(
+                            currentToken,
+                            ticketData.id,
+                        ),
+                        getTicketHistory(
+                            currentToken,
+                            ticketData.id,
+                        ),
+                    ])
 
                 setTicket(ticketData)
                 setComments(commentsData)
@@ -116,7 +142,12 @@ function TicketDetailsPage() {
         }
 
         void loadTicket()
-    }, [isValidTicketId, ticketId, token])
+    }, [
+        isCustomerNumberRoute,
+        isValidTicketReference,
+        ticketReference,
+        token,
+    ])
 
     async function handleAssign() {
         if (!token || !ticket) {
@@ -163,6 +194,37 @@ function TicketDetailsPage() {
             setError("Não foi possível alterar o status do chamado.")
         } finally {
             setIsUpdatingStatus(false)
+        }
+    }
+
+    async function handleDeleteTicket() {
+        if (!token || !ticket || user?.role !== "admin") {
+            return
+        }
+
+        const confirmed = window.confirm(
+            `Excluir permanentemente o chamado #${ticket.id}?\n\n` +
+            "Essa ação também removerá os comentários e o histórico " +
+            "e não poderá ser desfeita.",
+        )
+
+        if (!confirmed) {
+            return
+        }
+
+        setError("")
+        setIsDeleting(true)
+
+        try {
+            await deleteTicket(token, ticket.id)
+            navigate("/tickets")
+        } catch (error) {
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : "Não foi possível excluir o chamado.",
+            )
+            setIsDeleting(false)
         }
     }
     
@@ -231,7 +293,7 @@ function TicketDetailsPage() {
         }
     }
 
-    if (!isValidTicketId) {
+    if (!isValidTicketReference) {
         return (
         <div className="ticket-details-page">
             <div className="feedback-card">
@@ -271,7 +333,10 @@ function TicketDetailsPage() {
             <div className="ticket-details-header">
                 <div>
                     <span className="ticket-details-id">
-                        Chamado #{ticket.id}
+                        Chamado #
+                        {user?.role === "customer"
+                            ? ticket.creator_ticket_number
+                            : ticket.id}
                     </span>
                     <h1>{ticket.title}</h1>
                 </div>
@@ -371,6 +436,17 @@ function TicketDetailsPage() {
                                                 Fechar chamado
                                             </button>
                                         </>
+                                    )}
+
+                                    {user?.role === "admin" && (
+                                        <button
+                                            className="action-button action-danger"
+                                            type="button"
+                                            onClick={() => void handleDeleteTicket()}
+                                            disabled={isDeleting}
+                                        >
+                                            {isDeleting ? "Excluindo..." : "Excluir chamado"}
+                                        </button>
                                     )}
 
                                     {ticket.assignee_id !== null &&

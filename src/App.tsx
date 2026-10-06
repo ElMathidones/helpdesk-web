@@ -20,7 +20,10 @@ function App() {
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/tickets" element={<TicketsPage />} />
+          <Route path="/tickets/my/:number" element={<TicketDetailsPage />} />
           <Route path="/tickets/:id" element={<TicketDetailsPage />} />
+
+          <Route path="/settings" element={<SettingsPage />} />
 
           <Route
             element={
@@ -30,7 +33,6 @@ function App() {
             }
           >
             <Route path="/reports" element={<ReportsPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
           </Route>
         </Route>
       </Route>

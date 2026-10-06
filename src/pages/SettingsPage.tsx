@@ -12,6 +12,7 @@ import { useTheme } from "../contexts/useTheme"
 
 import {
     createCategory,
+    deleteCategory,
     getCategories,
     updateCategory,
     updateCategoryOrder,
@@ -50,6 +51,8 @@ function SettingsPage() {
         null,
     )
     const [updatingStatusCategoryId, setUpdatingStatusCategoryId] =
+        useState<number | null>(null)
+    const [deletingCategoryId, setDeletingCategoryId] =
         useState<number | null>(null)
     
     const [editName, setEditName] = useState("")
@@ -479,6 +482,44 @@ function SettingsPage() {
             )
         } finally {
             setUpdatingStatusCategoryId(null)
+        }
+    }
+
+    async function handleDeleteCategory(category: Category) {
+        if (!token || deletingCategoryId !== null) {
+            return
+        }
+
+        const confirmed = window.confirm(
+            `Excluir permanentemente a categoria "${category.name}"?\n\n` +
+            "Se ela já tiver sido utilizada em algum chamado, " +
+            "a exclusão será bloqueada.",
+        )
+
+        if (!confirmed) {
+            return
+        }
+
+        setDeletingCategoryId(category.id)
+        setCategoryError("")
+        setCategorySuccess("")
+
+        try {
+            await deleteCategory(token, category.id)
+
+            setCategories((current) =>
+                current.filter((item) => item.id !== category.id),
+            )
+
+            setCategorySuccess("Categoria excluída com sucesso.")
+        } catch (error) {
+            setCategoryError(
+                error instanceof Error
+                    ? error.message
+                    : "Não foi possível excluir a categoria.",
+            )
+        } finally {
+            setDeletingCategoryId(null)
         }
     }
 
@@ -1044,6 +1085,19 @@ function SettingsPage() {
                                                         : category.is_active
                                                         ? "Desativar"
                                                         : "Reativar"}
+                                                </button>
+
+                                                <button
+                                                    type="button"
+                                                    className="settings-danger-button"
+                                                    onClick={() => {
+                                                        void handleDeleteCategory(category)
+                                                    }}
+                                                    disabled={deletingCategoryId === category.id}
+                                                >
+                                                    {deletingCategoryId === category.id
+                                                        ? "Excluindo..."
+                                                        : "Excluir"}
                                                 </button>
                                             </div>
                                         </>

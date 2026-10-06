@@ -1,6 +1,34 @@
 import { API_URL } from "./api"
 import type { User } from "../types/user"
 
+interface CreateUserData {
+    name: string
+    email: string
+    password: string
+}
+
+export async function createUser(
+    data: CreateUserData,
+): Promise<User> {
+    const response = await fetch(`${API_URL}/users`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    })
+
+    if (response.status === 409) {
+        throw new Error("Este e-mail já está cadastrado.")
+    }
+
+    if (!response.ok) {
+        throw new Error("Não foi possível criar a conta.")
+    }
+
+    return response.json() as Promise<User>
+}
+
 export async function getCurrentUser(token: string): Promise<User> {
     const response = await fetch(`${API_URL}/users/me`, {
         headers: {

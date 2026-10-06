@@ -8,17 +8,99 @@ import { getTickets } from "../services/tickets"
 import type { Ticket } from "../types/ticket"
 import type { Category } from "../types/category"
 
+
+interface StoredTicketFilters {
+    search: string
+    status: string
+    priority: string
+    category: string
+}
+
+function getStoredTicketFilters(
+    userId?: number,
+): StoredTicketFilters {
+    const emptyFilters: StoredTicketFilters = {
+        search: "",
+        status: "",
+        priority: "",
+        category: "",
+    }
+
+    if (!userId) {
+        return emptyFilters
+    }
+
+    const storageKey = `helpdesk_ticket_filters_${userId}`
+    const savedFilters = sessionStorage.getItem(storageKey)
+
+    if (!savedFilters) {
+        return emptyFilters
+    }
+
+    try {
+        const parsed = JSON.parse(savedFilters) as Partial<StoredTicketFilters>
+
+        return {
+            search:
+                typeof parsed.search === "string"
+                    ? parsed.search
+                    : "",
+            status:
+                typeof parsed.status === "string"
+                    ? parsed.status
+                    : "",
+            priority:
+                typeof parsed.priority === "string"
+                    ? parsed.priority
+                    : "",
+            category:
+                typeof parsed.category === "string"
+                    ? parsed.category
+                    : "",
+        }
+    } catch {
+        sessionStorage.removeItem(storageKey)
+        return emptyFilters
+    }
+}
+
 function TicketsPage() {
-    const { token } = useAuth()
+    const { token, user } = useAuth()
 
     const [tickets, setTickets] = useState<Ticket[]>([])
     const [categories, setCategories] = useState<Category[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState("")
-    const [search, setSearch] = useState("")
-    const [statusFilter, setStatusFilter] = useState("")
-    const [priorityFilter, setPriorityFilter] = useState("")
-    const [categoryFilter, setCategoryFilter] = useState("")
+    const storedFilters = getStoredTicketFilters(user?.id)
+    const [search, setSearch] = useState(storedFilters.search)
+    const [statusFilter, setStatusFilter] = useState(storedFilters.status)
+    const [priorityFilter, setPriorityFilter] = useState(storedFilters.priority)
+    const [categoryFilter, setCategoryFilter] = useState(
+        storedFilters.category,
+    )
+
+
+    useEffect(() => {
+        if (!user?.id) {
+            return
+        }
+
+        sessionStorage.setItem(
+            `helpdesk_ticket_filters_${user.id}`,
+            JSON.stringify({
+                search,
+                status: statusFilter,
+                priority: priorityFilter,
+                category: categoryFilter,
+            }),
+        )
+    }, [
+        search,
+        statusFilter,
+        priorityFilter,
+        categoryFilter,
+        user?.id,
+    ])
 
     useEffect(() => {
         if (!token) {
@@ -201,10 +283,19 @@ function TicketsPage() {
                         <Link
                             className="ticket-card"
                             key={ticket.id}
-                            to={`/tickets/${ticket.id}`}
+                            to={
+                                user?.role === "customer"
+                                    ? `/tickets/my/${ticket.creator_ticket_number}`
+                                    : `/tickets/${ticket.id}`
+                            }
                         >
                         <div className="ticket-card-header">
-                            <span className="ticket-number">#{ticket.id}</span>
+                            <span className="ticket-number">
+                                #
+                                {user?.role === "customer"
+                                    ? ticket.creator_ticket_number
+                                    : ticket.id}
+                            </span>
 
                             <div className="ticket-badges">
                             <span

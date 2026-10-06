@@ -136,3 +136,33 @@ export async function updateCategoryStatus(
 
     return response.json() as Promise<Category>
 }
+
+export async function deleteCategory(
+    token: string,
+    categoryId: number,
+): Promise<void> {
+    const response = await fetch(
+        `${API_URL}/categories/${categoryId}`,
+        {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        },
+    )
+
+    if (response.status === 404) {
+        throw new Error("Categoria não encontrada.")
+    }
+
+    if (response.status === 409) {
+        throw new Error(
+            "Esta categoria já possui chamados e não pode ser excluída. " +
+            "Você pode desativá-la.",
+        )
+    }
+
+    if (!response.ok) {
+        throw new Error("Não foi possível excluir a categoria.")
+    }
+}

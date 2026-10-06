@@ -6,12 +6,46 @@ import { getTickets } from "../services/tickets"
 import type { Ticket } from "../types/ticket"
 
 function DashboardPage() {
-    const { token } = useAuth()
+    const { token, user } = useAuth()
 
     const [tickets, setTickets] = useState<Ticket[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState("")
-    const [period, setPeriod] = useState("this_week")
+    const [period, setPeriod] = useState(() => {
+        if (!user?.id) {
+            return "this_week"
+        }
+
+        const savedPeriod = sessionStorage.getItem(
+            `helpdesk_dashboard_period_${user.id}`,
+        )
+
+        const allowedPeriods = [
+            "today",
+            "this_week",
+            "last_week",
+            "this_month",
+            "last_month",
+            "last_30_days",
+            "all",
+        ]
+
+        return savedPeriod && allowedPeriods.includes(savedPeriod)
+            ? savedPeriod
+            : "this_week"
+    })
+
+
+    useEffect(() => {
+        if (!user?.id) {
+            return
+        }
+
+        sessionStorage.setItem(
+            `helpdesk_dashboard_period_${user.id}`,
+            period,
+        )
+    }, [period, user?.id])
 
     useEffect(() => {
         if (!token) return
@@ -248,10 +282,19 @@ function DashboardPage() {
                 <Link
                     className="recent-ticket"
                     key={ticket.id}
-                    to={`/tickets/${ticket.id}`}
+                    to={
+                        user?.role === "customer"
+                            ? `/tickets/my/${ticket.creator_ticket_number}`
+                            : `/tickets/${ticket.id}`
+                    }
                 >
                     <div className="ticket-main-info">
-                    <span className="ticket-id">#{ticket.id}</span>
+                    <span className="ticket-id">
+                        #
+                        {user?.role === "customer"
+                            ? ticket.creator_ticket_number
+                            : ticket.id}
+                    </span>
 
                     <div>
                         <strong>{ticket.title}</strong>
