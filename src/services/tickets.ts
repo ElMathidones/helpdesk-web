@@ -99,6 +99,27 @@ export async function assignTicket(
     return response.json() as Promise<Ticket>
 }
 
+export async function releaseTicket(
+    token: string,
+    ticketId: number,
+): Promise<Ticket> {
+    const response = await fetch(
+        `${API_URL}/tickets/${ticketId}/release`,
+        {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        },
+    )
+
+    if (!response.ok) {
+        throw new Error("Não foi possível liberar o chamado.")
+    }
+
+    return response.json() as Promise<Ticket>
+}
+
 export async function updateTicketStatus(
     token: string,
     ticketId: number,

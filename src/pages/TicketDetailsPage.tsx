@@ -7,6 +7,7 @@ import {
     deleteTicket,
     getMyTicket,
     getTicket,
+    releaseTicket,
     updateTicketStatus,
 } from "../services/tickets"
 import {
@@ -42,6 +43,7 @@ function TicketDetailsPage() {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState("")
     const [isAssigning, setIsAssigning] = useState(false)
+    const [isReleasing, setIsReleasing] = useState(false)
     const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
 
@@ -168,6 +170,39 @@ function TicketDetailsPage() {
             setError("Não foi possível assumir o chamado.")
         } finally {
             setIsAssigning(false)
+        }
+    }
+
+    async function handleRelease() {
+        if (!token || !ticket) {
+            return
+        }
+
+        setError("")
+        setIsReleasing(true)
+
+        try {
+            const updatedTicket = await releaseTicket(
+                token,
+                ticket.id,
+            )
+
+            setTicket(updatedTicket)
+
+            const updatedHistory = await getTicketHistory(
+                token,
+                ticket.id,
+            )
+
+            setHistory(updatedHistory)
+        } catch (error) {
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : "Não foi possível liberar o chamado.",
+            )
+        } finally {
+            setIsReleasing(false)
         }
     }
 
@@ -324,6 +359,12 @@ function TicketDetailsPage() {
     const canManage =
         user?.role === "admin" || user?.role === "technician"
 
+    const isAssignedToCurrentUser =
+        ticket.assignee_id === user?.id
+
+    const canControlAssignedTicket =
+        user?.role === "admin" || isAssignedToCurrentUser
+
     return (
         <div className="ticket-details-page">
             <Link className="back-link" to="/tickets">
@@ -378,7 +419,23 @@ function TicketDetailsPage() {
 
                             <div className="details-card-content">
                                 <div className="ticket-actions">
-                                    {ticket.assignee_id === null && (
+                                    {ticket.status === "open" && (
+                                        <button
+                                            className="action-button action-secondary"
+                                            type="button"
+                                            onClick={() =>
+                                                void handleStatusChange("under_review")
+                                            }
+                                            disabled={isUpdatingStatus}
+                                        >
+                                            {isUpdatingStatus
+                                                ? "Atualizando..."
+                                                : "Iniciar análise"}
+                                        </button>
+                                    )}
+
+                                    {ticket.status === "under_review"
+                                        && ticket.assignee_id === null && (
                                         <button
                                             className="action-button action-primary"
                                             type="button"
@@ -391,32 +448,43 @@ function TicketDetailsPage() {
                                         </button>
                                     )}
 
-                                    {ticket.status === "in_progress" && (
-                                        <button
-                                            className="action-button action-success"
-                                            type="button"
-                                            onClick={() =>
-                                                void handleStatusChange(
-                                                    "resolved",
-                                                )
-                                            }
-                                            disabled={isUpdatingStatus}
-                                        >
-                                            {isUpdatingStatus
-                                                ? "Atualizando..."
-                                                : "Marcar como resolvido"}
-                                        </button>
+                                    {ticket.status === "in_progress"
+                                        && canControlAssignedTicket && (
+                                        <>
+                                            <button
+                                                className="action-button action-success"
+                                                type="button"
+                                                onClick={() =>
+                                                    void handleStatusChange("resolved")
+                                                }
+                                                disabled={isUpdatingStatus}
+                                            >
+                                                {isUpdatingStatus
+                                                    ? "Atualizando..."
+                                                    : "Marcar como resolvido"}
+                                            </button>
+
+                                            <button
+                                                className="action-button action-secondary"
+                                                type="button"
+                                                onClick={() => void handleRelease()}
+                                                disabled={isReleasing}
+                                            >
+                                                {isReleasing
+                                                    ? "Liberando..."
+                                                    : "Liberar chamado"}
+                                            </button>
+                                        </>
                                     )}
 
-                                    {ticket.status === "resolved" && (
+                                    {ticket.status === "resolved"
+                                        && canControlAssignedTicket && (
                                         <>
                                             <button
                                                 className="action-button action-secondary"
                                                 type="button"
                                                 onClick={() =>
-                                                    void handleStatusChange(
-                                                        "in_progress",
-                                                    )
+                                                    void handleStatusChange("in_progress")
                                                 }
                                                 disabled={isUpdatingStatus}
                                             >
@@ -427,15 +495,26 @@ function TicketDetailsPage() {
                                                 className="action-button action-danger"
                                                 type="button"
                                                 onClick={() =>
-                                                    void handleStatusChange(
-                                                        "closed",
-                                                    )
+                                                    void handleStatusChange("closed")
                                                 }
                                                 disabled={isUpdatingStatus}
                                             >
                                                 Fechar chamado
                                             </button>
                                         </>
+                                    )}
+
+                                    {user?.role === "technician"
+                                        && ticket.assignee_id !== null
+                                        && ticket.assignee_id !== user.id
+                                        && (
+                                            ticket.status === "in_progress"
+                                            || ticket.status === "resolved"
+                                        ) && (
+                                        <p className="no-actions-message">
+                                            Este chamado está atribuído a{" "}
+                                            {ticket.assignee?.name ?? "outro responsável"}.
+                                        </p>
                                     )}
 
                                     {user?.role === "admin" && (

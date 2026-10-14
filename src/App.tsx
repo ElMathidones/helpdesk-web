@@ -4,6 +4,7 @@ import AppLayout from "./components/AppLayout"
 import ProtectedRoute from "./components/ProtectedRoute"
 import RoleProtectedRoute from "./components/RoleProtectedRoute"
 import DashboardPage from "./pages/DashboardPage"
+import FaqPage from "./pages/FaqPage"
 import LoginPage from "./pages/LoginPage"
 import ReportsPage from "./pages/ReportsPage"
 import TicketsPage from "./pages/TicketsPage"
@@ -23,6 +24,7 @@ function App() {
           <Route path="/tickets/my/:number" element={<TicketDetailsPage />} />
           <Route path="/tickets/:id" element={<TicketDetailsPage />} />
 
+          <Route path="/faq" element={<FaqPage />} />
           <Route path="/settings" element={<SettingsPage />} />
 
           <Route

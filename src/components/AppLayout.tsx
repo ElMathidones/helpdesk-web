@@ -1,5 +1,7 @@
 import { NavLink, Outlet } from "react-router-dom"
 
+import AssistantWidget from "./AssistantWidget"
+
 import { useAuth } from "../hooks/useAuth"
 import { getAvatarUrl } from "../services/users"
 
@@ -55,6 +57,18 @@ function AppLayout() {
                         </>
                     )}
 
+                    <div className="nav-section-title">AJUDA</div>
+
+                    <NavLink
+                        to="/faq"
+                        className={({ isActive }) =>
+                            `nav-link ${isActive ? "nav-link-active" : ""}`
+                        }
+                    >
+                        <span className="nav-icon">?</span>
+                        FAQ
+                    </NavLink>
+
                     <div className="nav-section-title">Sistema</div>
 
                     <NavLink
@@ -100,6 +114,8 @@ function AppLayout() {
             <main className="main-content">
                 <Outlet />
             </main>
+
+            <AssistantWidget />
         </div>
     )
 }
