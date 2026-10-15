@@ -37,6 +37,19 @@ html[data-theme="dark"] {
 
 * {
     box-sizing: border-box;
+    scrollbar-color: #475569 transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: #475569;
+    background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: #6366f1;
+    background-clip: padding-box;
 }
 
 html {
@@ -88,6 +101,12 @@ p {
 .app-layout {
     display: flex;
     min-height: 100vh;
+}
+
+.mobile-header,
+.sidebar-backdrop,
+.mobile-sidebar-close {
+    display: none;
 }
 
 .sidebar {
@@ -536,19 +555,116 @@ html[data-theme="dark"] .error-message {
 
 @media (max-width: 760px) {
 
-    .sidebar {
-        position: static;
-        width: 100%;
+    .app-layout {
+        display: block;
     }
 
-    .app-layout {
-        flex-direction: column;
+    .mobile-header {
+        position: sticky;
+        top: 0;
+        z-index: 1100;
+        display: flex;
+        min-height: 64px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 10px 20px;
+        border-bottom: 1px solid var(--color-border);
+        background: var(--color-surface);
+    }
+
+    .mobile-brand {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .mobile-brand .brand-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+
+    .mobile-brand strong {
+        display: block;
+        color: var(--color-text-primary);
+        font-size: 14px;
+    }
+
+    .mobile-brand span {
+        display: block;
+        margin-top: 1px;
+        color: var(--color-text-muted);
+        font-size: 10px;
+    }
+
+    .mobile-menu-button,
+    .mobile-sidebar-close {
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+        border: 1px solid var(--color-border);
+        border-radius: 9px;
+        color: var(--color-text-primary);
+        background: var(--color-surface-secondary);
+        font-size: 22px;
+        line-height: 1;
+    }
+
+    .mobile-menu-button {
+        display: grid;
+        place-items: center;
+    }
+
+    .sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        z-index: 1300;
+        width: min(86vw, 300px);
+        height: 100dvh;
+        padding: 24px 18px 18px;
+        overflow-y: auto;
+        transform: translateX(-105%);
+        box-shadow: 16px 0 40px rgb(15 23 42 / 24%);
+        transition: transform 0.25s ease;
+    }
+
+    .sidebar.sidebar-open {
+        transform: translateX(0);
+    }
+
+    .sidebar-brand {
+        padding-bottom: 24px;
+    }
+
+    .mobile-sidebar-close {
+        display: grid;
+        margin-left: auto;
+        place-items: center;
+        border-color: #374151;
+        color: #ffffff;
+        background: #1f2937;
+    }
+
+    .sidebar-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 1200;
+        display: block;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        border: 0;
+        background: rgb(15 23 42 / 55%);
+        cursor: default;
     }
 
     .main-content {
         width: 100%;
+        min-width: 0;
         margin-left: 0;
-        padding: 24px;
+        padding: 24px 20px 32px;
     }
 
     .stats-grid {
@@ -563,6 +679,22 @@ html[data-theme="dark"] .error-message {
 
     .ticket-meta {
         flex-wrap: wrap;
+    }
+
+    .mobile-menu-button-hidden {
+        visibility: hidden;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .mobile-header {
+        padding-right: 16px;
+        padding-left: 16px;
+    }
+
+    .main-content {
+        padding: 20px 16px 28px;
     }
 }
 
@@ -1133,6 +1265,14 @@ html[data-theme="dark"] .form-error {
     .ticket-info-list dd {
         text-align: left;
     }
+
+    .ticket-actions {
+        flex-direction: column;
+    }
+
+    .action-button {
+        width: 100%;
+    }
 }
 
 
@@ -1415,7 +1555,7 @@ html[data-theme="dark"] .form-error {
 
     .login-page {
         display: block;
-        background: #f4f7fb;
+        background: var(--color-background);
     }
 
     .login-panel {
@@ -1570,6 +1710,9 @@ html[data-theme="dark"] .form-error {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px;
+}
+
+.dashboard-charts-wrapper {
     margin-top: 24px;
 }
 
@@ -1716,6 +1859,110 @@ html[data-theme="dark"] .form-error {
 
     .dashboard-period-filter {
         min-width: 0;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .dashboard-header {
+        gap: 18px;
+        margin-bottom: 20px;
+    }
+
+    .dashboard-header h1 {
+        margin-bottom: 5px;
+        font-size: 26px;
+        line-height: 1.2;
+    }
+
+    .dashboard-header p {
+        font-size: 13px;
+    }
+
+    .dashboard-period-filter {
+        width: 100%;
+    }
+
+    .dashboard-period-filter select {
+        width: 100%;
+        min-height: 44px;
+    }
+
+    .stats-grid {
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .stat-card {
+        padding: 18px;
+    }
+
+    .stat-label {
+        margin-bottom: 10px;
+        font-size: 12px;
+    }
+
+    .stat-value {
+        margin-bottom: 5px;
+        font-size: 27px;
+    }
+
+    .section-header {
+        align-items: flex-start;
+        padding: 18px;
+    }
+
+    .section-header h2 {
+        font-size: 16px;
+    }
+
+    .section-header p {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .recent-ticket {
+        gap: 12px;
+        padding: 16px 18px;
+    }
+
+    .ticket-main-info {
+        width: 100%;
+        align-items: flex-start;
+    }
+
+    .ticket-main-info strong {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .dashboard-charts-wrapper {
+        margin-top: 18px;
+    }
+
+    .dashboard-chart-section {
+        margin-top: 0;
+        padding: 18px;
+        border-radius: 12px;
+    }
+
+    .dashboard-chart-section .section-header {
+        padding: 0 0 18px;
+    }
+
+    .dashboard-charts-grid {
+        gap: 18px;
+    }
+
+    .status-chart {
+        gap: 15px;
+        margin-top: 14px;
+    }
+
+    .dashboard-period-section {
+        margin-top: 18px;
+        padding: 18px;
+        border-radius: 12px;
     }
 }
 
@@ -1961,6 +2208,33 @@ html[data-theme="dark"] .form-error {
     color: var(--color-text-muted);
 }
 
+@media (max-width: 600px) {
+
+    .comment-item {
+        max-width: 88%;
+    }
+
+    .comment-header {
+        flex-wrap: wrap;
+        gap: 4px 10px;
+    }
+
+    .comment-form {
+        gap: 10px;
+        margin: 16px;
+    }
+
+    .comment-form textarea {
+        min-height: 52px;
+        padding: 13px 12px;
+    }
+
+    .comment-send-button {
+        width: 46px;
+        height: 52px;
+    }
+}
+
 
 /* ====================================================================
     12. Sidebar secondary controls
@@ -2020,7 +2294,7 @@ html[data-theme="dark"] .form-error {
     margin-top: 5px;
     flex-shrink: 0;
     border-radius: 50%;
-    background: var(--accent-color);
+    background: #4f46e5;
 }
 
 .ticket-history-item:not(:last-child) .ticket-history-marker::after {
@@ -2031,7 +2305,7 @@ html[data-theme="dark"] .form-error {
     width: 2px;
     height: calc(100% + 8px);
     transform: translateX(-50%);
-    background: var(--border-color);
+    background: var(--color-border);
 }
 
 .ticket-history-content {
@@ -2045,7 +2319,7 @@ html[data-theme="dark"] .form-error {
 .ticket-history-meta {
     margin: 4px 0 0;
     font-size: 0.875rem;
-    color: var(--text-muted);
+    color: var(--color-text-muted);
 }
 
 .ticket-history-change {
@@ -2226,6 +2500,7 @@ html[data-theme="dark"] .reports-filter-field input {
 
 .reports-page .dashboard-charts-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 24px;
 }
 
 .reports-page .status-chart-fill {
@@ -2417,6 +2692,19 @@ html[data-theme="dark"] .reports-filter-field input {
     fill: var(--color-text-primary);
     font-size: 12px;
     font-weight: 700;
+}
+
+@media (max-width: 600px) {
+
+    .reports-chart-wrapper {
+        padding: 14px 16px 10px;
+        overscroll-behavior-x: contain;
+        scrollbar-width: thin;
+    }
+
+    .reports-line-chart {
+        min-width: 560px;
+    }
 }
 
 
@@ -2812,12 +3100,26 @@ html[data-theme="dark"] .settings-success-message {
     }
 
     .settings-category-actions {
-        justify-content: space-between;
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 8px;
     }
 
     .settings-category-edit .settings-primary-button,
     .settings-category-edit .settings-secondary-button {
         flex: 1;
+    }
+
+    .settings-category-actions .settings-secondary-button,
+    .settings-category-actions .settings-danger-button,
+    .settings-category-actions .settings-reactivate-button {
+        flex: 1 1 auto;
+    }
+
+    .settings-category-content strong {
+        white-space: normal;
+        overflow-wrap: anywhere;
     }
 }
 
@@ -2911,6 +3213,13 @@ html[data-theme="dark"] .settings-success-message {
 
 .settings-category-item-drag-over {
     box-shadow: inset 0 2px 0 #6366f1;
+}
+
+@media (max-width: 600px) {
+
+    .settings-drag-handle {
+        display: none;
+    }
 }
 
 
@@ -3051,7 +3360,7 @@ html[data-theme="dark"] .settings-success-message {
 }
 
 /* ====================================================================
-    20. FAQ - knowledge base
+    21. FAQ - knowledge base
    ==================================================================== */
 
 .faq-page {
@@ -3320,12 +3629,27 @@ html[data-theme="dark"] .faq-answer-label {
     }
 
     .faq-answer {
-        margin: 10 18px 18px;
+        margin: 10px 18px 18px;
+    }
+
+    .faq-search-section {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 24px;
+    }
+
+    .faq-search-content {
+        width: 100%;
+    }
+
+    .faq-result-count {
+        align-self: flex-start;
     }
 }
 
 /* ====================================================================
-    21. AI assistant
+    22. AI assistant
    ==================================================================== */
 
 .assistant-widget {
@@ -3508,9 +3832,14 @@ html[data-theme="dark"] .faq-answer-label {
 }
 
 .assistant-messages {
+    min-height: 0;
     flex: 1;
     padding: 20px 16px;
     overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-gutter: stable;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
 }
 
 .assistant-message {
@@ -3598,27 +3927,6 @@ html[data-theme="dark"] .faq-answer-label {
     opacity: 0.45;
 }
 
-@media (max-width: 600px) {
-
-    .assistant-widget {
-        right: 16px;
-        bottom: 16px;
-    }
-
-    .assistant-panel {
-        position: fixed;
-        inset: 16px;
-        width: auto;
-        height: auto;
-        max-height: none;
-    }
-
-    .assistant-toggle {
-        min-width: 52px;
-        height: 52px;
-    }
-}
-
 .assistant-message-user {
     justify-content: flex-end;
 }
@@ -3663,10 +3971,6 @@ html[data-theme="dark"] .faq-answer-label {
 
 .assistant-message + .assistant-message {
     margin-top: 14px;
-}
-
-.assistant-messages {
-    scrollbar-gutter: stable;
 }
 
 .assistant-markdown {
@@ -3747,20 +4051,66 @@ html[data-theme="dark"] .faq-answer-label {
     }
 }
 
-/* Scrollbars globais */
+@media (max-width: 600px) {
 
-* {
-    scrollbar-color: #475569 transparent;
-}
+    .assistant-widget {
+        right: 14px;
+        bottom: 14px;
+        z-index: 1150;
+    }
 
-*::-webkit-scrollbar-thumb {
-    border: 2px solid transparent;
-    border-radius: 999px;
-    background: #475569;
-    background-clip: padding-box;
-}
+    .assistant-toggle {
+        width: 48px;
+        min-width: 48px;
+        height: 48px;
+        padding: 0;
+        border-radius: 50%;
+    }
 
-*::-webkit-scrollbar-thumb:hover {
-    background: #6366f1;
-    background-clip: padding-box;
+    .assistant-toggle > span {
+        display: none;
+    }
+
+    .assistant-toggle-open {
+        display: none;
+    }
+
+    .assistant-panel {
+        position: fixed;
+        inset: 12px;
+        width: auto;
+        height: auto;
+        max-height: none;
+        border-radius: 14px;
+    }
+
+    .assistant-header {
+        padding: 14px;
+    }
+
+    .assistant-messages {
+        padding: 14px;
+    }
+
+    .assistant-form {
+        gap: 8px;
+        padding: 12px;
+    }
+
+    .assistant-form input {
+        height: 44px;
+    }
+
+    .assistant-form button {
+        width: 44px;
+        height: 44px;
+    }
+
+    .assistant-message-bubble {
+        max-width: calc(100% - 36px);
+    }
+
+    .assistant-message-user .assistant-message-bubble {
+        max-width: 88%;
+    }
 }

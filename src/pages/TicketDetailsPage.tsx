@@ -61,13 +61,18 @@ function TicketDetailsPage() {
         )
 
         const websocket = new WebSocket(
-            `${websocketUrl}/ws/tickets/${ticket.id}?token=${encodeURIComponent(token)}`,
+            `${websocketUrl}/ws/tickets/${ticket.id}`,
         )
 
         websocketRef.current = websocket
 
         websocket.onopen = () => {
-            console.log("WebSocket do chamado conectado")
+            websocket.send(
+                JSON.stringify({
+                    type: "auth",
+                    token,
+                }),
+            )
         }
 
         websocket.onmessage = (event) => {

@@ -322,7 +322,10 @@ function DashboardPage() {
             )}
         </section>
 
-        <section className="dashboard-chart-section">
+        <section
+            className="dashboard-charts-wrapper"
+            aria-label="Distribuição dos chamados"
+        >
             <div className="dashboard-charts-grid">
                 <section className="dashboard-chart-section">
                     <div className="section-header">
