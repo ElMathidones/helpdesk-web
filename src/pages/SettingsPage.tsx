@@ -7,6 +7,9 @@ import {
     useState,
 } from "react"
 
+import { useTranslation } from "react-i18next"
+import { translateServiceError } from "../utils/serviceErrors"
+
 import { useAuth } from "../hooks/useAuth"
 import { useTheme } from "../contexts/useTheme"
 
@@ -23,17 +26,31 @@ import {
     getAvatarUrl,
     removeCurrentUserAvatar,
     updateCurrentUser,
+    updateCurrentUserEmail,
     uploadCurrentUserAvatar,
 } from "../services/users"
 
 import type { Category } from "../types/category"
 
+import FilterSelect from "../components/FilterSelect"
 
 function SettingsPage() {
     const { user, token, refreshUser } = useAuth()
     const { theme, toggleTheme } = useTheme()
+    const { t, i18n } = useTranslation()
 
-    const [profileName, setProfileName] = useState(user?.name ?? "")
+    const [profileNameDraft, setProfileNameDraft] =
+    useState<string | null>(null)
+
+    const profileName = profileNameDraft ?? user?.name ?? ""
+
+    const [emailDraft, setEmailDraft] = useState<string | null>(null)
+    const [emailPassword, setEmailPassword] = useState("")
+    const [isUpdatingEmail, setIsUpdatingEmail] = useState(false)
+    const [pendingEmailConfirmation, setPendingEmailConfirmation] =
+        useState<string | null>(null)
+
+    const profileEmail = emailDraft ?? user?.email ?? ""
     const [isUpdatingProfile, setIsUpdatingProfile] = useState(false)
     const [profileError, setProfileError] = useState("")
     const [profileSuccess, setProfileSuccess] = useState("")
@@ -116,7 +133,7 @@ function SettingsPage() {
                 setCategories(data)
             } catch {
                 setCategoryError(
-                    "Não foi possível carregar as categorias.",
+                    t("settings.feedback.loadCategoriesError"),
                 )
             } finally {
                 setIsLoadingCategories(false)
@@ -124,7 +141,7 @@ function SettingsPage() {
         }
 
         void loadCategories()
-    }, [token, isAdmin])
+    }, [token, isAdmin, t])
 
     async function handleCreateCategory(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
@@ -136,7 +153,7 @@ function SettingsPage() {
 
         if (name.length < 2) {
             setCategoryError(
-                "O nome da categoria deve ter pelo menos 2 caracteres.",
+                t("settings.feedback.categoryNameTooShort"),
             )
             return
         }
@@ -155,12 +172,10 @@ function SettingsPage() {
 
             setNewCategoryName("")
             setNewCategoryDescription("")
-            setCategorySuccess("Categoria criada com sucesso.")
+            setCategorySuccess(t("settings.feedback.categoryCreated"))
         } catch (error) {
             setCategoryError(
-                error instanceof Error
-                    ? error.message
-                    : "Não foi possível criar a categoria.",
+                translateServiceError(error, t("settings.feedback.createCategoryError")),
             )
         } finally {
             setIsCreatingCategory(false)
@@ -195,7 +210,7 @@ function SettingsPage() {
 
         if (name.length < 2) {
             setCategoryError(
-                "O nome da categoria deve ter pelo menos 2 caracteres.",
+                t("settings.feedback.categoryNameTooShort"),
             )
             return
         }
@@ -225,12 +240,10 @@ function SettingsPage() {
             setEditingCategoryId(null)
             setEditName("")
             setEditDescription("")
-            setCategorySuccess("Categoria atualizada com sucesso.")
+            setCategorySuccess(t("settings.feedback.categoryUpdated"))
         } catch (error) {
             setCategoryError(
-                error instanceof Error
-                    ? error.message
-                    : "Não foi possível atualizar a categoria.",
+                translateServiceError(error, t("settings.feedback.updateCategoryError")),
             )
         } finally {
             setIsUpdatingCategory(false)
@@ -254,14 +267,12 @@ function SettingsPage() {
             )
 
             setCategories(updatedCategories)
-            setCategorySuccess("Ordem das categorias atualizada.")
+            setCategorySuccess(t("settings.feedback.orderUpdated"))
         } catch (error) {
             setCategories(previousCategories)
 
             setCategoryError(
-                error instanceof Error
-                    ? error.message
-                    : "Não foi possível atualizar a ordem das categorias.",
+                translateServiceError(error, t("settings.feedback.orderError")),
             )
         } finally {
             setIsReorderingCategories(false)
@@ -421,7 +432,7 @@ function SettingsPage() {
 
         if (name.length < 2) {
             setProfileError(
-                "O nome deve ter pelo menos 2 caracteres.",
+                t("settings.feedback.profileNameTooShort"),
             )
             return
         }
@@ -434,14 +445,80 @@ function SettingsPage() {
             await updateCurrentUser(token, name)
             await refreshUser()
 
-            setProfileName(name)
-            setProfileSuccess("Nome atualizado com sucesso.")
+            setProfileNameDraft(null)
+            setProfileSuccess(t("settings.feedback.profileUpdated"))
         } catch {
             setProfileError(
-                "Não foi possível atualizar seu nome.",
+                t("settings.feedback.profileError"),
             )
         } finally {
             setIsUpdatingProfile(false)
+        }
+    }
+
+    async function handleUpdateEmail(
+        event: FormEvent<HTMLFormElement>,
+    ) {
+        event.preventDefault()
+
+        if (!token || !user) return
+
+        const newEmail = profileEmail.trim().toLowerCase()
+
+        if (
+            !newEmail ||
+            !emailPassword ||
+            newEmail === user.email.toLowerCase()
+        ) {
+            return
+        }
+
+        setIsUpdatingEmail(true)
+        setProfileError("")
+        setProfileSuccess("")
+
+        try {
+            await updateCurrentUserEmail(
+                token,
+                newEmail,
+                emailPassword,
+            )
+
+            setEmailDraft(null)
+            setEmailPassword("")
+            setPendingEmailConfirmation(newEmail)
+
+        } catch (error) {
+            const errorCode =
+                error instanceof Error ? error.message : ""
+
+            if (errorCode === "INCORRECT_PASSWORD") {
+                setProfileError(
+                    t("settings.feedback.incorrectPassword"),
+                )
+            } else if (errorCode === "EMAIL_ALREADY_REGISTERED") {
+                setProfileError(
+                    t("settings.feedback.emailAlreadyRegistered"),
+                )
+            } else if (errorCode === "EMAIL_REQUEST_TOO_SOON") {
+                setProfileError(
+                    t("settings.feedback.emailRequestTooSoon"),
+                )
+            } else if (errorCode === "EMAIL_CHANGE_LOCKED") {
+                setProfileError(
+                    t("settings.feedback.emailChangeLocked"),
+                )
+            } else if (errorCode === "EMAIL_DELIVERY_FAILED") {
+                setProfileError(
+                    t("settings.feedback.emailDeliveryError"),
+                )
+            } else {
+                setProfileError(
+                    t("settings.feedback.emailUpdateError"),
+                )
+            }
+        } finally {
+            setIsUpdatingEmail(false)
         }
     }
 
@@ -471,14 +548,12 @@ function SettingsPage() {
 
             setCategorySuccess(
                 updatedCategory.is_active
-                    ? "Categoria reativada com sucesso."
-                    : "Categoria desativada com sucesso.",
+                    ? t("settings.feedback.categoryReactivated")
+                    : t("settings.feedback.categoryDeactivated"),
             )
         } catch (error) {
             setCategoryError(
-                error instanceof Error
-                    ? error.message
-                    : "Não foi possível alterar a categoria.",
+                translateServiceError(error, t("settings.feedback.changeCategoryError")),
             )
         } finally {
             setUpdatingStatusCategoryId(null)
@@ -491,9 +566,9 @@ function SettingsPage() {
         }
 
         const confirmed = window.confirm(
-            `Excluir permanentemente a categoria "${category.name}"?\n\n` +
-            "Se ela já tiver sido utilizada em algum chamado, " +
-            "a exclusão será bloqueada.",
+            t("settings.categories.confirmDelete", {
+                name: category.name,
+            }),
         )
 
         if (!confirmed) {
@@ -511,12 +586,10 @@ function SettingsPage() {
                 current.filter((item) => item.id !== category.id),
             )
 
-            setCategorySuccess("Categoria excluída com sucesso.")
+            setCategorySuccess(t("settings.feedback.categoryDeleted"))
         } catch (error) {
             setCategoryError(
-                error instanceof Error
-                    ? error.message
-                    : "Não foi possível excluir a categoria.",
+                translateServiceError(error, t("settings.feedback.deleteCategoryError")),
             )
         } finally {
             setDeletingCategoryId(null)
@@ -535,7 +608,7 @@ function SettingsPage() {
 
         if (file.size > 2 * 1024 * 1024) {
             setProfileError(
-                "A foto deve ter no máximo 2 MB.",
+                t("settings.feedback.avatarTooLarge"),
             )
 
             event.target.value = ""
@@ -550,7 +623,7 @@ function SettingsPage() {
 
         if (!allowedTypes.includes(file.type)) {
             setProfileError(
-                "Use uma imagem JPEG, PNG ou WebP.",
+                t("settings.feedback.avatarInvalidFormat"),
             )
 
             event.target.value = ""
@@ -568,13 +641,11 @@ function SettingsPage() {
             await refreshUser()
 
             setProfileSuccess(
-                "Foto de perfil atualizada com sucesso.",
+                t("settings.feedback.avatarUpdated"),
             )
         } catch (error) {
             setProfileError(
-                error instanceof Error
-                    ? error.message
-                    : "Não foi possível alterar a foto.",
+                translateServiceError(error, t("settings.feedback.avatarError")),
             )
         } finally {
             setIsUpdatingAvatar(false)
@@ -594,13 +665,11 @@ function SettingsPage() {
             await refreshUser()
 
             setProfileSuccess(
-                "Foto de perfil removida.",
+                t("settings.feedback.avatarRemoved"),
             )
         } catch (error) {
             setProfileError(
-                error instanceof Error
-                    ? error.message
-                    : "Não foi possível remover a foto.",
+                translateServiceError(error, t("settings.feedback.avatarRemoveError")),
             )
         } finally {
             setIsUpdatingAvatar(false)
@@ -611,9 +680,9 @@ function SettingsPage() {
         <div className="settings-page">
             <div className="settings-header">
                 <div>
-                    <h1>Configurações</h1>
+                    <h1>{t("settings.page.title")}</h1>
                     <p>
-                        Gerencie suas preferências e configurações do sistema.
+                        {t("settings.page.description")}
                     </p>
                 </div>
             </div>
@@ -621,9 +690,9 @@ function SettingsPage() {
             <section className="settings-section">
                 <div className="settings-section-header">
                     <div>
-                        <h2>Minha conta</h2>
+                        <h2>{t("settings.account.title")}</h2>
                         <p>
-                            Informações associadas ao seu usuário.
+                            {t("settings.account.description")}
                         </p>
                     </div>
                 </div>
@@ -633,7 +702,7 @@ function SettingsPage() {
                         {user?.avatar_filename ? (
                             <img
                                 src={getAvatarUrl(user.avatar_filename)}
-                                alt={`Foto de ${user.name}`}
+                                alt={t("settings.account.avatarAlt", { name: user.name })}
                             />
                         ) : (
                             <span>
@@ -646,10 +715,10 @@ function SettingsPage() {
                     </div>
 
                     <div className="settings-avatar-content">
-                        <strong>Foto de perfil</strong>
+                        <strong>{t("settings.account.avatarTitle")}</strong>
 
                         <span>
-                            JPEG, PNG ou WebP. Máximo de 2 MB.
+                            {t("settings.account.avatarFormats")}
                         </span>
 
                         <div className="settings-avatar-actions">
@@ -672,10 +741,10 @@ function SettingsPage() {
                                 disabled={isUpdatingAvatar}
                             >
                                 {isUpdatingAvatar
-                                    ? "Enviando..."
+                                    ? t("settings.account.uploading")
                                     : user?.avatar_filename
-                                    ? "Alterar foto"
-                                    : "Adicionar foto"}
+                                    ? t("settings.account.changePhoto")
+                                    : t("settings.account.addPhoto")}
                             </button>
 
                             {user?.avatar_filename && (
@@ -687,7 +756,7 @@ function SettingsPage() {
                                     }}
                                     disabled={isUpdatingAvatar}
                                 >
-                                    Remover
+                                    {t("settings.account.removePhoto")}
                                 </button>
                             )}
                         </div>
@@ -701,7 +770,7 @@ function SettingsPage() {
                             onSubmit={handleUpdateProfile}
                         >
                             <div className="settings-form-field">
-                                <label htmlFor="profile-name">Nome</label>
+                                <label htmlFor="profile-name">{t("settings.account.name")}</label>
 
                                 <input
                                     id="profile-name"
@@ -710,8 +779,14 @@ function SettingsPage() {
                                     maxLength={120}
                                     value={profileName}
                                     onChange={(event) =>
-                                        setProfileName(event.target.value)
+                                        setProfileNameDraft(event.target.value)
                                     }
+                                    onBlur={() => {
+                                        if (!profileName.trim()) {
+                                            setProfileNameDraft(null)
+                                            setProfileError("")
+                                        }
+                                    }}
                                 />
                             </div>
 
@@ -725,27 +800,120 @@ function SettingsPage() {
                                 }
                             >
                                 {isUpdatingProfile
-                                    ? "Salvando..."
-                                    : "Salvar nome"}
+                                    ? t("settings.common.saving")
+                                    : t("settings.account.saveName")}
                             </button>
                         </form>
                     </div>
 
                     <div className="settings-field">
-                        <span>E-mail</span>
+                        <span>{t("settings.account.email")}</span>
                         <strong>{user?.email}</strong>
                     </div>
 
                     <div className="settings-field">
-                        <span>Perfil</span>
-                        <strong>{formatRole(user?.role)}</strong>
+                        <span>{t("settings.account.role")}</span>
+                        <strong>
+                            {user?.role
+                                ? t(`roles.${user.role}`, {
+                                    defaultValue: user.role,
+                                })
+                                : "-"}
+                        </strong>
                     </div>
                 </div>
 
-                {(profileError || profileSuccess) && (
+                <form
+                    className="settings-email-form"
+                    onSubmit={handleUpdateEmail}
+                >
+                    <div className="settings-email-heading">
+                        <strong>
+                            {t("settings.account.changeEmail")}
+                        </strong>
+                    </div>
+
+                    <div className="settings-form-field">
+                        <label htmlFor="profile-email">
+                            {t("settings.account.email")}
+                        </label>
+
+                        <input
+                            id="profile-email"
+                            type="email"
+                            autoComplete="email"
+                            maxLength={255}
+                            required
+                            value={profileEmail}
+                            onChange={(event) =>
+                                setEmailDraft(event.target.value)
+                            }
+                            onBlur={() => {
+                                if (!profileEmail.trim()) {
+                                    setEmailDraft(null)
+                                }
+                            }}
+                        />
+                    </div>
+
+                    <div className="settings-form-field">
+                        <label htmlFor="email-current-password">
+                            {t("settings.account.currentPassword")}
+                        </label>
+
+                        <input
+                            id="email-current-password"
+                            type="password"
+                            autoComplete="current-password"
+                            maxLength={128}
+                            required
+                            value={emailPassword}
+                            onChange={(event) =>
+                                setEmailPassword(event.target.value)
+                            }
+                        />
+                    </div>
+
+                    <div className="settings-email-actions">
+                        <button
+                            type="button"
+                            className="settings-secondary-button"
+                            disabled={isUpdatingEmail}
+                            onClick={() => {
+                                setEmailDraft(null)
+                                setEmailPassword("")
+                                setProfileError("")
+                            }}
+                        >
+                            {t("settings.common.cancel")}
+                        </button>
+
+                        <button
+                            type="submit"
+                            className="settings-primary-button"
+                            disabled={
+                                isUpdatingEmail ||
+                                !emailPassword ||
+                                !profileEmail.trim() ||
+                                profileEmail.trim().toLowerCase() ===
+                                    (user?.email ?? "").toLowerCase()
+                            }
+                        >
+                            {isUpdatingEmail
+                                ? t("settings.common.saving")
+                                : t("settings.account.saveEmail")}
+                        </button>
+                    </div>
+                </form>
+
+                {(
+                    profileError ||
+                    profileSuccess ||
+                    pendingEmailConfirmation
+                ) && (
                     <div className="settings-profile-feedback">
                         {profileError && (
-                            <p className="error-message">
+                            <p className="error-message" role="alert">
                                 {profileError}
                             </p>
                         )}
@@ -755,6 +923,17 @@ function SettingsPage() {
                                 {profileSuccess}
                             </p>
                         )}
+
+                        {pendingEmailConfirmation && (
+                            <p
+                                className="settings-success-message"
+                                role="status"
+                            >
+                                {t("settings.feedback.emailConfirmationSent", {
+                                    email: pendingEmailConfirmation,
+                                })}
+                            </p>
+                        )}
                     </div>
                 )}
             </section>
@@ -762,9 +941,9 @@ function SettingsPage() {
             <section className="settings-section">
                 <div className="settings-section-header">
                     <div>
-                        <h2>Aparência</h2>
+                        <h2>{t("settings.appearance.title")}</h2>
                         <p>
-                            Escolha como o Help Desk é exibido para você.
+                            {t("settings.appearance.description")}
                         </p>
                     </div>
                 </div>
@@ -773,12 +952,12 @@ function SettingsPage() {
                     <div>
                         <strong>
                             {theme === "light"
-                                ? "Tema claro"
-                                : "Tema escuro"}
+                                ? t("settings.appearance.light")
+                                : t("settings.appearance.dark")}
                         </strong>
 
                         <span>
-                            O tema escolhido fica salvo neste navegador.
+                            {t("settings.appearance.saved")}
                         </span>
                     </div>
 
@@ -788,9 +967,31 @@ function SettingsPage() {
                         onClick={toggleTheme}
                     >
                         {theme === "light"
-                            ? "Usar tema escuro"
-                            : "Usar tema claro"}
+                            ? t("settings.appearance.useDark")
+                            : t("settings.appearance.useLight")}
                     </button>
+                </div>
+
+                <div className="settings-theme-row">
+                    <div>
+                        <label htmlFor="settings-language">
+                            <strong>{t("settings.language.title")}</strong>
+                        </label>
+                        <span>{t("settings.language.description")}</span>
+                    </div>
+
+                    <FilterSelect
+                        id="settings-language"
+                        value={i18n.resolvedLanguage ?? "pt-BR"}
+                        onChange={(language) => {
+                            void i18n.changeLanguage(language)
+                        }}
+                        options={[
+                            { value: "pt-BR", label: "Português (Brasil)" },
+                            { value: "en-US", label: "English (US)" },
+                            { value: "es", label: "Español" },
+                        ]}
+                    />
                 </div>
             </section>
 
@@ -798,9 +999,9 @@ function SettingsPage() {
                 <section className="settings-section">
                     <div className="settings-section-header">
                         <div>
-                            <h2>Categorias</h2>
+                            <h2>{t("settings.categories.title")}</h2>
                             <p>
-                                Gerencie as categorias utilizadas nos chamados.
+                                {t("settings.categories.description")}
                             </p>
                         </div>
                     </div>
@@ -811,7 +1012,7 @@ function SettingsPage() {
                     >
                         <div className="settings-form-field">
                             <label htmlFor="category-name">
-                                Nome
+                                {t("settings.account.name")}
                             </label>
 
                             <input
@@ -822,13 +1023,13 @@ function SettingsPage() {
                                 onChange={(event) =>
                                     setNewCategoryName(event.target.value)
                                 }
-                                placeholder="Ex.: Software"
+                                placeholder={t("settings.categories.namePlaceholder")}
                             />
                         </div>
 
                         <div className="settings-form-field">
                             <label htmlFor="category-description">
-                                Descrição
+                                {t("settings.categories.descriptionLabel")}
                             </label>
 
                             <input
@@ -841,7 +1042,7 @@ function SettingsPage() {
                                         event.target.value,
                                     )
                                 }
-                                placeholder="Descrição opcional"
+                                placeholder={t("settings.categories.descriptionPlaceholder")}
                             />
                         </div>
 
@@ -851,8 +1052,8 @@ function SettingsPage() {
                             disabled={isCreatingCategory}
                         >
                             {isCreatingCategory
-                                ? "Criando..."
-                                : "Nova categoria"}
+                                ? t("settings.categories.creating")
+                                : t("settings.categories.new")}
                         </button>
                     </form>
 
@@ -869,10 +1070,10 @@ function SettingsPage() {
                     )}
 
                     {isLoadingCategories ? (
-                        <p>Carregando categorias...</p>
+                        <p>{t("settings.categories.loading")}</p>
                     ) : categories.length === 0 ? (
                         <p className="settings-empty-message">
-                            Nenhuma categoria cadastrada.
+                            {t("settings.categories.empty")}
                         </p>
                     ) : (
                         <div className="settings-category-list">
@@ -911,7 +1112,7 @@ function SettingsPage() {
                                                 <label
                                                     htmlFor={`category-edit-name-${category.id}`}
                                                 >
-                                                    Nome
+                                                    {t("settings.account.name")}
                                                 </label>
 
                                                 <input
@@ -931,7 +1132,7 @@ function SettingsPage() {
                                                 <label
                                                     htmlFor={`category-edit-description-${category.id}`}
                                                 >
-                                                    Descrição
+                                                    {t("settings.categories.descriptionLabel")}
                                                 </label>
 
                                                 <input
@@ -956,8 +1157,8 @@ function SettingsPage() {
                                                     }
                                                 >
                                                     {isUpdatingCategory
-                                                        ? "Salvando..."
-                                                        : "Salvar"}
+                                                        ? t("settings.common.saving")
+                                                        : t("settings.common.save")}
                                                 </button>
 
                                                 <button
@@ -970,7 +1171,7 @@ function SettingsPage() {
                                                         isUpdatingCategory
                                                     }
                                                 >
-                                                    Cancelar
+                                                    {t("settings.common.cancel")}
                                                 </button>
                                             </div>
                                         </form>
@@ -983,7 +1184,7 @@ function SettingsPage() {
 
                                                 <span>
                                                     {category.description ??
-                                                        "Sem descrição"}
+                                                        t("settings.categories.noDescription")}
                                                 </span>
                                             </div>
 
@@ -1000,7 +1201,7 @@ function SettingsPage() {
                                                     onDragEnd={() => {
                                                         void handleDragEnd()
                                                     }}
-                                                    title="Arrastar para reorganizar"
+                                                    title={t("settings.categories.drag")}
                                                     aria-hidden="true"
                                                 >
                                                     ⠿
@@ -1016,8 +1217,8 @@ function SettingsPage() {
                                                         index === 0 ||
                                                         isReorderingCategories
                                                     }
-                                                    aria-label={`Mover ${category.name} para cima`}
-                                                    title="Mover para cima"
+                                                    aria-label={t("settings.categories.moveCategoryUp", { name: category.name })}
+                                                    title={t("settings.categories.moveUp")}
                                                 >
                                                     <span
                                                         className="settings-order-chevron settings-order-chevron-up"
@@ -1034,8 +1235,8 @@ function SettingsPage() {
                                                         index === categories.length - 1 ||
                                                         isReorderingCategories
                                                     }
-                                                    aria-label={`Mover ${category.name} para baixo`}
-                                                    title="Mover para baixo"
+                                                    aria-label={t("settings.categories.moveCategoryDown", { name: category.name })}
+                                                    title={t("settings.categories.moveDown")}
                                                 >
                                                     <span
                                                         className="settings-order-chevron settings-order-chevron-down"
@@ -1050,8 +1251,8 @@ function SettingsPage() {
                                                     }
                                                 >
                                                     {category.is_active
-                                                        ? "Ativa"
-                                                        : "Inativa"}
+                                                        ? t("settings.categories.active")
+                                                        : t("settings.categories.inactive")}
                                                 </span>
 
                                                 <button
@@ -1063,7 +1264,7 @@ function SettingsPage() {
                                                         )
                                                     }
                                                 >
-                                                    Editar
+                                                    {t("settings.categories.edit")}
                                                 </button>
 
                                                 <button
@@ -1081,10 +1282,10 @@ function SettingsPage() {
                                                     }
                                                 >
                                                     {updatingStatusCategoryId === category.id
-                                                        ? "Salvando..."
+                                                        ? t("settings.common.saving")
                                                         : category.is_active
-                                                        ? "Desativar"
-                                                        : "Reativar"}
+                                                        ? t("settings.categories.deactivate")
+                                                        : t("settings.categories.reactivate")}
                                                 </button>
 
                                                 <button
@@ -1096,8 +1297,8 @@ function SettingsPage() {
                                                     disabled={deletingCategoryId === category.id}
                                                 >
                                                     {deletingCategoryId === category.id
-                                                        ? "Excluindo..."
-                                                        : "Excluir"}
+                                                        ? t("settings.categories.deleting")
+                                                        : t("settings.categories.delete")}
                                                 </button>
                                             </div>
                                         </>
@@ -1110,17 +1311,6 @@ function SettingsPage() {
             )}
         </div>
     )
-}
-
-
-function formatRole(role?: string) {
-    const labels: Record<string, string> = {
-        admin: "Administrador",
-        technician: "Técnico",
-        customer: "Cliente",
-    }
-
-    return role ? labels[role] ?? role : "-"
 }
 
 

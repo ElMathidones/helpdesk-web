@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 import CreateTicketForm from "../components/CreateTicketForm"
 import { useAuth } from "../hooks/useAuth"
@@ -8,6 +9,7 @@ import { getTickets } from "../services/tickets"
 import type { Ticket } from "../types/ticket"
 import type { Category } from "../types/category"
 
+import FilterSelect from "../components/FilterSelect"
 
 interface StoredTicketFilters {
     search: string
@@ -66,6 +68,8 @@ function getStoredTicketFilters(
 
 function TicketsPage() {
     const { token, user } = useAuth()
+    const { t, i18n } = useTranslation()
+    const locale = i18n.resolvedLanguage ?? "pt-BR"
 
     const [tickets, setTickets] = useState<Ticket[]>([])
     const [categories, setCategories] = useState<Category[]>([])
@@ -123,7 +127,7 @@ function TicketsPage() {
                 }
                 } catch {
                     if (!isCancelled) {
-                        setError("Não foi possível carregar os chamados.")
+                        setError("tickets.errors.load")
                     }
                 } finally {
                     if (!isCancelled) {
@@ -140,7 +144,7 @@ function TicketsPage() {
     }, [token])
 
     if (isLoading) {
-        return <p>Carregando chamados...</p>
+        return <p>{t("tickets.loading")}</p>
     }
 
     const filteredTickets = tickets.filter((ticket) => {
@@ -169,89 +173,102 @@ function TicketsPage() {
         <div className="tickets-page">
             <div className="page-header">
                 <div>
-                    <h1>Chamados</h1>
-                    <p>Crie, acompanhe e gerencie os chamados do sistema.</p>
+                    <h1>{t("tickets.page.title")}</h1>
+                    <p>{t("tickets.page.description")}</p>
                 </div>
             </div>
 
             <div className="tickets-toolbar">
                 <span className="ticket-count">
-                    {filteredTickets.length === 0
-                        ? "Nenhum chamado"
-                        : `${filteredTickets.length} ${
-                            filteredTickets.length === 1 ? "chamado" : "chamados"
-                        }`}
+                    {t("tickets.count", { count: filteredTickets.length })}
                 </span>
 
                 <div className="tickets-search">
+                    <span className="tickets-search-icon" aria-hidden="true">
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <circle cx="11" cy="11" r="7" />
+                            <path d="m20 20-4-4" />
+                        </svg>
+                    </span>
+
                     <input
                         type="search"
-                        placeholder="Buscar por título..."
+                        placeholder={t("tickets.search.placeholder")}
                         value={search}
                         onChange={(event) => setSearch(event.target.value)}
                     />
                 </div>
 
                 <div className="tickets-filter">
-                    <label htmlFor="status-filter">Status</label>
+                    <label htmlFor="status-filter">{t("tickets.filters.status")}</label>
 
-                    <select
+                    <FilterSelect
                         id="status-filter"
                         value={statusFilter}
-                        onChange={(event) => setStatusFilter(event.target.value)}
-                    >
-                        <option value="">Todos</option>
-                        <option value="open">Aberto</option>
-                        <option value="under_review">Em análise</option>
-                        <option value="in_progress">Em andamento</option>
-                        <option value="resolved">Resolvido</option>
-                        <option value="closed">Fechado</option>
-                        <option value="canceled">Cancelado</option>
-                    </select>
+                        onChange={setStatusFilter}
+                        options={[
+                            { value: "", label: t("tickets.filters.allStatuses") },
+                            { value: "open", label: t("tickets.status.open") },
+                            { value: "under_review", label: t("tickets.status.under_review") },
+                            { value: "in_progress", label: t("tickets.status.in_progress") },
+                            { value: "resolved", label: t("tickets.status.resolved") },
+                            { value: "closed", label: t("tickets.status.closed") },
+                            { value: "canceled", label: t("tickets.status.canceled") },
+                        ]}
+                    />
                 </div>
 
                 <div className="tickets-filter">
-                    <label htmlFor="priority-filter">Prioridade</label>
+                    <label htmlFor="priority-filter">{t("tickets.filters.priority")}</label>
 
-                    <select
+                    <FilterSelect
                         id="priority-filter"
                         value={priorityFilter}
-                        onChange={(event) => setPriorityFilter(event.target.value)}
-                    >
-                        <option value="">Todas</option>
-                        <option value="low">Baixa</option>
-                        <option value="medium">Média</option>
-                        <option value="high">Alta</option>
-                        <option value="critical">Crítica</option>
-                    </select>
+                        onChange={setPriorityFilter}
+                        options={[
+                            { value: "", label: t("tickets.filters.allPriorities") },
+                            { value: "low", label: t("tickets.priority.low") },
+                            { value: "medium", label: t("tickets.priority.medium") },
+                            { value: "high", label: t("tickets.priority.high") },
+                            { value: "critical", label: t("tickets.priority.critical") },
+                        ]}
+                    />
                 </div>
 
                 <div className="tickets-filter">
-                    <label htmlFor="category-filter">Categoria</label>
+                    <label htmlFor="category-filter">{t("tickets.filters.category")}</label>
 
-                    <select
+                    <FilterSelect
                         id="category-filter"
                         value={categoryFilter}
-                        onChange={(event) => setCategoryFilter(event.target.value)}
-                    >
-                        <option value="">Todas</option>
-
-                        {categories.map((category) => (
-                            <option key={category.id} value={category.id}>
-                                {category.name}
-                            </option>
-                        ))}
-                    </select>
+                        onChange={setCategoryFilter}
+                        options={[
+                            { value: "", label: t("tickets.filters.allCategories") },
+                            ...categories.map((category) => ({
+                                value: String(category.id),
+                                label: category.name,
+                            })),
+                        ]}
+                    />
             </div>
         </div>
 
-        {error && <p className="error-message">{error}</p>}
+        {error && <p className="error-message">{t(error)}</p>}
 
         <div className="tickets-layout">
             <section className="create-ticket-section">
             <div className="section-title">
-                <h2>Novo chamado</h2>
-                <p>Preencha os dados para registrar uma nova solicitação.</p>
+                <h2>{t("tickets.create.title")}</h2>
+                <p>{t("tickets.create.description")}</p>
             </div>
 
             <CreateTicketForm
@@ -263,19 +280,19 @@ function TicketsPage() {
 
             <section className="tickets-list-section">
                 <div className="section-title">
-                    <h2>Lista de chamados</h2>
-                    <p>Chamados disponíveis para o seu usuário.</p>
+                    <h2>{t("tickets.list.title")}</h2>
+                    <p>{t("tickets.list.description")}</p>
                 </div>
 
                 {tickets.length === 0 ? (
                     <div className="empty-state">
-                        <strong>Nenhum chamado encontrado</strong>
-                        <p>Crie um novo chamado utilizando o formulário ao lado.</p>
+                        <strong>{t("tickets.list.emptyTitle")}</strong>
+                        <p>{t("tickets.list.emptyDescription")}</p>
                     </div>
                 ) : filteredTickets.length === 0 ? (
                     <div className="empty-state">
-                        <strong>Nenhum chamado corresponde aos filtros</strong>
-                        <p>Tente alterar ou remover algum filtro.</p>
+                        <strong>{t("tickets.list.filteredEmptyTitle")}</strong>
+                        <p>{t("tickets.list.filteredEmptyDescription")}</p>
                     </div>
                 ) : (
                     <div className="tickets-list">
@@ -301,13 +318,13 @@ function TicketsPage() {
                             <span
                                 className={`priority-badge priority-${ticket.priority}`}
                             >
-                                {formatPriority(ticket.priority)}
+                                {t(`tickets.priority.${ticket.priority}`)}
                             </span>
 
                             <span
                                 className={`status-badge status-${ticket.status}`}
                             >
-                                {formatStatus(ticket.status)}
+                                {t(`tickets.status.${ticket.status}`)}
                             </span>
                             </div>
                         </div>
@@ -318,11 +335,12 @@ function TicketsPage() {
 
                         <div className="ticket-card-footer">
                             <span>
-                                Criado em{" "}
-                                {new Date(ticket.created_at).toLocaleDateString("pt-BR")}
+                                {t("tickets.list.createdAt", {
+                                    date: new Date(ticket.created_at).toLocaleDateString(locale),
+                                })}
                             </span>
 
-                            <span>Ver detalhes →</span>
+                            <span>{t("tickets.list.details")} →</span>
                         </div>
                         </Link>
                     ))}
@@ -334,28 +352,5 @@ function TicketsPage() {
     )
 }
 
-function formatPriority(priority: Ticket["priority"]) {
-    const labels: Record<Ticket["priority"], string> = {
-        low: "Baixa",
-        medium: "Média",
-        high: "Alta",
-        critical: "Crítica",
-    }
-
-    return labels[priority]
-}
-
-function formatStatus(status: Ticket["status"]) {
-    const labels: Record<Ticket["status"], string> = {
-        open: "Aberto",
-        under_review: "Em análise",
-        in_progress: "Em andamento",
-        resolved: "Resolvido",
-        closed: "Fechado",
-        canceled: "Cancelado",
-    }
-
-    return labels[status]
-}
 
 export default TicketsPage

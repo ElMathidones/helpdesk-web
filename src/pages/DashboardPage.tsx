@@ -1,12 +1,16 @@
 import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 import { useAuth } from "../hooks/useAuth"
 import { getTickets } from "../services/tickets"
 import type { Ticket } from "../types/ticket"
 
+import FilterSelect from "../components/FilterSelect"
+
 function DashboardPage() {
     const { token, user } = useAuth()
+    const { t, i18n } = useTranslation()
 
     const [tickets, setTickets] = useState<Ticket[]>([])
     const [isLoading, setIsLoading] = useState(true)
@@ -57,7 +61,7 @@ function DashboardPage() {
             const data = await getTickets(currentToken)
             setTickets(data)
         } catch {
-            setError("Não foi possível carregar os dados do dashboard.")
+            setError("dashboard.error.load")
         } finally {
             setIsLoading(false)
         }
@@ -183,10 +187,10 @@ function DashboardPage() {
 
         return statuses.map((status) => ({
             status,
-            label: formatStatus(status),
+            label: t(`dashboard.status.${status}`),
             total: filteredTickets.filter((ticket) => ticket.status === status).length,
         }))
-    }, [filteredTickets])
+    }, [filteredTickets, t])
 
     const priorityStatistics = useMemo(() => {
         const priorities: Ticket["priority"][] = [
@@ -198,83 +202,87 @@ function DashboardPage() {
 
         return priorities.map((priority) => ({
             priority,
-            label: formatPriority(priority),
+            label: t(`dashboard.priority.${priority}`),
             total: filteredTickets.filter((ticket) => ticket.priority === priority).length,
         }))
-    }, [filteredTickets])
+    }, [filteredTickets, t])
 
     if (isLoading) {
-        return <p>Carregando dashboard...</p>
+        return <p>{t("dashboard.loading")}</p>
     }
 
     return (
         <div className="dashboard-page">
         <div className="dashboard-header">
             <div>
-                <h1>Dashboard</h1>
-                <p>Visão geral dos chamados.</p>
+                <h1>{t("dashboard.page.title")}</h1>
+                <p>{t("dashboard.page.description")}</p>
             </div>
 
-            <label className="dashboard-period-filter">
-                <span>Período</span>
+            <div className="dashboard-period-filter">
+                <label htmlFor="dashboard-period">
+                    {t("dashboard.period.label")}
+                </label>
 
-                <select
+                <FilterSelect
+                    id="dashboard-period"
                     value={period}
-                    onChange={(event) => setPeriod(event.target.value)}
-                >
-                    <option value="today">Hoje</option>
-                    <option value="this_week">Esta semana</option>
-                    <option value="last_week">Semana passada</option>
-                    <option value="this_month">Este mês</option>
-                    <option value="last_month">Mês passado</option>
-                    <option value="last_30_days">Últimos 30 dias</option>
-                    <option value="all">Todos</option>
-                </select>
-            </label>
+                    onChange={setPeriod}
+                    options={[
+                        { value: "today", label: t("dashboard.period.today") },
+                        { value: "this_week", label: t("dashboard.period.thisWeek") },
+                        { value: "last_week", label: t("dashboard.period.lastWeek") },
+                        { value: "this_month", label: t("dashboard.period.thisMonth") },
+                        { value: "last_month", label: t("dashboard.period.lastMonth") },
+                        { value: "last_30_days", label: t("dashboard.period.last30Days") },
+                        { value: "all", label: t("dashboard.period.all") },
+                    ]}
+                />
+            </div>
         </div>
 
-        {error && <p className="error-message">{error}</p>}
+        {error && <p className="error-message">{t(error)}</p>}
 
-        <section className="stats-grid" aria-label="Resumo dos chamados">
+        <section className="stats-grid" aria-label={t("dashboard.stats.ariaLabel")}>
             <article className="stat-card">
-            <span className="stat-label">Total de chamados</span>
+            <span className="stat-label">{t("dashboard.stats.total.title")}</span>
             <strong className="stat-value">{statistics.total}</strong>
-            <span className="stat-description">Chamados disponíveis</span>
+            <span className="stat-description">{t("dashboard.stats.total.description")}</span>
             </article>
 
             <article className="stat-card">
-            <span className="stat-label">Abertos</span>
+            <span className="stat-label">{t("dashboard.stats.open.title")}</span>
             <strong className="stat-value">{statistics.open}</strong>
-            <span className="stat-description">Aguardando atendimento</span>
+            <span className="stat-description">{t("dashboard.stats.open.description")}</span>
             </article>
 
             <article className="stat-card">
-            <span className="stat-label">Em andamento</span>
+            <span className="stat-label">{t("dashboard.stats.inProgress.title")}</span>
             <strong className="stat-value">{statistics.inProgress}</strong>
-            <span className="stat-description">Em atendimento</span>
+            <span className="stat-description">{t("dashboard.stats.inProgress.description")}</span>
             </article>
 
             <article className="stat-card">
-            <span className="stat-label">Resolvidos</span>
+            <span className="stat-label">{t("dashboard.stats.resolved.title")}</span>
             <strong className="stat-value">{statistics.resolved}</strong>
-            <span className="stat-description">Resolvidos ou fechados</span>
+            <span className="stat-description">{t("dashboard.stats.resolved.description")}</span>
             </article>
         </section>
 
         <section className="recent-section">
             <div className="section-header">
             <div>
-                <h2>Chamados recentes</h2>
-                <p>Últimos chamados registrados no sistema.</p>
+                <h2>{t("dashboard.recent.title")}</h2>
+                <p>{t("dashboard.recent.description")}</p>
             </div>
 
-            <Link to="/tickets">Ver todos</Link>
+            <Link to="/tickets">{t("dashboard.recent.viewAll")}</Link>
             </div>
 
             {recentTickets.length === 0 ? (
             <div className="empty-state">
-                <strong>Nenhum chamado encontrado</strong>
-                <p>Os chamados mais recentes aparecerão aqui.</p>
+                <strong>{t("dashboard.recent.emptyTitle")}</strong>
+                <p>{t("dashboard.recent.emptyDescription")}</p>
             </div>
             ) : (
             <div className="ticket-list">
@@ -299,8 +307,11 @@ function DashboardPage() {
                     <div>
                         <strong>{ticket.title}</strong>
                         <span>
-                        Criado em{" "}
-                        {new Date(ticket.created_at).toLocaleDateString("pt-BR")}
+                        {t("dashboard.recent.createdAt", {
+                            date: new Date(ticket.created_at).toLocaleDateString(
+                                i18n.resolvedLanguage ?? "pt-BR",
+                            ),
+                        })}
                         </span>
                     </div>
                     </div>
@@ -309,11 +320,11 @@ function DashboardPage() {
                     <span
                         className={`priority-badge priority-${ticket.priority}`}
                     >
-                        {formatPriority(ticket.priority)}
+                        {t(`dashboard.priority.${ticket.priority}`)}
                     </span>
 
                     <span className={`status-badge status-${ticket.status}`}>
-                        {formatStatus(ticket.status)}
+                        {t(`dashboard.status.${ticket.status}`)}
                     </span>
                     </div>
                 </Link>
@@ -324,14 +335,14 @@ function DashboardPage() {
 
         <section
             className="dashboard-charts-wrapper"
-            aria-label="Distribuição dos chamados"
+            aria-label={t("dashboard.charts.ariaLabel")}
         >
             <div className="dashboard-charts-grid">
                 <section className="dashboard-chart-section">
                     <div className="section-header">
                         <div>
-                            <h2>Chamados por status</h2>
-                            <p>Distribuição dos chamados no sistema.</p>
+                            <h2>{t("dashboard.charts.status.title")}</h2>
+                            <p>{t("dashboard.charts.status.description")}</p>
                         </div>
                     </div>
 
@@ -366,8 +377,8 @@ function DashboardPage() {
                 <section className="dashboard-chart-section">
                     <div className="section-header">
                         <div>
-                            <h2>Chamados por prioridade</h2>
-                            <p>Distribuição por nível de prioridade.</p>
+                            <h2>{t("dashboard.charts.priority.title")}</h2>
+                            <p>{t("dashboard.charts.priority.description")}</p>
                         </div>
                     </div>
 
@@ -402,30 +413,6 @@ function DashboardPage() {
         </section>
         </div>
     )
-}
-
-function formatPriority(priority: Ticket["priority"]) {
-    const labels: Record<Ticket["priority"], string> = {
-        low: "Baixa",
-        medium: "Média",
-        high: "Alta",
-        critical: "Crítica",
-    }
-
-    return labels[priority]
-}
-
-function formatStatus(status: Ticket["status"]) {
-    const labels: Record<Ticket["status"], string> = {
-        open: "Aberto",
-        under_review: "Em análise",
-        in_progress: "Em andamento",
-        resolved: "Resolvido",
-        closed: "Fechado",
-        canceled: "Cancelado",
-    }
-
-    return labels[status]
 }
 
 function formatPercentage(value: number, total: number) {

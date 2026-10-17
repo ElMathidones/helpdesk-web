@@ -1,8 +1,10 @@
-import { useMemo, useState } from "react"
+import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { faqItems } from "../data/faq"
 
 function FaqPage() {
+    const { t } = useTranslation()
     const [search, setSearch] = useState("")
 
     const [openItems, setOpenItems] = useState<Set<string>>(
@@ -23,47 +25,38 @@ function FaqPage() {
         })
     }
 
-    const filteredItems = useMemo(() => {
-        const normalizedSearch = search.trim().toLowerCase()
+    const localizedItems = faqItems.map((item) => ({
+        ...item,
+        categoryLabel: t(`faq.categories.${item.category}`),
+        question: t(`faq.items.${item.id}.question`),
+        answer: t(`faq.items.${item.id}.answer`),
+    }))
 
-        if (!normalizedSearch) {
-            return faqItems
-        }
-
-        return faqItems.filter((item) =>
-            [
-                item.question,
-                item.answer,
-                item.category,
-            ].some((value) =>
-                value.toLowerCase().includes(normalizedSearch),
+    const normalizedSearch = search.trim().toLocaleLowerCase()
+    const filteredItems = normalizedSearch
+        ? localizedItems.filter((item) =>
+            [item.question, item.answer, item.categoryLabel].some((value) =>
+                value.toLocaleLowerCase().includes(normalizedSearch),
             ),
         )
-    }, [search])
+        : localizedItems
 
-    const groupedItems = useMemo(() => {
-        return filteredItems.reduce<Record<string, typeof faqItems>>(
-            (groups, item) => {
-                if (!groups[item.category]) {
-                    groups[item.category] = []
-                }
-
-                groups[item.category].push(item)
-
-                return groups
-            },
-            {},
-        )
-    }, [filteredItems])
+    const groupedItems = filteredItems.reduce<Record<string, typeof filteredItems>>(
+        (groups, item) => {
+            if (!groups[item.category]) groups[item.category] = []
+            groups[item.category].push(item)
+            return groups
+        },
+        {},
+    )
 
     return (
         <div className="faq-page">
             <div className="page-header">
                 <div>
-                    <h1>Central de ajuda</h1>
+                    <h1>{t("faq.page.title")}</h1>
                     <p>
-                        Encontre respostas rápidas para as dúvidas mais
-                        frequentes sobre o Help Desk.
+                        {t("faq.page.description")}
                     </p>
                 </div>
             </div>
@@ -71,7 +64,19 @@ function FaqPage() {
             <section className="faq-search-section">
                 <div className="faq-search-content">
                     <span className="faq-search-icon" aria-hidden="true">
-                        ⌕
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <circle cx="11" cy="11" r="7" />
+                            <path d="m20 20-4-4" />
+                        </svg>
                     </span>
 
                     <input
@@ -80,33 +85,18 @@ function FaqPage() {
                         onChange={(event) =>
                             setSearch(event.target.value)
                         }
-                        placeholder="Busque uma dúvida..."
-                        aria-label="Buscar no FAQ"
+                        placeholder={t("faq.page.searchPlaceholder")}
+                        aria-label={t("faq.page.searchLabel")}
                     />
-
-                    {search && (
-                        <button
-                            type="button"
-                            className="faq-clear-search"
-                            onClick={() => setSearch("")}
-                        >
-                            Limpar
-                        </button>
-                    )}
                 </div>
 
-                <span className="faq-result-count">
-                    {filteredItems.length === 1
-                        ? "1 resposta encontrada"
-                        : `${filteredItems.length} respostas encontradas`}
-                </span>
             </section>
 
             {filteredItems.length === 0 ? (
                 <div className="faq-empty-state">
-                    <strong>Nenhuma resposta encontrada</strong>
+                    <strong>{t("faq.page.emptyTitle")}</strong>
                     <p>
-                        Tente pesquisar utilizando outras palavras.
+                        {t("faq.page.emptyDescription")}
                     </p>
                 </div>
             ) : (
@@ -118,7 +108,7 @@ function FaqPage() {
                                 key={category}
                             >
                                 <div className="faq-group-header">
-                                    <h2>{category}</h2>
+                                    <h2>{items[0].categoryLabel}</h2>
                                 </div>
 
                                 <div className="faq-list">
@@ -164,7 +154,7 @@ function FaqPage() {
                                                     <div className="faq-answer-inner">
                                                         <div className="faq-answer">
                                                             <span className="faq-answer-label">
-                                                                Resposta
+                                                                {t("faq.page.answer")}
                                                             </span>
 
                                                             <p>{item.answer}</p>

@@ -1,16 +1,31 @@
 import { useState } from "react"
-import { NavLink, Outlet } from "react-router-dom"
+import { useTranslation } from "react-i18next"
+import {
+    NavLink,
+    Outlet,
+    useLocation,
+} from "react-router-dom"
 
 import AssistantWidget from "./AssistantWidget"
 
 import { useAuth } from "../hooks/useAuth"
+import { useTheme } from "../contexts/useTheme"
 import { getAvatarUrl } from "../services/users"
 
 function AppLayout() {
     const { user, logout } = useAuth()
+    const { theme } = useTheme()
+    const { t } = useTranslation()
+
+    const logoSrc =
+        theme === "dark"
+            ? "/branding/helpdesk-logo-dark.png"
+            : "/branding/helpdesk-logo-light.png"
 
     const [isMobileMenuOpen, setIsMobileMenuOpen] =
         useState(false)
+
+    const location = useLocation()
 
     function closeMobileMenu() {
         setIsMobileMenuOpen(false)
@@ -25,11 +40,16 @@ function AppLayout() {
         <div className="app-layout">
             <header className="mobile-header">
                 <div className="mobile-brand">
-                    <div className="brand-icon">H</div>
+                    <img
+                        className="brand-logo"
+                        src={logoSrc}
+                        alt=""
+                        aria-hidden="true"
+                    />
 
                     <div>
                         <strong>Help Desk</strong>
-                        <span>Support Center</span>
+                        <span>{t("brand.subtitle")}</span>
                     </div>
                 </div>
 
@@ -49,8 +69,8 @@ function AppLayout() {
                     }
                     aria-label={
                         isMobileMenuOpen
-                            ? "Fechar menu"
-                            : "Abrir menu"
+                            ? t("layout.closeMenu")
+                            : t("layout.openMenu")
                     }
                     aria-controls="app-sidebar"
                     aria-expanded={isMobileMenuOpen}
@@ -66,7 +86,7 @@ function AppLayout() {
                     type="button"
                     className="sidebar-backdrop"
                     onClick={closeMobileMenu}
-                    aria-label="Fechar menu"
+                    aria-label={t("layout.closeMenu")}
                 />
             )}
 
@@ -81,18 +101,23 @@ function AppLayout() {
                 }
             >
                 <div className="sidebar-brand">
-                    <div className="brand-icon">H</div>
+                    <img
+                        className="brand-logo"
+                        src={logoSrc}
+                        alt=""
+                        aria-hidden="true"
+                    />
 
                     <div>
                         <strong>Help Desk</strong>
-                        <span>Support Center</span>
+                        <span>{t("brand.subtitle")}</span>
                     </div>
 
                     <button
                         type="button"
                         className="mobile-sidebar-close"
                         onClick={closeMobileMenu}
-                        aria-label="Fechar menu"
+                        aria-label={t("layout.closeMenu")}
                     >
                         ×
                     </button>
@@ -113,7 +138,7 @@ function AppLayout() {
                         <span className="nav-icon">
                             ▦
                         </span>
-                        Dashboard
+                        {t("navigation.dashboard")}
                     </NavLink>
 
                     <NavLink
@@ -130,14 +155,14 @@ function AppLayout() {
                         <span className="nav-icon">
                             ▤
                         </span>
-                        Chamados
+                        {t("navigation.tickets")}
                     </NavLink>
 
                     {(user?.role === "admin" ||
                         user?.role === "technician") && (
                         <>
                             <div className="nav-section-title">
-                                ANÁLISES
+                                {t("navigation.analytics")}
                             </div>
 
                             <NavLink
@@ -156,13 +181,13 @@ function AppLayout() {
                                 <span className="nav-icon">
                                     ◔
                                 </span>
-                                Relatórios
+                                {t("navigation.reports")}
                             </NavLink>
                         </>
                     )}
 
                     <div className="nav-section-title">
-                        AJUDA
+                        {t("navigation.help")}
                     </div>
 
                     <NavLink
@@ -179,11 +204,11 @@ function AppLayout() {
                         <span className="nav-icon">
                             ?
                         </span>
-                        FAQ
+                        {t("navigation.faq")}
                     </NavLink>
 
                     <div className="nav-section-title">
-                        Sistema
+                        {t("navigation.system")}
                     </div>
 
                     <NavLink
@@ -200,7 +225,7 @@ function AppLayout() {
                         <span className="nav-icon">
                             ⚙
                         </span>
-                        Configurações
+                        {t("navigation.settings")}
                     </NavLink>
                 </nav>
 
@@ -224,7 +249,13 @@ function AppLayout() {
 
                         <div className="user-details">
                             <strong>{user?.name}</strong>
-                            <span>{user?.role}</span>
+                            <span>
+                                {user?.role
+                                    ? t(`roles.${user.role}`, {
+                                        defaultValue: user.role,
+                                    })
+                                : ""}
+                            </span>
                         </div>
                     </div>
 
@@ -233,13 +264,18 @@ function AppLayout() {
                         type="button"
                         onClick={handleLogout}
                     >
-                        Sair
+                        {t("layout.logout")}
                     </button>
                 </div>
             </aside>
 
             <main className="main-content">
-                <Outlet />
+                <div
+                    className="page-transition"
+                    key={location.pathname}
+                >
+                    <Outlet />
+                </div>
             </main>
 
             <AssistantWidget />

@@ -1,12 +1,22 @@
 import { useState, type FormEvent } from "react"
 import { Navigate, useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 import { useAuth } from "../hooks/useAuth"
+import { useTheme } from "../contexts/useTheme"
 import { createUser } from "../services/users"
+import { translateServiceError } from "../utils/serviceErrors"
 
 function LoginPage() {
     const navigate = useNavigate()
     const { login, isAuthenticated } = useAuth()
+    const { theme } = useTheme()
+    const { t } = useTranslation()
+
+    const logoSrc =
+        theme === "dark"
+            ? "/branding/helpdesk-logo-dark.png"
+            : "/branding/helpdesk-logo-light.png"
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -27,12 +37,12 @@ function LoginPage() {
 
         if (mode === "register") {
             if (password.length < 8) {
-                setError("A senha deve ter pelo menos 8 caracteres.")
+                setError(t("auth.errors.minPassword"))
                 return
             }
 
             if (password !== confirmPassword) {
-                setError("As senhas não coincidem.")
+                setError(t("auth.errors.passwordMismatch"))
                 return
             }
         }
@@ -58,11 +68,11 @@ function LoginPage() {
             if (mode === "register") {
                 setError(
                     error instanceof Error
-                        ? error.message
-                        : "Não foi possível criar a conta.",
+                        ? translateServiceError(error, t("auth.errors.registration"))
+                        : t("auth.errors.registration"),
                 )
             } else {
-                setError("E-mail ou senha inválidos.")
+                setError(t("auth.errors.invalidCredentials"))
             }
         } finally {
             setIsLoading(false)
@@ -71,197 +81,201 @@ function LoginPage() {
 
     return (
         <main className="login-page">
-        <section className="login-panel">
-            <div className="login-brand">
-            <div className="login-logo">H</div>
-
-            <div>
-                <strong>Help Desk</strong>
-                <span>Support Center</span>
-            </div>
-            </div>
-
-            <div className="login-heading">
-                <h1>
-                    {mode === "login"
-                        ? "Bem-vindo"
-                        : "Crie sua conta"}
-                </h1>
-
-                <p>
-                    {mode === "login"
-                        ? "Entre com sua conta para acessar o sistema."
-                        : "Cadastre-se para abrir e acompanhar seus chamados."}
-                </p>
-            </div>
-
-            <form className="login-form" onSubmit={handleSubmit}>
-
-                {mode === "register" && (
-                    <div className="form-field">
-                        <label htmlFor="name">Nome</label>
-
-                        <input
-                            id="name"
-                            type="text"
-                            value={name}
-                            onChange={(event) => setName(event.target.value)}
-                            placeholder="Seu nome"
-                            required
-                            minLength={2}
-                            maxLength={120}
-                            autoComplete="name"
-                        />
-                    </div>
-                )}
-
-                <div className="form-field">
-                    <label htmlFor="email">E-mail</label>
-
-                    <input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    placeholder="seu@email.com"
-                    required
-                    autoComplete="email"
+            <section className="login-panel">
+                <div className="login-brand">
+                    <img
+                        className="login-logo"
+                        src={logoSrc}
+                        alt=""
+                        aria-hidden="true"
                     />
+
+                    <div>
+                        <strong>Help Desk</strong>
+                        <span>{t("brand.subtitle")}</span>
+                    </div>
                 </div>
 
-                <div className="form-field">
-                    <label htmlFor="password">Senha</label>
-
-                    <input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    placeholder="Digite sua senha"
-                    required
-                    autoComplete={
-                        mode === "login"
-                            ? "current-password"
-                            : "new-password"
-                    }
-                    minLength={mode === "register" ? 8 : undefined}
-                    maxLength={128}
-                    />
-                </div>
-
-                {mode === "register" && (
-                    <div className="form-field">
-                        <label htmlFor="confirm-password">
-                            Confirmar senha
-                        </label>
-
-                        <input
-                            id="confirm-password"
-                            type="password"
-                            value={confirmPassword}
-                            onChange={(event) =>
-                                setConfirmPassword(event.target.value)
-                            }
-                            placeholder="Digite sua senha novamente"
-                            required
-                            minLength={8}
-                            maxLength={128}
-                            autoComplete="new-password"
-                        />
-                    </div>
-                )}
-
-                {error && <p className="form-error">{error}</p>}
-
-                <button
-                    className="login-button"
-                    type="submit"
-                    disabled={isLoading}
-                >
-                    {isLoading
-                        ? mode === "login"
-                            ? "Entrando..."
-                            : "Criando conta..."
-                        : mode === "login"
-                        ? "Entrar"
-                        : "Criar conta"}
-                </button>
-
-                <div className="login-account-switch">
-                    <span>
+                <div className="login-heading">
+                    <h1>
                         {mode === "login"
-                            ? "Ainda não tem uma conta?"
-                            : "Já possui uma conta?"}
-                    </span>
+                            ? t("auth.login.title")
+                            : t("auth.register.title")}
+                    </h1>
+
+                    <p>
+                        {mode === "login"
+                            ? t("auth.login.description")
+                            : t("auth.register.description")}
+                    </p>
+                </div>
+
+                <form className="login-form" onSubmit={handleSubmit}>
+
+                    {mode === "register" && (
+                        <div className="form-field">
+                            <label htmlFor="name">{t("auth.fields.name")}</label>
+
+                            <input
+                                id="name"
+                                type="text"
+                                value={name}
+                                onChange={(event) => setName(event.target.value)}
+                                placeholder={t("auth.fields.namePlaceholder")}
+                                required
+                                minLength={2}
+                                maxLength={120}
+                                autoComplete="name"
+                            />
+                        </div>
+                    )}
+
+                    <div className="form-field">
+                        <label htmlFor="email">{t("auth.fields.email")}</label>
+
+                        <input
+                        id="email"
+                        type="email"
+                        value={email}
+                        onChange={(event) => setEmail(event.target.value)}
+                        placeholder={t("auth.fields.emailPlaceholder")}
+                        required
+                        autoComplete="email"
+                        />
+                    </div>
+
+                    <div className="form-field">
+                        <label htmlFor="password">{t("auth.fields.password")}</label>
+
+                        <input
+                        id="password"
+                        type="password"
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
+                        placeholder={t("auth.fields.passwordPlaceholder")}
+                        required
+                        autoComplete={
+                            mode === "login"
+                                ? "current-password"
+                                : "new-password"
+                        }
+                        minLength={mode === "register" ? 8 : undefined}
+                        maxLength={128}
+                        />
+                    </div>
+
+                    {mode === "register" && (
+                        <div className="form-field">
+                            <label htmlFor="confirm-password">
+                                {t("auth.fields.confirmPassword")}
+                            </label>
+
+                            <input
+                                id="confirm-password"
+                                type="password"
+                                value={confirmPassword}
+                                onChange={(event) =>
+                                    setConfirmPassword(event.target.value)
+                                }
+                                placeholder={t("auth.fields.confirmPasswordPlaceholder")}
+                                required
+                                minLength={8}
+                                maxLength={128}
+                                autoComplete="new-password"
+                            />
+                        </div>
+                    )}
+
+                    {error && <p className="form-error">{error}</p>}
 
                     <button
-                        type="button"
-                        onClick={() => {
-                            setMode(
-                                mode === "login"
-                                    ? "register"
-                                    : "login",
-                            )
-
-                            setError("")
-                            setPassword("")
-                            setConfirmPassword("")
-                        }}
+                        className="login-button"
+                        type="submit"
                         disabled={isLoading}
                     >
-                        {mode === "login"
-                            ? "Criar conta"
-                            : "Entrar"}
+                        {isLoading
+                            ? mode === "login"
+                                ? t("auth.login.loading")
+                                : t("auth.register.loading")
+                            : mode === "login"
+                            ? t("auth.login.submit")
+                            : t("auth.register.submit")}
                     </button>
-                </div>
 
-            </form>
-        </section>
+                    <div className="login-account-switch">
+                        <span>
+                            {mode === "login"
+                                ? t("auth.login.switchQuestion")
+                                : t("auth.register.switchQuestion")}
+                        </span>
 
-        <aside className="login-hero">
-            <div className="login-hero-content">
-                <span className="login-hero-label">HELP DESK</span>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setMode(
+                                    mode === "login"
+                                        ? "register"
+                                        : "login",
+                                )
 
-                <h2>Suporte organizado, atendimento eficiente.</h2>
-
-                <p>
-                    Centralize solicitações, acompanhe o andamento dos chamados
-                    e mantenha todo o fluxo de suporte em um único lugar.
-                </p>
-
-                <div className="login-features">
-                    <div>
-                    <span>✓</span>
-                    <p>
-                        <strong>Gestão de chamados</strong>
-                        <small>
-                        Acompanhe solicitações do início ao encerramento.
-                        </small>
-                    </p>
+                                setError("")
+                                setPassword("")
+                                setConfirmPassword("")
+                            }}
+                            disabled={isLoading}
+                        >
+                            {mode === "login"
+                                ? t("auth.login.switchAction")
+                                : t("auth.register.switchAction")}
+                        </button>
                     </div>
 
-                    <div>
-                    <span>✓</span>
-                    <p>
-                        <strong>Controle de prioridades</strong>
-                        <small>
-                        Identifique rapidamente o que precisa de atenção.
-                        </small>
-                    </p>
-                    </div>
+                </form>
+            </section>
 
-                    <div>
-                    <span>✓</span>
+            <aside className="login-hero">
+                <div className="login-hero-content">
+                    <span className="login-hero-label">HELP DESK</span>
+
+                    <h2>{t("auth.hero.heading")}</h2>
+
                     <p>
-                        <strong>Acesso seguro</strong>
-                        <small>
-                        Autenticação e permissões de acordo com cada usuário.
-                        </small>
+                        {t("auth.hero.description")}
                     </p>
+
+                    <div className="login-features">
+                        <div>
+                        <span>✓</span>
+                        <p>
+                            <strong>{t("auth.hero.ticketManagement")}</strong>
+                            <small>
+                            {t("auth.hero.ticketManagementDescription")}
+                            </small>
+                        </p>
+                        </div>
+
+                        <div>
+                        <span>✓</span>
+                        <p>
+                            <strong>{t("auth.hero.priorities")}</strong>
+                            <small>
+                            {t("auth.hero.prioritiesDescription")}
+                            </small>
+                        </p>
+                        </div>
+
+                        <div>
+                        <span>✓</span>
+                        <p>
+                            <strong>{t("auth.hero.security")}</strong>
+                            <small>
+                            {t("auth.hero.securityDescription")}
+                            </small>
+                        </p>
+                    </div>
                 </div>
-            </div>
-            </div>
-        </aside>
+                </div>
+            </aside>
         </main>
     )
 }

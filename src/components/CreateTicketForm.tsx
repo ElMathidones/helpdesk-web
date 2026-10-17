@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react"
+import { useTranslation } from "react-i18next"
 
 import { useAuth } from "../hooks/useAuth"
 import { getCategories } from "../services/categories"
@@ -6,12 +7,14 @@ import { createTicket } from "../services/tickets"
 import type { Category } from "../types/category"
 import type { Ticket, TicketPriority } from "../types/ticket"
 
+import FilterSelect from "./FilterSelect"
 interface CreateTicketFormProps {
     onCreated: (ticket: Ticket) => void
 }
 
 function CreateTicketForm({ onCreated }: CreateTicketFormProps) {
     const { token } = useAuth()
+    const { t } = useTranslation()
 
     const [categories, setCategories] = useState<Category[]>([])
     const [title, setTitle] = useState("")
@@ -40,7 +43,7 @@ function CreateTicketForm({ onCreated }: CreateTicketFormProps) {
 
                 setCategories(activeCategories)
             } catch {
-                setError("Não foi possível carregar as categorias.")
+                setError("tickets.form.errors.loadCategories")
             }
         }
 
@@ -50,7 +53,10 @@ function CreateTicketForm({ onCreated }: CreateTicketFormProps) {
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
 
-        if (!token || !categoryId) {
+        if (!token) return
+
+        if (!categoryId) {
+            setError("tickets.form.selectCategory")
             return
         }
 
@@ -64,17 +70,17 @@ function CreateTicketForm({ onCreated }: CreateTicketFormProps) {
                 priority,
                 category_id: Number(categoryId),
                 send_email_copy: sendEmailCopy,
-        })
+            })
 
-        onCreated(ticket)
+            onCreated(ticket)
 
-        setTitle("")
-        setDescription("")
-        setPriority("medium")
-        setCategoryId("")
-        setSendEmailCopy(false)
+            setTitle("")
+            setDescription("")
+            setPriority("medium")
+            setCategoryId("")
+            setSendEmailCopy(false)
         } catch {
-            setError("Não foi possível criar o chamado.")
+            setError("tickets.form.errors.create")
         } finally {
             setIsSubmitting(false)
         }
@@ -105,21 +111,21 @@ function CreateTicketForm({ onCreated }: CreateTicketFormProps) {
     return (
         <form className="ticket-form" onSubmit={handleSubmit}>
             <div className="form-field">
-                <label htmlFor="title">Título</label>
+                <label htmlFor="title">{t("tickets.form.title")}</label>
                 <input
-                id="title"
-                type="text"
-                value={title}
-                onChange={(event) => setTitle(event.target.value)}
-                minLength={3}
-                maxLength={150}
-                placeholder="Ex: Computador não liga"
-                required
+                    id="title"
+                    type="text"
+                    value={title}
+                    onChange={(event) => setTitle(event.target.value)}
+                    minLength={3}
+                    maxLength={150}
+                    placeholder={t("tickets.form.titlePlaceholder")}
+                    required
                 />
             </div>
 
             <div className="form-field">
-                <label htmlFor="description">Descrição</label>
+                <label htmlFor="description">{t("tickets.form.description")}</label>
                 <textarea
                     ref={descriptionRef}
                     className="ticket-description-input"
@@ -127,43 +133,45 @@ function CreateTicketForm({ onCreated }: CreateTicketFormProps) {
                     value={description}
                     onChange={(event) => setDescription(event.target.value)}
                     minLength={10}
-                    placeholder="Descreva o problema com detalhes..."
+                    placeholder={t("tickets.form.descriptionPlaceholder")}
                     required
                 />
             </div>
 
             <div className="form-field">
-                <label htmlFor="priority">Prioridade</label>
-                <select
-                id="priority"
-                value={priority}
-                onChange={(event) =>
-                    setPriority(event.target.value as TicketPriority)
-                }
-                >
-                <option value="low">Baixa</option>
-                <option value="medium">Média</option>
-                <option value="high">Alta</option>
-                <option value="critical">Crítica</option>
-                </select>
+                <label htmlFor="priority">{t("tickets.form.priority")}</label>
+                <FilterSelect
+                    id="priority"
+                    value={priority}
+                    onChange={(value) =>
+                        setPriority(value as TicketPriority)
+                    }
+                    options={[
+                        { value: "low", label: t("tickets.priority.low") },
+                        { value: "medium", label: t("tickets.priority.medium") },
+                        { value: "high", label: t("tickets.priority.high") },
+                        { value: "critical", label: t("tickets.priority.critical") },
+                    ]}
+                />
             </div>
 
             <div className="form-field">
-                <label htmlFor="category">Categoria</label>
-                <select
-                id="category"
-                value={categoryId}
-                onChange={(event) => setCategoryId(event.target.value)}
-                required
-                >
-                <option value="">Selecione uma categoria</option>
-
-                {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                    {category.name}
-                    </option>
-                ))}
-                </select>
+                <label htmlFor="category">{t("tickets.form.category")}</label>
+                <FilterSelect
+                    id="category"
+                    value={categoryId}
+                    onChange={setCategoryId}
+                    options={[
+                        {
+                            value: "",
+                            label: t("tickets.form.selectCategory"),
+                        },
+                        ...categories.map((category) => ({
+                            value: String(category.id),
+                            label: category.name,
+                        })),
+                    ]}
+                />
             </div>
 
             <div className="ticket-email-option">
@@ -174,18 +182,18 @@ function CreateTicketForm({ onCreated }: CreateTicketFormProps) {
                         onChange={(event) => setSendEmailCopy(event.target.checked)}
                     />
 
-                    <span>Enviar uma cópia deste chamado para meu e-mail</span>
+                    <span>{t("tickets.form.emailCopy")}</span>
                 </label>
             </div>
 
-            {error && <p className="form-error">{error}</p>}
+            {error && <p className="form-error">{t(error)}</p>}
 
             <button
                 className="submit-button"
                 type="submit"
                 disabled={isSubmitting}
             >
-                {isSubmitting ? "Criando..." : "Criar chamado"}
+                {isSubmitting ? t("tickets.form.creating") : t("tickets.form.submit")}
             </button>
         </form>
     )

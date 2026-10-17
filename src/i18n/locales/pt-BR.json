@@ -1,0 +1,585 @@
+{
+  "brand": {
+    "subtitle": "Central de suporte"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "tickets": "Chamados",
+    "analytics": "ANÁLISES",
+    "reports": "Relatórios",
+    "help": "AJUDA",
+    "faq": "FAQ",
+    "system": "Sistema",
+    "settings": "Configurações"
+  },
+  "layout": {
+    "openMenu": "Abrir menu",
+    "closeMenu": "Fechar menu",
+    "logout": "Sair"
+  },
+  "roles": {
+    "admin": "Administrador",
+    "technician": "Técnico",
+    "customer": "Cliente",
+    "user": "Usuário"
+  },
+  "settings": {
+    "page": {
+      "title": "Configurações",
+      "description": "Gerencie suas preferências e configurações do sistema."
+    },
+    "account": {
+      "title": "Minha conta",
+      "description": "Informações associadas ao seu usuário.",
+      "avatarAlt": "Foto de {{name}}",
+      "avatarTitle": "Foto de perfil",
+      "avatarFormats": "JPEG, PNG ou WebP. Máximo de 2 MB.",
+      "uploading": "Enviando...",
+      "changePhoto": "Alterar foto",
+      "addPhoto": "Adicionar foto",
+      "removePhoto": "Remover",
+      "name": "Nome",
+      "email": "E-mail",
+      "role": "Perfil",
+      "saveName": "Salvar nome",
+      "changeEmail": "Alterar e-mail",
+      "currentPassword": "Senha atual",
+      "saveEmail": "Enviar confirmação"
+    },
+    "appearance": {
+      "title": "Aparência",
+      "description": "Escolha como o Help Desk é exibido para você.",
+      "light": "Tema claro",
+      "dark": "Tema escuro",
+      "saved": "O tema escolhido fica salvo neste navegador.",
+      "useDark": "Usar tema escuro",
+      "useLight": "Usar tema claro"
+    },
+    "language": {
+      "title": "Idioma da interface",
+      "description": "Escolha o idioma. Sua preferência fica salva neste navegador."
+    },
+    "common": {
+      "saving": "Salvando...",
+      "save": "Salvar",
+      "cancel": "Cancelar"
+    },
+    "categories": {
+      "title": "Categorias",
+      "description": "Gerencie as categorias utilizadas nos chamados.",
+      "descriptionLabel": "Descrição",
+      "namePlaceholder": "Ex.: Software",
+      "descriptionPlaceholder": "Descrição opcional",
+      "creating": "Criando...",
+      "new": "Nova categoria",
+      "loading": "Carregando categorias...",
+      "empty": "Nenhuma categoria cadastrada.",
+      "noDescription": "Sem descrição",
+      "drag": "Arrastar para reorganizar",
+      "moveUp": "Mover para cima",
+      "moveDown": "Mover para baixo",
+      "moveCategoryUp": "Mover {{name}} para cima",
+      "moveCategoryDown": "Mover {{name}} para baixo",
+      "active": "Ativa",
+      "inactive": "Inativa",
+      "edit": "Editar",
+      "deactivate": "Desativar",
+      "reactivate": "Reativar",
+      "deleting": "Excluindo...",
+      "delete": "Excluir",
+      "confirmDelete": "Excluir permanentemente a categoria \"{{name}}\"?\n\nSe ela já tiver sido utilizada em algum chamado, a exclusão será bloqueada."
+    },
+    "feedback": {
+      "loadCategoriesError": "Não foi possível carregar as categorias.",
+      "categoryNameTooShort": "O nome da categoria deve ter pelo menos 2 caracteres.",
+      "categoryCreated": "Categoria criada com sucesso.",
+      "createCategoryError": "Não foi possível criar a categoria.",
+      "categoryUpdated": "Categoria atualizada com sucesso.",
+      "updateCategoryError": "Não foi possível atualizar a categoria.",
+      "orderUpdated": "Ordem das categorias atualizada.",
+      "orderError": "Não foi possível atualizar a ordem das categorias.",
+      "profileNameTooShort": "O nome deve ter pelo menos 2 caracteres.",
+      "profileUpdated": "Nome atualizado com sucesso.",
+      "profileError": "Não foi possível atualizar seu nome.",
+      "categoryReactivated": "Categoria reativada com sucesso.",
+      "categoryDeactivated": "Categoria desativada com sucesso.",
+      "changeCategoryError": "Não foi possível alterar a categoria.",
+      "categoryDeleted": "Categoria excluída com sucesso.",
+      "deleteCategoryError": "Não foi possível excluir a categoria.",
+      "avatarTooLarge": "A foto deve ter no máximo 2 MB.",
+      "avatarInvalidFormat": "Use uma imagem JPEG, PNG ou WebP.",
+      "avatarUpdated": "Foto de perfil atualizada com sucesso.",
+      "avatarError": "Não foi possível alterar a foto.",
+      "avatarRemoved": "Foto de perfil removida.",
+      "avatarRemoveError": "Não foi possível remover a foto.",
+      "emailUpdated": "E-mail atualizado com sucesso. Use o novo endereço no próximo login.",
+      "incorrectPassword": "A senha atual está incorreta.",
+      "emailAlreadyRegistered": "Este e-mail já está cadastrado.",
+      "emailUpdateError": "Não foi possível atualizar o e-mail.",
+      "emailConfirmationSent": "Enviamos um link de confirmação para {{email}}. Seu e-mail atual continuará válido até você confirmar.",
+      "emailRequestTooSoon": "Aguarde um minuto antes de solicitar outro link.",
+      "emailDeliveryError": "Não foi possível enviar o e-mail de confirmação. Tente novamente mais tarde.",
+      "emailChangeLocked": "Por segurança, a alteração de e-mail foi bloqueada temporariamente após várias tentativas incorretas de senha. Aguarde 15 minutos e tente novamente."
+    }
+  },
+  "dashboard": {
+    "loading": "Carregando dashboard...",
+    "error": {
+      "load": "Não foi possível carregar os dados do dashboard."
+    },
+    "page": {
+      "title": "Dashboard",
+      "description": "Visão geral dos chamados."
+    },
+    "period": {
+      "label": "Período",
+      "today": "Hoje",
+      "thisWeek": "Esta semana",
+      "lastWeek": "Semana passada",
+      "thisMonth": "Este mês",
+      "lastMonth": "Mês passado",
+      "last30Days": "Últimos 30 dias",
+      "all": "Todos"
+    },
+    "stats": {
+      "ariaLabel": "Resumo dos chamados",
+      "total": {
+        "title": "Total de chamados",
+        "description": "Chamados disponíveis"
+      },
+      "open": {
+        "title": "Abertos",
+        "description": "Aguardando atendimento"
+      },
+      "inProgress": {
+        "title": "Em andamento",
+        "description": "Em atendimento"
+      },
+      "resolved": {
+        "title": "Resolvidos",
+        "description": "Resolvidos ou fechados"
+      }
+    },
+    "recent": {
+      "title": "Chamados recentes",
+      "description": "Últimos chamados registrados no sistema.",
+      "viewAll": "Ver todos",
+      "emptyTitle": "Nenhum chamado encontrado",
+      "emptyDescription": "Os chamados mais recentes aparecerão aqui.",
+      "createdAt": "Criado em {{date}}"
+    },
+    "charts": {
+      "ariaLabel": "Distribuição dos chamados",
+      "status": {
+        "title": "Chamados por status",
+        "description": "Distribuição dos chamados no sistema."
+      },
+      "priority": {
+        "title": "Chamados por prioridade",
+        "description": "Distribuição por nível de prioridade."
+      }
+    },
+    "status": {
+      "open": "Aberto",
+      "under_review": "Em análise",
+      "in_progress": "Em andamento",
+      "resolved": "Resolvido",
+      "closed": "Fechado",
+      "canceled": "Cancelado"
+    },
+    "priority": {
+      "low": "Baixa",
+      "medium": "Média",
+      "high": "Alta",
+      "critical": "Crítica"
+    }
+  },
+  "ticketDetails": {
+    "invalid": {
+      "title": "Chamado inválido",
+      "description": "O identificador informado não é válido."
+    },
+    "backToTickets": "Voltar para chamados",
+    "loading": "Carregando chamado...",
+    "cannotOpen": "Não foi possível abrir o chamado",
+    "notFound": "Chamado não encontrado.",
+    "ticketLabel": "Chamado #",
+    "description": "Descrição",
+    "confirmDelete": "Excluir permanentemente o chamado #{{number}}?\n\nEssa ação também removerá os comentários e o histórico e não poderá ser desfeita.",
+    "errors": {
+      "load": "Não foi possível carregar o chamado.",
+      "assign": "Não foi possível assumir o chamado.",
+      "release": "Não foi possível liberar o chamado.",
+      "changeStatus": "Não foi possível alterar o status do chamado.",
+      "delete": "Não foi possível excluir o chamado.",
+      "sendMessage": "Não foi possível enviar a mensagem."
+    },
+    "actions": {
+      "title": "Ações do chamado",
+      "updating": "Atualizando...",
+      "startReview": "Iniciar análise",
+      "assigning": "Assumindo...",
+      "assign": "Assumir chamado",
+      "markResolved": "Marcar como resolvido",
+      "releasing": "Liberando...",
+      "release": "Liberar chamado",
+      "reopen": "Reabrir chamado",
+      "close": "Fechar chamado",
+      "deleting": "Excluindo...",
+      "delete": "Excluir chamado",
+      "assignedTo": "Este chamado está atribuído a {{name}}.",
+      "anotherAssignee": "outro responsável",
+      "noActions": "Não há ações disponíveis para o status atual."
+    },
+    "history": {
+      "title": "Histórico",
+      "empty": "Nenhum evento registrado.",
+      "system": "Sistema",
+      "events": {
+        "ticket_created": "Chamado criado",
+        "assignee_changed": "Responsável alterado",
+        "status_changed": "Status alterado"
+      }
+    },
+    "chat": {
+      "title": "Chat",
+      "empty": "Ainda não há mensagens nesta conversa.",
+      "placeholder": "Digite uma mensagem...",
+      "send": "Enviar mensagem"
+    },
+    "info": {
+      "title": "Informações",
+      "priority": "Prioridade",
+      "status": "Status",
+      "category": "Categoria",
+      "createdBy": "Criado por",
+      "assignee": "Responsável",
+      "unassigned": "Não atribuído",
+      "createdAt": "Criado em",
+      "updatedAt": "Atualizado em",
+      "closedAt": "Fechado em"
+    }
+  },
+  "tickets": {
+    "loading": "Carregando chamados...",
+    "errors": {
+      "load": "Não foi possível carregar os chamados."
+    },
+    "page": {
+      "title": "Chamados",
+      "description": "Crie, acompanhe e gerencie os chamados do sistema."
+    },
+    "count_zero": "Nenhum chamado",
+    "count_one": "{{count}} chamado",
+    "count_other": "{{count}} chamados",
+    "search": {
+      "placeholder": "Buscar por título..."
+    },
+    "filters": {
+      "status": "Status",
+      "priority": "Prioridade",
+      "category": "Categoria",
+      "allStatuses": "Todos",
+      "allPriorities": "Todas",
+      "allCategories": "Todas"
+    },
+    "create": {
+      "title": "Novo chamado",
+      "description": "Preencha os dados para registrar uma nova solicitação."
+    },
+    "list": {
+      "title": "Lista de chamados",
+      "description": "Chamados disponíveis para o seu usuário.",
+      "emptyTitle": "Nenhum chamado encontrado",
+      "emptyDescription": "Crie um novo chamado utilizando o formulário ao lado.",
+      "filteredEmptyTitle": "Nenhum chamado corresponde aos filtros",
+      "filteredEmptyDescription": "Tente alterar ou remover algum filtro.",
+      "createdAt": "Criado em {{date}}",
+      "details": "Ver detalhes"
+    },
+    "status": {
+      "open": "Aberto",
+      "under_review": "Em análise",
+      "in_progress": "Em andamento",
+      "resolved": "Resolvido",
+      "closed": "Fechado",
+      "canceled": "Cancelado"
+    },
+    "priority": {
+      "low": "Baixa",
+      "medium": "Média",
+      "high": "Alta",
+      "critical": "Crítica"
+    },
+    "form": {
+      "title": "Título",
+      "titlePlaceholder": "Ex: Computador não liga",
+      "description": "Descrição",
+      "descriptionPlaceholder": "Descreva o problema com detalhes...",
+      "priority": "Prioridade",
+      "category": "Categoria",
+      "selectCategory": "Selecione uma categoria",
+      "emailCopy": "Enviar uma cópia deste chamado para meu e-mail",
+      "creating": "Criando...",
+      "submit": "Criar chamado",
+      "errors": {
+        "loadCategories": "Não foi possível carregar as categorias.",
+        "create": "Não foi possível criar o chamado."
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Bem-vindo",
+      "description": "Entre com sua conta para acessar o sistema.",
+      "submit": "Entrar",
+      "loading": "Entrando...",
+      "switchQuestion": "Ainda não tem uma conta?",
+      "switchAction": "Criar conta"
+    },
+    "register": {
+      "title": "Crie sua conta",
+      "description": "Cadastre-se para abrir e acompanhar seus chamados.",
+      "submit": "Criar conta",
+      "loading": "Criando conta...",
+      "switchQuestion": "Já possui uma conta?",
+      "switchAction": "Entrar"
+    },
+    "fields": {
+      "name": "Nome",
+      "namePlaceholder": "Seu nome",
+      "email": "E-mail",
+      "emailPlaceholder": "seu@email.com",
+      "password": "Senha",
+      "passwordPlaceholder": "Digite sua senha",
+      "confirmPassword": "Confirmar senha",
+      "confirmPasswordPlaceholder": "Digite sua senha novamente"
+    },
+    "errors": {
+      "minPassword": "A senha deve ter pelo menos 8 caracteres.",
+      "passwordMismatch": "As senhas não coincidem.",
+      "registration": "Não foi possível criar a conta.",
+      "invalidCredentials": "E-mail ou senha inválidos."
+    },
+    "hero": {
+      "heading": "Suporte organizado, atendimento eficiente.",
+      "description": "Centralize solicitações, acompanhe o andamento dos chamados e mantenha todo o fluxo de suporte em um único lugar.",
+      "ticketManagement": "Gestão de chamados",
+      "ticketManagementDescription": "Acompanhe solicitações do início ao encerramento.",
+      "priorities": "Controle de prioridades",
+      "prioritiesDescription": "Identifique rapidamente o que precisa de atenção.",
+      "security": "Acesso seguro",
+      "securityDescription": "Autenticação e permissões de acordo com cada usuário."
+    }
+  },
+  "emailConfirmation": {
+    "title": "Confirmar novo e-mail",
+    "description": "Para concluir a alteração, clique no botão abaixo. Seu e-mail atual continuará válido até a confirmação.",
+    "confirmButton": "Confirmar e-mail",
+    "confirming": "Confirmando...",
+    "successTitle": "E-mail confirmado!",
+    "success": "Seu endereço foi atualizado com sucesso. Use o novo e-mail no próximo login.",
+    "missingToken": "Este link não contém um token de confirmação. Abra novamente o link recebido por e-mail.",
+    "invalidToken": "Este link é inválido, expirou ou já foi utilizado. Solicite outra confirmação nas configurações.",
+    "genericError": "Não foi possível confirmar o e-mail. Tente novamente.",
+    "backToSettings": "Voltar às configurações",
+    "backToLogin": "Ir para o login"
+  },
+  "assistant": {
+    "label": "Assistente",
+    "panelLabel": "Assistente do Help Desk",
+    "title": "Assistente Help Desk",
+    "subtitle": "Tire dúvidas sobre o sistema",
+    "close": "Fechar assistente",
+    "open": "Abrir assistente",
+    "greeting": "Olá! Posso ajudar com dúvidas sobre o Help Desk.",
+    "suggestion": "Pergunte sobre chamados, prioridades, status, atendimento ou funcionamento do sistema.",
+    "waiting": "Aguarde a resposta...",
+    "placeholder": "Digite sua pergunta...",
+    "messageLabel": "Mensagem para o assistente",
+    "send": "Enviar mensagem",
+    "error": "Não consegui responder agora. Tente novamente em alguns instantes."
+  },
+  "reports": {
+    "title": "Relatórios",
+    "description": "Análise dos chamados e indicadores de atendimento.",
+    "loading": "Carregando relatórios...",
+    "loadError": "Não foi possível carregar os relatórios.",
+    "startDate": "Data inicial",
+    "endDate": "Data final",
+    "openStartCalendar": "Abrir calendário da data inicial",
+    "openEndCalendar": "Abrir calendário da data final",
+    "apply": "Aplicar",
+    "clear": "Limpar",
+    "datePlaceholder": "DD/MM/AAAA",
+    "errors": {
+      "startInvalid": "Informe uma data inicial válida.",
+      "endInvalid": "Informe uma data final válida.",
+      "rangeInvalid": "A data inicial não pode ser posterior à data final."
+    },
+    "summaryLabel": "Resumo dos relatórios",
+    "stats": {
+      "total": "Total de chamados",
+      "totalDescription": "Chamados registrados",
+      "open": "Abertos",
+      "openDescription": "Abertos ou em análise",
+      "inProgress": "Em andamento",
+      "inProgressDescription": "Em atendimento",
+      "resolved": "Resolvidos",
+      "resolvedDescription": "Resolvidos ou fechados",
+      "canceled": "Cancelados",
+      "canceledDescription": "Chamados cancelados"
+    },
+    "timeline": {
+      "title": "Chamados criados por dia",
+      "description": "Evolução da criação de chamados no período.",
+      "empty": "Nenhum chamado criado no período.",
+      "ariaLabel": "Gráfico de chamados criados por dia"
+    },
+    "distribution": {
+      "byStatus": "Chamados por status",
+      "byPriority": "Chamados por prioridade",
+      "byCategory": "Chamados por categoria",
+      "empty": "Nenhum dado encontrado."
+    }
+  },
+  "faq": {
+    "page": {
+      "title": "Central de ajuda",
+      "description": "Encontre respostas rápidas para as dúvidas mais frequentes sobre o Help Desk.",
+      "searchPlaceholder": "Busque uma dúvida...",
+      "searchLabel": "Buscar no FAQ",
+      "clear": "Limpar",
+      "emptyTitle": "Nenhuma resposta encontrada",
+      "emptyDescription": "Tente pesquisar utilizando outras palavras.",
+      "answer": "Resposta"
+    },
+    "categories": {
+      "tickets": "Chamados",
+      "priorities": "Prioridades",
+      "status": "Status",
+      "support": "Atendimento",
+      "notifications": "Notificações",
+      "accounts": "Conta e permissões"
+    },
+    "items": {
+      "create-ticket": {
+        "question": "Como posso abrir um novo chamado?",
+        "answer": "Acesse a página Chamados, preencha o título, a descrição, a categoria e a prioridade do problema. Depois, envie o formulário para registrar o chamado."
+      },
+      "track-ticket": {
+        "question": "Como acompanho o andamento do meu chamado?",
+        "answer": "Na página Chamados você encontra todas as solicitações associadas à sua conta. Clique em um chamado para visualizar seus detalhes, status, responsável, histórico e conversa."
+      },
+      "ticket-number": {
+        "question": "O que significa o número do chamado?",
+        "answer": "O número identifica o chamado dentro do sistema. Para clientes, a numeração é sequencial dentro da própria conta, facilitando o acompanhamento das solicitações."
+      },
+      "ticket-edit": {
+        "question": "Posso editar um chamado depois de criá-lo?",
+        "answer": "Atualmente, as informações principais do chamado não são editadas após a criação. Caso seja necessário complementar alguma informação, utilize a conversa disponível nos detalhes do chamado."
+      },
+      "ticket-delete": {
+        "question": "Posso excluir um chamado?",
+        "answer": "A exclusão de chamados é uma ação administrativa. Clientes podem acompanhar suas solicitações, mas não excluí-las diretamente."
+      },
+      "priority": {
+        "question": "O que significam as prioridades dos chamados?",
+        "answer": "Baixa é usada para situações sem impacto relevante; Média para problemas que precisam de atenção, mas permitem continuar trabalhando; Alta para problemas com impacto significativo; e Crítica para situações urgentes ou que impedem completamente uma atividade importante."
+      },
+      "change-priority": {
+        "question": "Posso alterar a prioridade depois de abrir o chamado?",
+        "answer": "A prioridade é definida durante a abertura do chamado. Se a situação mudar, você pode informar isso pela conversa do chamado para que a equipe de suporte tenha o contexto atualizado."
+      },
+      "status-open": {
+        "question": "O que significa o status Aberto?",
+        "answer": "Significa que o chamado foi registrado e está aguardando o início da análise pela equipe de suporte. Chamados liberados por um responsável também retornam para esse status."
+      },
+      "status-review": {
+        "question": "O que significa Em análise?",
+        "answer": "Significa que a equipe de suporte iniciou a avaliação do chamado. Nessa etapa ele ainda não possui um responsável e precisa estar Em análise antes de poder ser assumido."
+      },
+      "status-progress": {
+        "question": "O que significa Em andamento?",
+        "answer": "Significa que um administrador ou técnico assumiu o chamado, tornou-se responsável pelo atendimento e está trabalhando na solicitação."
+      },
+      "status-resolved-closed": {
+        "question": "Qual a diferença entre Resolvido e Fechado?",
+        "answer": "Resolvido indica que a equipe considera o problema solucionado. Fechado representa a etapa final do fluxo, quando o chamado é encerrado definitivamente."
+      },
+      "status-canceled": {
+        "question": "O que significa Cancelado?",
+        "answer": "Significa que o atendimento daquele chamado foi interrompido e não seguirá o fluxo normal de resolução."
+      },
+      "comments": {
+        "question": "Como converso com a equipe de suporte?",
+        "answer": "Abra os detalhes do chamado e utilize a área de conversa. As novas mensagens aparecem em tempo real para os usuários que estiverem acompanhando o mesmo chamado."
+      },
+      "assignee": {
+        "question": "O que significa responsável pelo chamado?",
+        "answer": "É o administrador ou técnico que assumiu o atendimento. Ao assumir um chamado Em análise, ele passa automaticamente para Em andamento e o usuário fica registrado como responsável."
+      },
+      "no-assignee": {
+        "question": "Meu chamado está sem responsável. Isso é um problema?",
+        "answer": "Não. Chamados Abertos ou Em análise podem permanecer sem responsável. Um responsável é definido quando um administrador ou técnico assume o atendimento."
+      },
+      "release-ticket": {
+        "question": "O que significa liberar um chamado?",
+        "answer": "Liberar um chamado significa deixar de ser o responsável pelo atendimento. O chamado volta de Em andamento para Aberto, fica sem responsável e pode passar novamente pelo processo de análise e atribuição."
+      },
+      "ticket-flow": {
+        "question": "Qual é o fluxo normal de um chamado?",
+        "answer": "Normalmente, o chamado começa como Aberto. Depois a equipe inicia a análise, passando para Em análise. Quando um técnico ou administrador assume o atendimento, ele passa para Em andamento. Após a solução, pode ser marcado como Resolvido e, por fim, Fechado."
+      },
+      "email-copy": {
+        "question": "Posso receber uma cópia do chamado por e-mail?",
+        "answer": "Sim. Durante a criação do chamado, você pode solicitar o envio de uma cópia por e-mail com as principais informações da solicitação."
+      },
+      "assignment-email": {
+        "question": "Técnicos recebem notificações por e-mail?",
+        "answer": "Sim. Quando um administrador ou técnico assume um chamado, o sistema pode enviar uma notificação ao e-mail da conta responsável pelo atendimento."
+      },
+      "roles": {
+        "question": "Quais tipos de usuário existem no sistema?",
+        "answer": "O Help Desk possui três perfis principais: Cliente, Técnico e Administrador. Cada perfil possui permissões diferentes de acordo com sua função no sistema."
+      },
+      "customer-permissions": {
+        "question": "Um cliente consegue visualizar chamados de outros clientes?",
+        "answer": "Não. Clientes têm acesso somente aos chamados associados à própria conta."
+      },
+      "technician-permissions": {
+        "question": "O que um técnico pode fazer?",
+        "answer": "Técnicos podem acompanhar chamados, iniciar análises, assumir atendimentos e participar das conversas. Depois que um chamado é assumido, somente o técnico responsável pode alterar seu fluxo; outros técnicos ainda podem visualizar o chamado, mas não controlar o atendimento."
+      },
+      "admin-permissions": {
+        "question": "O que um administrador pode fazer?",
+        "answer": "Administradores possuem acesso às funções administrativas do Help Desk, incluindo gerenciamento de categorias, chamados e relatórios. Também podem intervir no fluxo de chamados atribuídos a técnicos quando necessário."
+      },
+      "dark-mode": {
+        "question": "O sistema possui modo escuro?",
+        "answer": "Sim. O tema pode ser alterado nas configurações ou pelo controle disponível na interface. A preferência fica salva no navegador."
+      }
+    }
+  },
+  "serviceErrors": {
+    "emailRegistered": "Este e-mail já está cadastrado.",
+    "createAccount": "Não foi possível criar a conta.",
+    "categoryExists": "Já existe uma categoria com esse nome.",
+    "categoryNotFound": "Categoria não encontrada.",
+    "categoryCreate": "Não foi possível criar a categoria.",
+    "categoryUpdate": "Não foi possível atualizar a categoria.",
+    "categoryOrder": "Não foi possível atualizar a ordem das categorias.",
+    "categoryStatus": "Não foi possível alterar o status da categoria.",
+    "categoryInUse": "Esta categoria já possui chamados e não pode ser excluída. Você pode desativá-la.",
+    "categoryDelete": "Não foi possível excluir a categoria.",
+    "ticketRelease": "Não foi possível liberar o chamado.",
+    "ticketNotFound": "Chamado não encontrado.",
+    "ticketDelete": "Não foi possível excluir o chamado.",
+    "updateUser": "Não foi possível atualizar o usuário.",
+    "changeAvatar": "Não foi possível alterar a foto.",
+    "removeAvatar": "Não foi possível remover a foto."
+  },
+  "route": {
+    "loading": "Carregando..."
+  }
+}

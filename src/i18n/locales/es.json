@@ -1,0 +1,585 @@
+{
+  "brand": {
+    "subtitle": "Centro de soporte"
+  },
+  "navigation": {
+    "dashboard": "Panel",
+    "tickets": "Tickets",
+    "analytics": "ANÁLISIS",
+    "reports": "Informes",
+    "help": "AYUDA",
+    "faq": "FAQ",
+    "system": "Sistema",
+    "settings": "Configuración"
+  },
+  "layout": {
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "logout": "Cerrar sesión"
+  },
+  "roles": {
+    "admin": "Administrador",
+    "technician": "Técnico",
+    "customer": "Cliente",
+    "user": "Usuario"
+  },
+  "settings": {
+    "page": {
+      "title": "Configuración",
+      "description": "Gestiona tus preferencias y la configuración del sistema."
+    },
+    "account": {
+      "title": "Mi cuenta",
+      "description": "Información asociada a tu usuario.",
+      "avatarAlt": "Foto de {{name}}",
+      "avatarTitle": "Foto de perfil",
+      "avatarFormats": "JPEG, PNG o WebP. Máximo 2 MB.",
+      "uploading": "Subiendo...",
+      "changePhoto": "Cambiar foto",
+      "addPhoto": "Añadir foto",
+      "removePhoto": "Quitar",
+      "name": "Nombre",
+      "email": "Correo electrónico",
+      "role": "Perfil",
+      "saveName": "Guardar nombre",
+      "changeEmail": "Cambiar correo electrónico",
+      "currentPassword": "Contraseña actual",
+      "saveEmail": "Enviar confirmación"
+    },
+    "appearance": {
+      "title": "Apariencia",
+      "description": "Elige cómo se muestra Help Desk para ti.",
+      "light": "Tema claro",
+      "dark": "Tema oscuro",
+      "saved": "El tema elegido se guarda en este navegador.",
+      "useDark": "Usar tema oscuro",
+      "useLight": "Usar tema claro"
+    },
+    "language": {
+      "title": "Idioma de la interfaz",
+      "description": "Elige un idioma. Tu preferencia se guarda en este navegador."
+    },
+    "common": {
+      "saving": "Guardando...",
+      "save": "Guardar",
+      "cancel": "Cancelar"
+    },
+    "categories": {
+      "title": "Categorías",
+      "description": "Gestiona las categorías utilizadas en los tickets.",
+      "descriptionLabel": "Descripción",
+      "namePlaceholder": "Ej.: Software",
+      "descriptionPlaceholder": "Descripción opcional",
+      "creating": "Creando...",
+      "new": "Nueva categoría",
+      "loading": "Cargando categorías...",
+      "empty": "No hay categorías registradas.",
+      "noDescription": "Sin descripción",
+      "drag": "Arrastra para reordenar",
+      "moveUp": "Subir",
+      "moveDown": "Bajar",
+      "moveCategoryUp": "Subir {{name}}",
+      "moveCategoryDown": "Bajar {{name}}",
+      "active": "Activa",
+      "inactive": "Inactiva",
+      "edit": "Editar",
+      "deactivate": "Desactivar",
+      "reactivate": "Reactivar",
+      "deleting": "Eliminando...",
+      "delete": "Eliminar",
+      "confirmDelete": "¿Eliminar permanentemente la categoría \"{{name}}\"?\n\nSi ya se ha utilizado en algún ticket, no se podrá eliminar."
+    },
+    "feedback": {
+      "loadCategoriesError": "No se pudieron cargar las categorías.",
+      "categoryNameTooShort": "El nombre de la categoría debe tener al menos 2 caracteres.",
+      "categoryCreated": "Categoría creada correctamente.",
+      "createCategoryError": "No se pudo crear la categoría.",
+      "categoryUpdated": "Categoría actualizada correctamente.",
+      "updateCategoryError": "No se pudo actualizar la categoría.",
+      "orderUpdated": "Orden de categorías actualizado.",
+      "orderError": "No se pudo actualizar el orden de las categorías.",
+      "profileNameTooShort": "El nombre debe tener al menos 2 caracteres.",
+      "profileUpdated": "Nombre actualizado correctamente.",
+      "profileError": "No se pudo actualizar tu nombre.",
+      "categoryReactivated": "Categoría reactivada correctamente.",
+      "categoryDeactivated": "Categoría desactivada correctamente.",
+      "changeCategoryError": "No se pudo modificar la categoría.",
+      "categoryDeleted": "Categoría eliminada correctamente.",
+      "deleteCategoryError": "No se pudo eliminar la categoría.",
+      "avatarTooLarge": "La foto debe tener un máximo de 2 MB.",
+      "avatarInvalidFormat": "Usa una imagen JPEG, PNG o WebP.",
+      "avatarUpdated": "Foto de perfil actualizada correctamente.",
+      "avatarError": "No se pudo cambiar la foto.",
+      "avatarRemoved": "Foto de perfil eliminada.",
+      "avatarRemoveError": "No se pudo eliminar la foto.",
+      "emailUpdated": "Correo actualizado correctamente. Usa la nueva dirección la próxima vez que inicies sesión.",
+      "incorrectPassword": "La contraseña actual es incorrecta.",
+      "emailAlreadyRegistered": "Este correo electrónico ya está registrado.",
+      "emailUpdateError": "No se pudo actualizar el correo electrónico.",
+      "emailConfirmationSent": "Enviamos un enlace de confirmación a {{email}}. Tu correo actual seguirá activo hasta que confirmes.",
+      "emailRequestTooSoon": "Espera un minuto antes de solicitar otro enlace.",
+      "emailDeliveryError": "No se pudo enviar el correo de confirmación. Inténtalo de nuevo más tarde.",
+      "emailChangeLocked": "Por seguridad, el cambio de correo electrónico se ha bloqueado temporalmente después de varios intentos fallidos de contraseña. Espera 15 minutos e inténtalo de nuevo."
+    }
+  },
+  "dashboard": {
+    "loading": "Cargando panel de control...",
+    "error": {
+      "load": "No se pudieron cargar los datos del panel de control."
+    },
+    "page": {
+      "title": "Panel de control",
+      "description": "Vista general de los tickets."
+    },
+    "period": {
+      "label": "Período",
+      "today": "Hoy",
+      "thisWeek": "Esta semana",
+      "lastWeek": "Semana pasada",
+      "thisMonth": "Este mes",
+      "lastMonth": "Mes pasado",
+      "last30Days": "Últimos 30 días",
+      "all": "Todos"
+    },
+    "stats": {
+      "ariaLabel": "Resumen de tickets",
+      "total": {
+        "title": "Total de tickets",
+        "description": "Tickets disponibles"
+      },
+      "open": {
+        "title": "Abiertos",
+        "description": "Pendientes de atención"
+      },
+      "inProgress": {
+        "title": "En curso",
+        "description": "En atención"
+      },
+      "resolved": {
+        "title": "Resueltos",
+        "description": "Resueltos o cerrados"
+      }
+    },
+    "recent": {
+      "title": "Tickets recientes",
+      "description": "Últimos tickets registrados en el sistema.",
+      "viewAll": "Ver todos",
+      "emptyTitle": "No se encontraron tickets",
+      "emptyDescription": "Los tickets más recientes aparecerán aquí.",
+      "createdAt": "Creado el {{date}}"
+    },
+    "charts": {
+      "ariaLabel": "Distribución de tickets",
+      "status": {
+        "title": "Tickets por estado",
+        "description": "Distribución de tickets en el sistema."
+      },
+      "priority": {
+        "title": "Tickets por prioridad",
+        "description": "Distribución por nivel de prioridad."
+      }
+    },
+    "status": {
+      "open": "Abierto",
+      "under_review": "En revisión",
+      "in_progress": "En curso",
+      "resolved": "Resuelto",
+      "closed": "Cerrado",
+      "canceled": "Cancelado"
+    },
+    "priority": {
+      "low": "Baja",
+      "medium": "Media",
+      "high": "Alta",
+      "critical": "Crítica"
+    }
+  },
+  "ticketDetails": {
+    "invalid": {
+      "title": "Ticket no válido",
+      "description": "El identificador indicado no es válido."
+    },
+    "backToTickets": "Volver a los tickets",
+    "loading": "Cargando ticket...",
+    "cannotOpen": "No se pudo abrir el ticket",
+    "notFound": "Ticket no encontrado.",
+    "ticketLabel": "Ticket n.º ",
+    "description": "Descripción",
+    "confirmDelete": "¿Eliminar permanentemente el ticket n.º {{number}}?\n\nEsto también eliminará sus comentarios y su historial y no se podrá deshacer.",
+    "errors": {
+      "load": "No se pudo cargar el ticket.",
+      "assign": "No se pudo asumir el ticket.",
+      "release": "No se pudo liberar el ticket.",
+      "changeStatus": "No se pudo cambiar el estado del ticket.",
+      "delete": "No se pudo eliminar el ticket.",
+      "sendMessage": "No se pudo enviar el mensaje."
+    },
+    "actions": {
+      "title": "Acciones del ticket",
+      "updating": "Actualizando...",
+      "startReview": "Iniciar revisión",
+      "assigning": "Asumiendo...",
+      "assign": "Asumir ticket",
+      "markResolved": "Marcar como resuelto",
+      "releasing": "Liberando...",
+      "release": "Liberar ticket",
+      "reopen": "Reabrir ticket",
+      "close": "Cerrar ticket",
+      "deleting": "Eliminando...",
+      "delete": "Eliminar ticket",
+      "assignedTo": "Este ticket está asignado a {{name}}.",
+      "anotherAssignee": "otra persona responsable",
+      "noActions": "No hay acciones disponibles para el estado actual."
+    },
+    "history": {
+      "title": "Historial",
+      "empty": "No hay eventos registrados.",
+      "system": "Sistema",
+      "events": {
+        "ticket_created": "Ticket creado",
+        "assignee_changed": "Responsable cambiado",
+        "status_changed": "Estado cambiado"
+      }
+    },
+    "chat": {
+      "title": "Chat",
+      "empty": "Aún no hay mensajes en esta conversación.",
+      "placeholder": "Escribe un mensaje...",
+      "send": "Enviar mensaje"
+    },
+    "info": {
+      "title": "Información",
+      "priority": "Prioridad",
+      "status": "Estado",
+      "category": "Categoría",
+      "createdBy": "Creado por",
+      "assignee": "Responsable",
+      "unassigned": "Sin asignar",
+      "createdAt": "Creado el",
+      "updatedAt": "Actualizado el",
+      "closedAt": "Cerrado el"
+    }
+  },
+  "tickets": {
+    "loading": "Cargando tickets...",
+    "errors": {
+      "load": "No se pudieron cargar los tickets."
+    },
+    "page": {
+      "title": "Tickets",
+      "description": "Crea, consulta y gestiona los tickets de soporte."
+    },
+    "count_zero": "Ningún ticket",
+    "count_one": "{{count}} ticket",
+    "count_other": "{{count}} tickets",
+    "search": {
+      "placeholder": "Buscar por título..."
+    },
+    "filters": {
+      "status": "Estado",
+      "priority": "Prioridad",
+      "category": "Categoría",
+      "allStatuses": "Todos",
+      "allPriorities": "Todas",
+      "allCategories": "Todas"
+    },
+    "create": {
+      "title": "Nuevo ticket",
+      "description": "Completa los datos para registrar una nueva solicitud."
+    },
+    "list": {
+      "title": "Lista de tickets",
+      "description": "Tickets disponibles para tu usuario.",
+      "emptyTitle": "No se encontraron tickets",
+      "emptyDescription": "Crea un nuevo ticket usando el formulario de al lado.",
+      "filteredEmptyTitle": "Ningún ticket coincide con los filtros",
+      "filteredEmptyDescription": "Intenta cambiar o eliminar algún filtro.",
+      "createdAt": "Creado el {{date}}",
+      "details": "Ver detalles"
+    },
+    "status": {
+      "open": "Abierto",
+      "under_review": "En revisión",
+      "in_progress": "En curso",
+      "resolved": "Resuelto",
+      "closed": "Cerrado",
+      "canceled": "Cancelado"
+    },
+    "priority": {
+      "low": "Baja",
+      "medium": "Media",
+      "high": "Alta",
+      "critical": "Crítica"
+    },
+    "form": {
+      "title": "Título",
+      "titlePlaceholder": "Ej.: La computadora no enciende",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Describe el problema con detalle...",
+      "priority": "Prioridad",
+      "category": "Categoría",
+      "selectCategory": "Selecciona una categoría",
+      "emailCopy": "Enviarme una copia de este ticket por correo electrónico",
+      "creating": "Creando...",
+      "submit": "Crear ticket",
+      "errors": {
+        "loadCategories": "No se pudieron cargar las categorías.",
+        "create": "No se pudo crear el ticket."
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Bienvenido",
+      "description": "Inicia sesión con tu cuenta para acceder al sistema.",
+      "submit": "Iniciar sesión",
+      "loading": "Iniciando sesión...",
+      "switchQuestion": "¿Todavía no tienes una cuenta?",
+      "switchAction": "Crear cuenta"
+    },
+    "register": {
+      "title": "Crea tu cuenta",
+      "description": "Regístrate para abrir y dar seguimiento a tus tickets.",
+      "submit": "Crear cuenta",
+      "loading": "Creando cuenta...",
+      "switchQuestion": "¿Ya tienes una cuenta?",
+      "switchAction": "Iniciar sesión"
+    },
+    "fields": {
+      "name": "Nombre",
+      "namePlaceholder": "Tu nombre",
+      "email": "Correo electrónico",
+      "emailPlaceholder": "tu@ejemplo.com",
+      "password": "Contraseña",
+      "passwordPlaceholder": "Introduce tu contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "confirmPasswordPlaceholder": "Introduce tu contraseña de nuevo"
+    },
+    "errors": {
+      "minPassword": "La contraseña debe tener al menos 8 caracteres.",
+      "passwordMismatch": "Las contraseñas no coinciden.",
+      "registration": "No se pudo crear la cuenta.",
+      "invalidCredentials": "Correo electrónico o contraseña incorrectos."
+    },
+    "hero": {
+      "heading": "Soporte organizado, atención eficiente.",
+      "description": "Centraliza solicitudes, sigue el progreso de los tickets y mantén todo el proceso de soporte en un solo lugar.",
+      "ticketManagement": "Gestión de tickets",
+      "ticketManagementDescription": "Sigue las solicitudes desde su creación hasta su cierre.",
+      "priorities": "Control de prioridades",
+      "prioritiesDescription": "Identifica rápidamente lo que necesita atención.",
+      "security": "Acceso seguro",
+      "securityDescription": "Autenticación y permisos según cada usuario."
+    }
+  },
+  "emailConfirmation": {
+    "title": "Confirmar nuevo correo",
+    "description": "Para completar el cambio, haz clic en el botón de abajo. Tu correo actual seguirá activo hasta la confirmación.",
+    "confirmButton": "Confirmar correo",
+    "confirming": "Confirmando...",
+    "successTitle": "¡Correo confirmado!",
+    "success": "Tu dirección de correo se ha actualizado correctamente. Usa el nuevo correo la próxima vez que inicies sesión.",
+    "missingToken": "Este enlace no contiene un token de confirmación. Abre nuevamente el enlace recibido por correo.",
+    "invalidToken": "Este enlace no es válido, ha caducado o ya se ha utilizado. Solicita otra confirmación en Configuración.",
+    "genericError": "No se pudo confirmar el correo. Inténtalo de nuevo.",
+    "backToSettings": "Volver a configuración",
+    "backToLogin": "Ir al inicio de sesión"
+  },
+  "assistant": {
+    "label": "Asistente",
+    "panelLabel": "Asistente de Help Desk",
+    "title": "Asistente Help Desk",
+    "subtitle": "Resuelve tus dudas sobre el sistema",
+    "close": "Cerrar asistente",
+    "open": "Abrir asistente",
+    "greeting": "¡Hola! Puedo ayudarte con tus dudas sobre Help Desk.",
+    "suggestion": "Pregunta sobre tickets, prioridades, estados, atención o el funcionamiento del sistema.",
+    "waiting": "Esperando respuesta...",
+    "placeholder": "Escribe tu pregunta...",
+    "messageLabel": "Mensaje para el asistente",
+    "send": "Enviar mensaje",
+    "error": "No pude responder ahora. Inténtalo de nuevo en unos instantes."
+  },
+  "reports": {
+    "title": "Informes",
+    "description": "Análisis de tickets e indicadores de atención.",
+    "loading": "Cargando informes...",
+    "loadError": "No se pudieron cargar los informes.",
+    "startDate": "Fecha inicial",
+    "endDate": "Fecha final",
+    "openStartCalendar": "Abrir calendario de fecha inicial",
+    "openEndCalendar": "Abrir calendario de fecha final",
+    "apply": "Aplicar",
+    "clear": "Limpiar",
+    "datePlaceholder": "DD/MM/AAAA",
+    "errors": {
+      "startInvalid": "Introduce una fecha inicial válida.",
+      "endInvalid": "Introduce una fecha final válida.",
+      "rangeInvalid": "La fecha inicial no puede ser posterior a la final."
+    },
+    "summaryLabel": "Resumen de informes",
+    "stats": {
+      "total": "Total de tickets",
+      "totalDescription": "Tickets registrados",
+      "open": "Abiertos",
+      "openDescription": "Abiertos o en revisión",
+      "inProgress": "En curso",
+      "inProgressDescription": "En atención",
+      "resolved": "Resueltos",
+      "resolvedDescription": "Resueltos o cerrados",
+      "canceled": "Cancelados",
+      "canceledDescription": "Tickets cancelados"
+    },
+    "timeline": {
+      "title": "Tickets creados por día",
+      "description": "Evolución de la creación de tickets en el período.",
+      "empty": "No se crearon tickets en este período.",
+      "ariaLabel": "Gráfico de tickets creados por día"
+    },
+    "distribution": {
+      "byStatus": "Tickets por estado",
+      "byPriority": "Tickets por prioridad",
+      "byCategory": "Tickets por categoría",
+      "empty": "No se encontraron datos."
+    }
+  },
+  "faq": {
+    "page": {
+      "title": "Centro de ayuda",
+      "description": "Encuentra respuestas rápidas a las preguntas más frecuentes sobre Help Desk.",
+      "searchPlaceholder": "Busca una respuesta...",
+      "searchLabel": "Buscar en preguntas frecuentes",
+      "clear": "Limpiar",
+      "emptyTitle": "No se encontraron respuestas",
+      "emptyDescription": "Prueba a buscar con otras palabras.",
+      "answer": "Respuesta"
+    },
+    "categories": {
+      "tickets": "Tickets",
+      "priorities": "Prioridades",
+      "status": "Estados",
+      "support": "Atención",
+      "notifications": "Notificaciones",
+      "accounts": "Cuenta y permisos"
+    },
+    "items": {
+      "create-ticket": {
+        "question": "¿Cómo puedo crear un ticket nuevo?",
+        "answer": "Ve a la página Tickets, introduce el título, la descripción, la categoría y la prioridad del problema. Después, envía el formulario para registrar el ticket."
+      },
+      "track-ticket": {
+        "question": "¿Cómo puedo seguir el estado de mi ticket?",
+        "answer": "En la página Tickets encontrarás todas las solicitudes asociadas a tu cuenta. Selecciona un ticket para ver sus detalles, estado, responsable, historial y conversación."
+      },
+      "ticket-number": {
+        "question": "¿Qué significa el número del ticket?",
+        "answer": "El número identifica el ticket en el sistema. Para los clientes, la numeración es secuencial dentro de su propia cuenta, lo que facilita el seguimiento."
+      },
+      "ticket-edit": {
+        "question": "¿Puedo editar un ticket después de crearlo?",
+        "answer": "Actualmente, los datos principales del ticket no se pueden editar después de crearlo. Para añadir información, utiliza la conversación en los detalles del ticket."
+      },
+      "ticket-delete": {
+        "question": "¿Puedo eliminar un ticket?",
+        "answer": "La eliminación de tickets es una acción administrativa. Los clientes pueden dar seguimiento a sus solicitudes, pero no eliminarlas directamente."
+      },
+      "priority": {
+        "question": "¿Qué significan las prioridades de los tickets?",
+        "answer": "Baja se utiliza para situaciones de poco impacto; Media para problemas que requieren atención, pero permiten continuar trabajando; Alta para problemas de impacto considerable; y Crítica para situaciones urgentes que impiden realizar una actividad importante."
+      },
+      "change-priority": {
+        "question": "¿Puedo cambiar la prioridad después de crear un ticket?",
+        "answer": "La prioridad se define al crear el ticket. Si la situación cambia, coméntalo en la conversación del ticket para que el equipo de soporte tenga el contexto actualizado."
+      },
+      "status-open": {
+        "question": "¿Qué significa el estado Abierto?",
+        "answer": "El ticket se ha registrado y espera a que el equipo de soporte comience a revisarlo. Los tickets liberados por un responsable también regresan a este estado."
+      },
+      "status-review": {
+        "question": "¿Qué significa En revisión?",
+        "answer": "El equipo de soporte ha empezado a evaluar el ticket. En esta etapa todavía no tiene un responsable y debe estar En revisión antes de que alguien pueda hacerse cargo."
+      },
+      "status-progress": {
+        "question": "¿Qué significa En curso?",
+        "answer": "Un administrador o técnico se ha hecho responsable del ticket y está trabajando en la solicitud."
+      },
+      "status-resolved-closed": {
+        "question": "¿Cuál es la diferencia entre Resuelto y Cerrado?",
+        "answer": "Resuelto indica que el equipo considera solucionado el problema. Cerrado es la última etapa, cuando el ticket queda finalizado definitivamente."
+      },
+      "status-canceled": {
+        "question": "¿Qué significa Cancelado?",
+        "answer": "La atención de ese ticket se ha interrumpido y no seguirá el proceso normal de resolución."
+      },
+      "comments": {
+        "question": "¿Cómo puedo hablar con el equipo de soporte?",
+        "answer": "Abre los detalles del ticket y utiliza el chat. Los mensajes nuevos aparecen en tiempo real para quienes estén viendo el mismo ticket."
+      },
+      "assignee": {
+        "question": "¿Qué significa ser responsable de un ticket?",
+        "answer": "Es el administrador o técnico que se hace cargo de la solicitud. Cuando asume un ticket En revisión, su estado cambia automáticamente a En curso."
+      },
+      "no-assignee": {
+        "question": "Mi ticket no tiene responsable. ¿Es un problema?",
+        "answer": "No. Los tickets Abiertos o En revisión pueden permanecer sin responsable. Se asigna uno cuando un administrador o técnico se hace cargo."
+      },
+      "release-ticket": {
+        "question": "¿Qué significa liberar un ticket?",
+        "answer": "Liberar un ticket significa dejar de ser responsable de él. Pasa de En curso a Abierto, queda sin responsable y puede volver al proceso de revisión y asignación."
+      },
+      "ticket-flow": {
+        "question": "¿Cuál es el proceso habitual de un ticket?",
+        "answer": "Normalmente empieza como Abierto. Luego el equipo inicia la revisión (En revisión). Cuando un técnico o administrador se hace cargo, pasa a En curso. Al resolverlo, puede marcarse como Resuelto y finalmente Cerrado."
+      },
+      "email-copy": {
+        "question": "¿Puedo recibir una copia del ticket por correo electrónico?",
+        "answer": "Sí. Al crear el ticket, puedes solicitar una copia por correo electrónico con la información principal de la solicitud."
+      },
+      "assignment-email": {
+        "question": "¿Los técnicos reciben avisos por correo electrónico?",
+        "answer": "Sí. Cuando un administrador o técnico se hace cargo de un ticket, el sistema puede enviar un aviso al correo de la cuenta responsable de atenderlo."
+      },
+      "roles": {
+        "question": "¿Qué tipos de usuarios hay en el sistema?",
+        "answer": "Help Desk tiene tres perfiles principales: Cliente, Técnico y Administrador. Cada perfil dispone de permisos diferentes según su función."
+      },
+      "customer-permissions": {
+        "question": "¿Un cliente puede ver tickets de otros clientes?",
+        "answer": "No. Los clientes solo pueden acceder a los tickets asociados a su propia cuenta."
+      },
+      "technician-permissions": {
+        "question": "¿Qué puede hacer un técnico?",
+        "answer": "Los técnicos pueden ver tickets, iniciar revisiones, hacerse cargo de solicitudes y participar en conversaciones. Una vez asignado, solo el técnico responsable puede cambiar el flujo del ticket; los demás pueden verlo, pero no gestionarlo."
+      },
+      "admin-permissions": {
+        "question": "¿Qué puede hacer un administrador?",
+        "answer": "Los administradores pueden utilizar las funciones administrativas de Help Desk, como gestionar categorías, tickets e informes. También pueden intervenir en tickets asignados a técnicos cuando sea necesario."
+      },
+      "dark-mode": {
+        "question": "¿El sistema tiene modo oscuro?",
+        "answer": "Sí. Puedes cambiar el tema en Configuración o mediante el control disponible en la interfaz. La preferencia se guarda en el navegador."
+      }
+    }
+  },
+  "serviceErrors": {
+    "emailRegistered": "Este correo electrónico ya está registrado.",
+    "createAccount": "No se pudo crear la cuenta.",
+    "categoryExists": "Ya existe una categoría con ese nombre.",
+    "categoryNotFound": "No se encontró la categoría.",
+    "categoryCreate": "No se pudo crear la categoría.",
+    "categoryUpdate": "No se pudo actualizar la categoría.",
+    "categoryOrder": "No se pudo actualizar el orden de las categorías.",
+    "categoryStatus": "No se pudo cambiar el estado de la categoría.",
+    "categoryInUse": "Esta categoría tiene tickets y no se puede eliminar. Puedes desactivarla.",
+    "categoryDelete": "No se pudo eliminar la categoría.",
+    "ticketRelease": "No se pudo liberar el ticket.",
+    "ticketNotFound": "No se encontró el ticket.",
+    "ticketDelete": "No se pudo eliminar el ticket.",
+    "updateUser": "No se pudo actualizar el usuario.",
+    "changeAvatar": "No se pudo cambiar la foto de perfil.",
+    "removeAvatar": "No se pudo eliminar la foto de perfil."
+  },
+  "route": {
+    "loading": "Cargando..."
+  }
+}

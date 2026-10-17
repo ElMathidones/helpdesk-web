@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { useAuth } from "../hooks/useAuth"
 import {
@@ -9,6 +10,7 @@ import {
     getReportTimeline,
 } from "../services/reports"
 import ReportTimelineChart from "../components/ReportTimelineChart"
+import DateFilter from "../components/DateFilter"
 
 import type { ReportFilters } from "../services/reports"
 import type {
@@ -21,8 +23,7 @@ import type {
 
 function ReportsPage() {
     const { token } = useAuth()
-    const startDatePickerRef = useRef<HTMLInputElement>(null)
-    const endDatePickerRef = useRef<HTMLInputElement>(null)
+    const { t } = useTranslation()
 
     const [summary, setSummary] = useState<ReportSummary | null>(null)
     const [timeline, setTimeline] = useState<ReportTimelineItem[]>([])
@@ -67,14 +68,14 @@ function ReportsPage() {
                 setCategories(categoryData)
                 setStatuses(statusData)
             } catch {
-                setError("Não foi possível carregar os relatórios.")
+                setError(t("reports.loadError"))
             } finally {
                 setIsLoading(false)
             }
         }
 
         void loadReports()
-    }, [token, filters])
+    }, [token, filters, t])
 
     function handleApplyFilters() {
         setError("")
@@ -83,12 +84,12 @@ function ReportsPage() {
         const formattedEndDate = parseDateInput(endDate)
 
         if (startDate && !formattedStartDate) {
-            setError("Informe uma data inicial válida.")
+            setError(t("reports.errors.startInvalid"))
             return
         }
 
         if (endDate && !formattedEndDate) {
-            setError("Informe uma data final válida.")
+            setError(t("reports.errors.endInvalid"))
             return
         }
 
@@ -97,7 +98,7 @@ function ReportsPage() {
             formattedEndDate &&
             formattedStartDate > formattedEndDate
         ) {
-            setError("A data inicial não pode ser posterior à data final.")
+            setError(t("reports.errors.rangeInvalid"))
             return
         }
 
@@ -117,84 +118,36 @@ function ReportsPage() {
         <div className="reports-page">
             <div className="reports-header">
                 <div>
-                    <h1>Relatórios</h1>
-                    <p>Análise dos chamados e indicadores de atendimento.</p>
+                    <h1>{t("reports.title")}</h1>
+                    <p>{t("reports.description")}</p>
                 </div>
             </div>
 
             <section className="reports-filters">
                 <div className="reports-filter-field">
-                    <label htmlFor="report-start-date">Data inicial</label>
+                    <label htmlFor="report-start-date">{t("reports.startDate")}</label>
 
                     <div className="reports-date-input">
-                        <input
+                        <DateFilter
                             id="report-start-date"
-                            type="text"
-                            inputMode="numeric"
-                            maxLength={10}
-                            placeholder="DD/MM/AAAA"
                             value={startDate}
-                            onChange={(event) =>
-                                setStartDate(formatDateInput(event.target.value))
-                            }
-                        />
-
-                        <button
-                            className="reports-date-button"
-                            type="button"
-                            aria-label="Abrir calendário da data inicial"
-                            onClick={() => startDatePickerRef.current?.showPicker()}
-                        >
-                            <span className="reports-date-chevron" />
-                        </button>
-
-                        <input
-                            ref={startDatePickerRef}
-                            className="reports-date-picker"
-                            type="date"
-                            tabIndex={-1}
-                            value={parseDateInput(startDate) ?? ""}
-                            onChange={(event) =>
-                                setStartDate(formatDateFromIso(event.target.value))
-                            }
+                            onChange={setStartDate}
+                            placeholder={t("reports.datePlaceholder")}
+                            openLabel={t("reports.openStartCalendar")}
                         />
                     </div>
                 </div>
 
                 <div className="reports-filter-field">
-                    <label htmlFor="report-end-date">Data final</label>
+                    <label htmlFor="report-end-date">{t("reports.endDate")}</label>
 
                     <div className="reports-date-input">
-                        <input
+                        <DateFilter
                             id="report-end-date"
-                            type="text"
-                            inputMode="numeric"
-                            maxLength={10}
-                            placeholder="DD/MM/AAAA"
                             value={endDate}
-                            onChange={(event) =>
-                                setEndDate(formatDateInput(event.target.value))
-                            }
-                        />
-
-                        <button
-                            className="reports-date-button"
-                            type="button"
-                            aria-label="Abrir calendário da data final"
-                            onClick={() => endDatePickerRef.current?.showPicker()}
-                        >
-                            <span className="reports-date-chevron" />
-                        </button>
-
-                        <input
-                            ref={endDatePickerRef}
-                            className="reports-date-picker"
-                            type="date"
-                            tabIndex={-1}
-                            value={parseDateInput(endDate) ?? ""}
-                            onChange={(event) =>
-                                setEndDate(formatDateFromIso(event.target.value))
-                            }
+                            onChange={setEndDate}
+                            placeholder={t("reports.datePlaceholder")}
+                            openLabel={t("reports.openEndCalendar")}
                         />
                     </div>
                 </div>
@@ -205,7 +158,7 @@ function ReportsPage() {
                         type="button"
                         onClick={handleApplyFilters}
                     >
-                        Aplicar
+                        {t("reports.apply")}
                     </button>
 
                     <button
@@ -213,7 +166,7 @@ function ReportsPage() {
                         type="button"
                         onClick={handleClearFilters}
                     >
-                        Limpar
+                        {t("reports.clear")}
                     </button>
                 </div>
             </section>
@@ -221,65 +174,65 @@ function ReportsPage() {
             {error && <p className="error-message">{error}</p>}
 
             {isLoading ? (
-                <p>Carregando relatórios...</p>
+                <p>{t("reports.loading")}</p>
             ) : (
                 <>
                     {summary && (
                         <section
                             className="stats-grid"
-                            aria-label="Resumo dos relatórios"
+                            aria-label={t("reports.summaryLabel")}
                         >
                             <article className="stat-card">
                                 <span className="stat-label">
-                                    Total de chamados
+                                    {t("reports.stats.total")}
                                 </span>
                                 <strong className="stat-value">
                                     {summary.total}
                                 </strong>
                                 <span className="stat-description">
-                                    Chamados registrados
+                                    {t("reports.stats.totalDescription")}
                                 </span>
                             </article>
 
                             <article className="stat-card">
-                                <span className="stat-label">Abertos</span>
+                                <span className="stat-label">{t("reports.stats.open")}</span>
                                 <strong className="stat-value">
                                     {summary.open}
                                 </strong>
                                 <span className="stat-description">
-                                    Abertos ou em análise
+                                    {t("reports.stats.openDescription")}
                                 </span>
                             </article>
 
                             <article className="stat-card">
                                 <span className="stat-label">
-                                    Em andamento
+                                    {t("reports.stats.inProgress")}
                                 </span>
                                 <strong className="stat-value">
                                     {summary.in_progress}
                                 </strong>
                                 <span className="stat-description">
-                                    Em atendimento
+                                    {t("reports.stats.inProgressDescription")}
                                 </span>
                             </article>
 
                             <article className="stat-card">
-                                <span className="stat-label">Resolvidos</span>
+                                <span className="stat-label">{t("reports.stats.resolved")}</span>
                                 <strong className="stat-value">
                                     {summary.resolved}
                                 </strong>
                                 <span className="stat-description">
-                                    Resolvidos ou fechados
+                                    {t("reports.stats.resolvedDescription")}
                                 </span>
                             </article>
 
                             <article className="stat-card">
-                                <span className="stat-label">Cancelados</span>
+                                <span className="stat-label">{t("reports.stats.canceled")}</span>
                                 <strong className="stat-value">
                                     {summary.canceled}
                                 </strong>
                                 <span className="stat-description">
-                                    Chamados cancelados
+                                    {t("reports.stats.canceledDescription")}
                                 </span>
                             </article>
                         </section>
@@ -288,8 +241,8 @@ function ReportsPage() {
                     <section className="recent-section">
                         <div className="section-header">
                             <div>
-                                <h2>Chamados criados por dia</h2>
-                                <p>Evolução da criação de chamados no período.</p>
+                                <h2>{t("reports.timeline.title")}</h2>
+                                <p>{t("reports.timeline.description")}</p>
                             </div>
                         </div>
 
@@ -298,10 +251,10 @@ function ReportsPage() {
 
                     <section className="dashboard-charts-grid">
                         <ReportDistribution
-                            title="Chamados por status"
+                            title={t("reports.distribution.byStatus")}
                             items={statuses.map((item) => ({
                                 key: item.status,
-                                label: formatStatus(item.status),
+                                label: t(`tickets.status.${item.status}`, { defaultValue: item.status }),
                                 count: item.count,
                                 barClassName: `status-${item.status}`,
                             }))}
@@ -309,10 +262,10 @@ function ReportsPage() {
                         />
 
                         <ReportDistribution
-                            title="Chamados por prioridade"
+                            title={t("reports.distribution.byPriority")}
                             items={priorities.map((item) => ({
                                 key: item.priority,
-                                label: formatPriority(item.priority),
+                                label: t(`tickets.priority.${item.priority}`, { defaultValue: item.priority }),
                                 count: item.count,
                                 barClassName: `priority-${item.priority}`,
                             }))}
@@ -320,7 +273,7 @@ function ReportsPage() {
                         />
 
                         <ReportDistribution
-                            title="Chamados por categoria"
+                            title={t("reports.distribution.byCategory")}
                             items={categories.map((item) => ({
                                 key: String(item.category_id),
                                 label: item.category_name,
@@ -353,6 +306,8 @@ function ReportDistribution({
     items,
     total,
 }: ReportDistributionProps) {
+    const { t } = useTranslation()
+
     return (
         <section className="dashboard-chart-section">
             <div className="section-header">
@@ -363,7 +318,7 @@ function ReportDistribution({
 
             {items.length === 0 ? (
                 <p className="reports-empty-message">
-                    Nenhum dado encontrado.
+                    {t("reports.distribution.empty")}
                 </p>
             ) : (
                 <div className="status-chart">
@@ -399,20 +354,6 @@ function ReportDistribution({
     )
 }
 
-function formatDateInput(value: string) {
-    const digits = value.replace(/\D/g, "").slice(0, 8)
-
-    if (digits.length <= 2) {
-        return digits
-    }
-
-    if (digits.length <= 4) {
-        return `${digits.slice(0, 2)}/${digits.slice(2)}`
-    }
-
-    return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`
-}
-
 function parseDateInput(value: string) {
     if (!value) {
         return undefined
@@ -436,40 +377,6 @@ function parseDateInput(value: string) {
     }
 
     return `${year}-${month}-${day}`
-}
-
-function formatDateFromIso(value: string) {
-    if (!value) {
-        return ""
-    }
-
-    const [year, month, day] = value.split("-")
-
-    return `${day}/${month}/${year}`
-}
-
-function formatStatus(status: string) {
-    const labels: Record<string, string> = {
-        open: "Aberto",
-        under_review: "Em análise",
-        in_progress: "Em andamento",
-        resolved: "Resolvido",
-        closed: "Fechado",
-        canceled: "Cancelado",
-    }
-
-    return labels[status] ?? status
-}
-
-function formatPriority(priority: string) {
-    const labels: Record<string, string> = {
-        low: "Baixa",
-        medium: "Média",
-        high: "Alta",
-        critical: "Crítica",
-    }
-
-    return labels[priority] ?? priority
 }
 
 function formatPercentage(value: number, total: number) {

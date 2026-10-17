@@ -1,0 +1,585 @@
+{
+  "brand": {
+    "subtitle": "Support Center"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "tickets": "Tickets",
+    "analytics": "ANALYTICS",
+    "reports": "Reports",
+    "help": "HELP",
+    "faq": "FAQ",
+    "system": "System",
+    "settings": "Settings"
+  },
+  "layout": {
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "logout": "Sign out"
+  },
+  "roles": {
+    "admin": "Administrator",
+    "technician": "Technician",
+    "customer": "Customer",
+    "user": "User"
+  },
+  "settings": {
+    "page": {
+      "title": "Settings",
+      "description": "Manage your preferences and system settings."
+    },
+    "account": {
+      "title": "My account",
+      "description": "Information associated with your account.",
+      "avatarAlt": "Photo of {{name}}",
+      "avatarTitle": "Profile picture",
+      "avatarFormats": "JPEG, PNG, or WebP. Maximum 2 MB.",
+      "uploading": "Uploading...",
+      "changePhoto": "Change photo",
+      "addPhoto": "Add photo",
+      "removePhoto": "Remove",
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "saveName": "Save name",
+      "changeEmail": "Change email",
+      "currentPassword": "Current password",
+      "saveEmail": "Send confirmation"
+    },
+    "appearance": {
+      "title": "Appearance",
+      "description": "Choose how Help Desk looks for you.",
+      "light": "Light theme",
+      "dark": "Dark theme",
+      "saved": "Your chosen theme is saved in this browser.",
+      "useDark": "Use dark theme",
+      "useLight": "Use light theme"
+    },
+    "language": {
+      "title": "Interface language",
+      "description": "Choose a language. Your preference is saved in this browser."
+    },
+    "common": {
+      "saving": "Saving...",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "categories": {
+      "title": "Categories",
+      "description": "Manage the categories used for tickets.",
+      "descriptionLabel": "Description",
+      "namePlaceholder": "E.g., Software",
+      "descriptionPlaceholder": "Optional description",
+      "creating": "Creating...",
+      "new": "New category",
+      "loading": "Loading categories...",
+      "empty": "No categories have been created.",
+      "noDescription": "No description",
+      "drag": "Drag to reorder",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "moveCategoryUp": "Move {{name}} up",
+      "moveCategoryDown": "Move {{name}} down",
+      "active": "Active",
+      "inactive": "Inactive",
+      "edit": "Edit",
+      "deactivate": "Deactivate",
+      "reactivate": "Reactivate",
+      "deleting": "Deleting...",
+      "delete": "Delete",
+      "confirmDelete": "Permanently delete the category \"{{name}}\"?\n\nIf it has already been used in a ticket, deletion will be blocked."
+    },
+    "feedback": {
+      "loadCategoriesError": "Could not load categories.",
+      "categoryNameTooShort": "The category name must have at least 2 characters.",
+      "categoryCreated": "Category created successfully.",
+      "createCategoryError": "Could not create the category.",
+      "categoryUpdated": "Category updated successfully.",
+      "updateCategoryError": "Could not update the category.",
+      "orderUpdated": "Category order updated.",
+      "orderError": "Could not update category order.",
+      "profileNameTooShort": "The name must have at least 2 characters.",
+      "profileUpdated": "Name updated successfully.",
+      "profileError": "Could not update your name.",
+      "categoryReactivated": "Category reactivated successfully.",
+      "categoryDeactivated": "Category deactivated successfully.",
+      "changeCategoryError": "Could not change the category.",
+      "categoryDeleted": "Category deleted successfully.",
+      "deleteCategoryError": "Could not delete the category.",
+      "avatarTooLarge": "The photo must be 2 MB or smaller.",
+      "avatarInvalidFormat": "Use a JPEG, PNG, or WebP image.",
+      "avatarUpdated": "Profile picture updated successfully.",
+      "avatarError": "Could not change the photo.",
+      "avatarRemoved": "Profile picture removed.",
+      "avatarRemoveError": "Could not remove the photo.",
+      "emailUpdated": "Email updated successfully. Use the new address the next time you sign in.",
+      "incorrectPassword": "Your current password is incorrect.",
+      "emailAlreadyRegistered": "This email address is already registered.",
+      "emailUpdateError": "Could not update your email address.",
+      "emailConfirmationSent": "We sent a confirmation link to {{email}}. Your current email will remain active until you confirm.",
+      "emailRequestTooSoon": "Please wait one minute before requesting another link.",
+      "emailDeliveryError": "We couldn't send the confirmation email. Please try again later.",
+      "emailChangeLocked": "For security reasons, email changes have been temporarily locked after multiple incorrect password attempts. Please wait 15 minutes and try again."
+    }
+  },
+  "dashboard": {
+    "loading": "Loading dashboard...",
+    "error": {
+      "load": "Could not load dashboard data."
+    },
+    "page": {
+      "title": "Dashboard",
+      "description": "Overview of support tickets."
+    },
+    "period": {
+      "label": "Period",
+      "today": "Today",
+      "thisWeek": "This week",
+      "lastWeek": "Last week",
+      "thisMonth": "This month",
+      "lastMonth": "Last month",
+      "last30Days": "Last 30 days",
+      "all": "All"
+    },
+    "stats": {
+      "ariaLabel": "Ticket summary",
+      "total": {
+        "title": "Total tickets",
+        "description": "Available tickets"
+      },
+      "open": {
+        "title": "Open",
+        "description": "Awaiting support"
+      },
+      "inProgress": {
+        "title": "In progress",
+        "description": "Being handled"
+      },
+      "resolved": {
+        "title": "Resolved",
+        "description": "Resolved or closed"
+      }
+    },
+    "recent": {
+      "title": "Recent tickets",
+      "description": "Most recently created tickets in the system.",
+      "viewAll": "View all",
+      "emptyTitle": "No tickets found",
+      "emptyDescription": "The most recent tickets will appear here.",
+      "createdAt": "Created on {{date}}"
+    },
+    "charts": {
+      "ariaLabel": "Ticket distribution",
+      "status": {
+        "title": "Tickets by status",
+        "description": "Ticket distribution in the system."
+      },
+      "priority": {
+        "title": "Tickets by priority",
+        "description": "Distribution by priority level."
+      }
+    },
+    "status": {
+      "open": "Open",
+      "under_review": "Under review",
+      "in_progress": "In progress",
+      "resolved": "Resolved",
+      "closed": "Closed",
+      "canceled": "Canceled"
+    },
+    "priority": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "critical": "Critical"
+    }
+  },
+  "ticketDetails": {
+    "invalid": {
+      "title": "Invalid ticket",
+      "description": "The provided ticket identifier is invalid."
+    },
+    "backToTickets": "Back to tickets",
+    "loading": "Loading ticket...",
+    "cannotOpen": "Unable to open ticket",
+    "notFound": "Ticket not found.",
+    "ticketLabel": "Ticket #",
+    "description": "Description",
+    "confirmDelete": "Permanently delete ticket #{{number}}?\n\nThis will also remove its comments and history and cannot be undone.",
+    "errors": {
+      "load": "Could not load the ticket.",
+      "assign": "Could not take ownership of the ticket.",
+      "release": "Could not release the ticket.",
+      "changeStatus": "Could not change the ticket status.",
+      "delete": "Could not delete the ticket.",
+      "sendMessage": "Could not send the message."
+    },
+    "actions": {
+      "title": "Ticket actions",
+      "updating": "Updating...",
+      "startReview": "Start review",
+      "assigning": "Taking ownership...",
+      "assign": "Take ownership",
+      "markResolved": "Mark as resolved",
+      "releasing": "Releasing...",
+      "release": "Release ticket",
+      "reopen": "Reopen ticket",
+      "close": "Close ticket",
+      "deleting": "Deleting...",
+      "delete": "Delete ticket",
+      "assignedTo": "This ticket is assigned to {{name}}.",
+      "anotherAssignee": "another agent",
+      "noActions": "No actions are available for the current status."
+    },
+    "history": {
+      "title": "History",
+      "empty": "No events recorded.",
+      "system": "System",
+      "events": {
+        "ticket_created": "Ticket created",
+        "assignee_changed": "Assignee changed",
+        "status_changed": "Status changed"
+      }
+    },
+    "chat": {
+      "title": "Chat",
+      "empty": "There are no messages in this conversation yet.",
+      "placeholder": "Type a message...",
+      "send": "Send message"
+    },
+    "info": {
+      "title": "Information",
+      "priority": "Priority",
+      "status": "Status",
+      "category": "Category",
+      "createdBy": "Created by",
+      "assignee": "Assignee",
+      "unassigned": "Unassigned",
+      "createdAt": "Created on",
+      "updatedAt": "Updated on",
+      "closedAt": "Closed on"
+    }
+  },
+  "tickets": {
+    "loading": "Loading tickets...",
+    "errors": {
+      "load": "Unable to load tickets."
+    },
+    "page": {
+      "title": "Tickets",
+      "description": "Create, track, and manage support tickets."
+    },
+    "count_zero": "No tickets",
+    "count_one": "{{count}} ticket",
+    "count_other": "{{count}} tickets",
+    "search": {
+      "placeholder": "Search by title..."
+    },
+    "filters": {
+      "status": "Status",
+      "priority": "Priority",
+      "category": "Category",
+      "allStatuses": "All",
+      "allPriorities": "All",
+      "allCategories": "All"
+    },
+    "create": {
+      "title": "New ticket",
+      "description": "Fill in the details to submit a new request."
+    },
+    "list": {
+      "title": "Ticket list",
+      "description": "Tickets available to your account.",
+      "emptyTitle": "No tickets found",
+      "emptyDescription": "Create a new ticket using the form alongside.",
+      "filteredEmptyTitle": "No tickets match your filters",
+      "filteredEmptyDescription": "Try changing or clearing a filter.",
+      "createdAt": "Created on {{date}}",
+      "details": "View details"
+    },
+    "status": {
+      "open": "Open",
+      "under_review": "Under review",
+      "in_progress": "In progress",
+      "resolved": "Resolved",
+      "closed": "Closed",
+      "canceled": "Canceled"
+    },
+    "priority": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "critical": "Critical"
+    },
+    "form": {
+      "title": "Title",
+      "titlePlaceholder": "E.g., Computer won’t turn on",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe the problem in detail...",
+      "priority": "Priority",
+      "category": "Category",
+      "selectCategory": "Select a category",
+      "emailCopy": "Email me a copy of this ticket",
+      "creating": "Creating...",
+      "submit": "Create ticket",
+      "errors": {
+        "loadCategories": "Unable to load categories.",
+        "create": "Unable to create the ticket."
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome",
+      "description": "Sign in to access the system.",
+      "submit": "Sign in",
+      "loading": "Signing in...",
+      "switchQuestion": "Don’t have an account yet?",
+      "switchAction": "Create account"
+    },
+    "register": {
+      "title": "Create your account",
+      "description": "Sign up to open and track your support tickets.",
+      "submit": "Create account",
+      "loading": "Creating account...",
+      "switchQuestion": "Already have an account?",
+      "switchAction": "Sign in"
+    },
+    "fields": {
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Enter your password again"
+    },
+    "errors": {
+      "minPassword": "Your password must be at least 8 characters long.",
+      "passwordMismatch": "Passwords do not match.",
+      "registration": "Unable to create your account.",
+      "invalidCredentials": "Invalid email or password."
+    },
+    "hero": {
+      "heading": "Organized support, efficient service.",
+      "description": "Centralize requests, track ticket progress, and keep your entire support workflow in one place.",
+      "ticketManagement": "Ticket management",
+      "ticketManagementDescription": "Track requests from creation to closure.",
+      "priorities": "Priority control",
+      "prioritiesDescription": "Quickly identify what needs attention.",
+      "security": "Secure access",
+      "securityDescription": "Authentication and permissions based on each user’s role."
+    }
+  },
+  "emailConfirmation": {
+    "title": "Confirm your new email",
+    "description": "To complete the change, click the button below. Your current email will remain active until confirmation.",
+    "confirmButton": "Confirm email",
+    "confirming": "Confirming...",
+    "successTitle": "Email confirmed!",
+    "success": "Your email address has been updated successfully. Use your new email the next time you sign in.",
+    "missingToken": "This link doesn't contain a confirmation token. Open the link from your email again.",
+    "invalidToken": "This link is invalid, expired, or has already been used. Request another confirmation in Settings.",
+    "genericError": "We couldn't confirm your email. Please try again.",
+    "backToSettings": "Back to settings",
+    "backToLogin": "Go to login"
+  },
+  "assistant": {
+    "label": "Assistant",
+    "panelLabel": "Help Desk assistant",
+    "title": "Help Desk Assistant",
+    "subtitle": "Ask questions about the system",
+    "close": "Close assistant",
+    "open": "Open assistant",
+    "greeting": "Hello! I can help answer questions about Help Desk.",
+    "suggestion": "Ask about tickets, priorities, statuses, support, or how the system works.",
+    "waiting": "Waiting for a response...",
+    "placeholder": "Type your question...",
+    "messageLabel": "Message to the assistant",
+    "send": "Send message",
+    "error": "I couldn’t respond right now. Please try again in a moment."
+  },
+  "reports": {
+    "title": "Reports",
+    "description": "Ticket analysis and support performance metrics.",
+    "loading": "Loading reports...",
+    "loadError": "Unable to load reports.",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "openStartCalendar": "Open start date calendar",
+    "openEndCalendar": "Open end date calendar",
+    "apply": "Apply",
+    "clear": "Clear",
+    "datePlaceholder": "DD/MM/YYYY",
+    "errors": {
+      "startInvalid": "Enter a valid start date.",
+      "endInvalid": "Enter a valid end date.",
+      "rangeInvalid": "The start date cannot be later than the end date."
+    },
+    "summaryLabel": "Report summary",
+    "stats": {
+      "total": "Total tickets",
+      "totalDescription": "Tickets created",
+      "open": "Open",
+      "openDescription": "Open or under review",
+      "inProgress": "In progress",
+      "inProgressDescription": "Being handled",
+      "resolved": "Resolved",
+      "resolvedDescription": "Resolved or closed",
+      "canceled": "Canceled",
+      "canceledDescription": "Canceled tickets"
+    },
+    "timeline": {
+      "title": "Tickets created per day",
+      "description": "Trend of tickets created during the selected period.",
+      "empty": "No tickets created during this period.",
+      "ariaLabel": "Chart of tickets created per day"
+    },
+    "distribution": {
+      "byStatus": "Tickets by status",
+      "byPriority": "Tickets by priority",
+      "byCategory": "Tickets by category",
+      "empty": "No data found."
+    }
+  },
+  "faq": {
+    "page": {
+      "title": "Help center",
+      "description": "Find quick answers to frequently asked questions about Help Desk.",
+      "searchPlaceholder": "Search for an answer...",
+      "searchLabel": "Search FAQ",
+      "clear": "Clear",
+      "emptyTitle": "No answers found",
+      "emptyDescription": "Try searching with different words.",
+      "answer": "Answer"
+    },
+    "categories": {
+      "tickets": "Tickets",
+      "priorities": "Priorities",
+      "status": "Status",
+      "support": "Support",
+      "notifications": "Notifications",
+      "accounts": "Account and permissions"
+    },
+    "items": {
+      "create-ticket": {
+        "question": "How can I open a new ticket?",
+        "answer": "Go to the Tickets page, enter a title, description, category, and priority for the issue, then submit the form to create the ticket."
+      },
+      "track-ticket": {
+        "question": "How can I track my ticket?",
+        "answer": "The Tickets page shows all requests associated with your account. Select a ticket to view its details, status, assignee, history, and conversation."
+      },
+      "ticket-number": {
+        "question": "What does the ticket number mean?",
+        "answer": "The number identifies a ticket in the system. For customers, numbers are sequential within their own account, making it easier to track requests."
+      },
+      "ticket-edit": {
+        "question": "Can I edit a ticket after creating it?",
+        "answer": "Currently, a ticket’s main details cannot be edited after creation. If you need to add information, use the conversation in the ticket details."
+      },
+      "ticket-delete": {
+        "question": "Can I delete a ticket?",
+        "answer": "Deleting tickets is an administrative action. Customers can track their requests but cannot delete them directly."
+      },
+      "priority": {
+        "question": "What do ticket priorities mean?",
+        "answer": "Low is for situations with little impact; Medium is for issues needing attention while work can continue; High is for issues with significant impact; and Critical is for urgent problems or situations that completely block an important activity."
+      },
+      "change-priority": {
+        "question": "Can I change the priority after opening a ticket?",
+        "answer": "Priority is set when a ticket is created. If the situation changes, explain it in the ticket conversation so the support team has the latest context."
+      },
+      "status-open": {
+        "question": "What does Open status mean?",
+        "answer": "The ticket has been registered and is waiting for the support team to start reviewing it. Tickets released by an assignee also return to this status."
+      },
+      "status-review": {
+        "question": "What does Under review mean?",
+        "answer": "The support team has started evaluating the ticket. At this stage, it has no assignee and must be Under review before someone can take ownership."
+      },
+      "status-progress": {
+        "question": "What does In progress mean?",
+        "answer": "An administrator or technician has taken ownership of the ticket and is working on the request."
+      },
+      "status-resolved-closed": {
+        "question": "What is the difference between Resolved and Closed?",
+        "answer": "Resolved means the team considers the issue fixed. Closed is the final stage, when the ticket is permanently completed."
+      },
+      "status-canceled": {
+        "question": "What does Canceled mean?",
+        "answer": "Support for this ticket has been stopped and it will not follow the normal resolution process."
+      },
+      "comments": {
+        "question": "How can I talk to the support team?",
+        "answer": "Open the ticket details and use the chat. New messages appear in real time to users viewing the same ticket."
+      },
+      "assignee": {
+        "question": "What is a ticket assignee?",
+        "answer": "The administrator or technician responsible for the request. When they take ownership of a ticket Under review, its status automatically changes to In progress."
+      },
+      "no-assignee": {
+        "question": "My ticket has no assignee. Is that a problem?",
+        "answer": "No. Tickets that are Open or Under review can remain unassigned. An assignee is set when an administrator or technician takes ownership."
+      },
+      "release-ticket": {
+        "question": "What does it mean to release a ticket?",
+        "answer": "Releasing a ticket means giving up ownership. Its status changes from In progress back to Open, it becomes unassigned, and can go through review and assignment again."
+      },
+      "ticket-flow": {
+        "question": "What is the normal ticket workflow?",
+        "answer": "A ticket usually starts as Open. The team begins reviewing it (Under review). When a technician or administrator takes ownership, it moves to In progress. After a solution is found, it can be marked Resolved and finally Closed."
+      },
+      "email-copy": {
+        "question": "Can I receive a copy of my ticket by email?",
+        "answer": "Yes. When creating a ticket, you can request an email copy containing the main details of your request."
+      },
+      "assignment-email": {
+        "question": "Do technicians receive email notifications?",
+        "answer": "Yes. When an administrator or technician takes ownership of a ticket, the system may send an email notification to the account responsible for handling it."
+      },
+      "roles": {
+        "question": "What types of users exist in the system?",
+        "answer": "Help Desk has three main roles: Customer, Technician, and Administrator. Each role has different permissions based on its responsibilities."
+      },
+      "customer-permissions": {
+        "question": "Can customers view other customers’ tickets?",
+        "answer": "No. Customers can only access tickets associated with their own account."
+      },
+      "technician-permissions": {
+        "question": "What can a technician do?",
+        "answer": "Technicians can view tickets, start reviews, take ownership, and join conversations. Once assigned, only the responsible technician can change the ticket workflow; other technicians may view it but cannot control it."
+      },
+      "admin-permissions": {
+        "question": "What can an administrator do?",
+        "answer": "Administrators can use Help Desk’s administrative features, including category management, ticket management, and reports. They can also intervene in tickets assigned to technicians when necessary."
+      },
+      "dark-mode": {
+        "question": "Does the system have dark mode?",
+        "answer": "Yes. You can change the theme in Settings or through the available interface control. Your preference is saved in the browser."
+      }
+    }
+  },
+  "serviceErrors": {
+    "emailRegistered": "This email is already registered.",
+    "createAccount": "Unable to create the account.",
+    "categoryExists": "A category with this name already exists.",
+    "categoryNotFound": "Category not found.",
+    "categoryCreate": "Unable to create the category.",
+    "categoryUpdate": "Unable to update the category.",
+    "categoryOrder": "Unable to update category order.",
+    "categoryStatus": "Unable to change category status.",
+    "categoryInUse": "This category has tickets and cannot be deleted. You can deactivate it instead.",
+    "categoryDelete": "Unable to delete the category.",
+    "ticketRelease": "Unable to release the ticket.",
+    "ticketNotFound": "Ticket not found.",
+    "ticketDelete": "Unable to delete the ticket.",
+    "updateUser": "Unable to update the user.",
+    "changeAvatar": "Unable to change the profile photo.",
+    "removeAvatar": "Unable to remove the profile photo."
+  },
+  "route": {
+    "loading": "Loading..."
+  }
+}

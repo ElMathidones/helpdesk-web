@@ -1,4 +1,5 @@
 import type { ReportTimelineItem } from "../types/report"
+import { useTranslation } from "react-i18next"
 
 interface ReportTimelineChartProps {
     items: ReportTimelineItem[]
@@ -11,18 +12,20 @@ const PADDING_RIGHT = 28
 const PADDING_TOP = 30
 const PADDING_BOTTOM = 48
 
-function formatChartDate(value: string) {
-    const [, month, day] = value.split("-")
-    return `${day}/${month}`
+function formatChartDate(value: string, language: string) {
+    const [year, month, day] = value.split("-").map(Number)
+    return new Intl.DateTimeFormat(language, { month: "2-digit", day: "2-digit", timeZone: "UTC" }).format(new Date(Date.UTC(year, month - 1, day)))
 }
 
 export default function ReportTimelineChart({
     items,
 }: ReportTimelineChartProps) {
+    const { t, i18n } = useTranslation()
+
     if (items.length === 0) {
         return (
             <p className="reports-empty-message">
-                Nenhum chamado criado no período.
+                {t("reports.timeline.empty")}
             </p>
         )
     }
@@ -77,7 +80,7 @@ export default function ReportTimelineChart({
                 className="reports-line-chart"
                 viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}
                 role="img"
-                aria-label="Gráfico de chamados criados por dia"
+                aria-label={t("reports.timeline.ariaLabel")}
             >
                 {yTicks.map((tick) => {
                     const y = getY(tick)
@@ -142,7 +145,7 @@ export default function ReportTimelineChart({
                                 y={CHART_HEIGHT - 16}
                                 textAnchor="middle"
                             >
-                                {formatChartDate(item.date)}
+                                {formatChartDate(item.date, i18n.resolvedLanguage ?? "pt-BR")}
                             </text>
                         </g>
                     )

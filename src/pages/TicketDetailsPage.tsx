@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, type KeyboardEvent } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
+import { useTranslation } from "react-i18next"
+import { translateServiceError } from "../utils/serviceErrors"
 
 import { useAuth } from "../hooks/useAuth"
 import {
@@ -15,7 +17,6 @@ import {
     getComments,
 } from "../services/comments"
 import { getTicketHistory } from "../services/ticketHistory"
-import { formatDateTime } from "../utils/date"
 
 import type { Ticket, TicketStatus } from "../types/ticket"
 import type { Comment } from "../types/comment"
@@ -25,6 +26,8 @@ function TicketDetailsPage() {
     const { id, number } = useParams()
     const { token, user } = useAuth()
     const navigate = useNavigate()
+    const { t, i18n } = useTranslation()
+    const locale = i18n.resolvedLanguage ?? "pt-BR"
 
     const ticketReference = Number(number ?? id)
 
@@ -42,6 +45,9 @@ function TicketDetailsPage() {
     const [isCreatingComment, setIsCreatingComment] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState("")
+    const displayError = error.startsWith("ticketDetails.errors.")
+        ? t(error)
+        : error
     const [isAssigning, setIsAssigning] = useState(false)
     const [isReleasing, setIsReleasing] = useState(false)
     const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
@@ -142,7 +148,7 @@ function TicketDetailsPage() {
                 setComments(commentsData)
                 setHistory(historyData)
             } catch {
-                setError("Não foi possível carregar o chamado.")
+                setError("ticketDetails.errors.load")
             } finally {
                 setIsLoading(false)
             }
@@ -172,7 +178,7 @@ function TicketDetailsPage() {
 
             setHistory(updatedHistory)
         } catch {
-            setError("Não foi possível assumir o chamado.")
+            setError("ticketDetails.errors.assign")
         } finally {
             setIsAssigning(false)
         }
@@ -202,9 +208,7 @@ function TicketDetailsPage() {
             setHistory(updatedHistory)
         } catch (error) {
             setError(
-                error instanceof Error
-                    ? error.message
-                    : "Não foi possível liberar o chamado.",
+                translateServiceError(error, t("ticketDetails.errors.release")),
             )
         } finally {
             setIsReleasing(false)
@@ -231,7 +235,7 @@ function TicketDetailsPage() {
         const updatedHistory = await getTicketHistory(token, ticket.id)
         setHistory(updatedHistory)
         } catch {
-            setError("Não foi possível alterar o status do chamado.")
+            setError("ticketDetails.errors.changeStatus")
         } finally {
             setIsUpdatingStatus(false)
         }
@@ -243,9 +247,7 @@ function TicketDetailsPage() {
         }
 
         const confirmed = window.confirm(
-            `Excluir permanentemente o chamado #${ticket.id}?\n\n` +
-            "Essa ação também removerá os comentários e o histórico " +
-            "e não poderá ser desfeita.",
+            t("ticketDetails.confirmDelete", { number: ticket.id }),
         )
 
         if (!confirmed) {
@@ -260,9 +262,7 @@ function TicketDetailsPage() {
             navigate("/tickets")
         } catch (error) {
             setError(
-                error instanceof Error
-                    ? error.message
-                    : "Não foi possível excluir o chamado.",
+                translateServiceError(error, t("ticketDetails.errors.delete")),
             )
             setIsDeleting(false)
         }
@@ -291,6 +291,29 @@ function TicketDetailsPage() {
         requestAnimationFrame(() => {
             window.scrollTo(0, currentScrollY)
         })
+    }
+
+    function handleCommentKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+        // Shift+Enter keeps the native newline behavior.
+        // Do not submit while the user is composing text with an IME.
+        if (
+            event.key !== "Enter" ||
+            event.shiftKey ||
+            event.ctrlKey ||
+            event.altKey ||
+            event.metaKey ||
+            event.nativeEvent.isComposing
+        ) {
+            return
+        }
+
+        event.preventDefault()
+
+        if (isCreatingComment || !commentContent.trim()) {
+            return
+        }
+
+        void handleCreateComment()
     }
 
     async function handleCreateComment() {
@@ -327,7 +350,7 @@ function TicketDetailsPage() {
                 commentInputRef.current.style.overflowY = "hidden"
             }
         } catch {
-            setError("Não foi possível enviar a mensagem.")
+            setError(t("ticketDetails.errors.sendMessage"))
         } finally {
             setIsCreatingComment(false)
         }
@@ -337,25 +360,25 @@ function TicketDetailsPage() {
         return (
         <div className="ticket-details-page">
             <div className="feedback-card">
-            <strong>Chamado inválido</strong>
-            <p>O identificador informado não é válido.</p>
-            <Link to="/tickets">← Voltar para chamados</Link>
+            <strong>{t("ticketDetails.invalid.title")}</strong>
+            <p>{t("ticketDetails.invalid.description")}</p>
+            <Link to="/tickets">← {t("ticketDetails.backToTickets")}</Link>
             </div>
         </div>
         )
     }
 
     if (isLoading) {
-        return <p>Carregando chamado...</p>
+        return <p>{t("ticketDetails.loading")}</p>
     }
 
     if (error || !ticket) {
         return (
         <div className="ticket-details-page">
             <div className="feedback-card">
-            <strong>Não foi possível abrir o chamado</strong>
-            <p>{error || "Chamado não encontrado."}</p>
-            <Link to="/tickets">← Voltar para chamados</Link>
+            <strong>{t("ticketDetails.cannotOpen")}</strong>
+            <p>{displayError || t("ticketDetails.notFound")}</p>
+            <Link to="/tickets">← {t("ticketDetails.backToTickets")}</Link>
             </div>
         </div>
         )
@@ -373,13 +396,13 @@ function TicketDetailsPage() {
     return (
         <div className="ticket-details-page">
             <Link className="back-link" to="/tickets">
-                ← Voltar para chamados
+                ← {t("ticketDetails.backToTickets")}
             </Link>
 
             <div className="ticket-details-header">
                 <div>
                     <span className="ticket-details-id">
-                        Chamado #
+                        {t("ticketDetails.ticketLabel")}
                         {user?.role === "customer"
                             ? ticket.creator_ticket_number
                             : ticket.id}
@@ -391,22 +414,22 @@ function TicketDetailsPage() {
                     <span
                         className={`priority-badge priority-${ticket.priority}`}
                     >
-                        {formatPriority(ticket.priority)}
+                        {t(`dashboard.priority.${ticket.priority}`)}
                     </span>
 
                     <span className={`status-badge status-${ticket.status}`}>
-                        {formatStatus(ticket.status)}
+                        {t(`dashboard.status.${ticket.status}`)}
                     </span>
                 </div>
             </div>
 
-            {error && <p className="error-message">{error}</p>}
+            {error && <p className="error-message">{displayError}</p>}
 
             <div className="ticket-details-grid">
                 <div className="ticket-details-main">
                     <section className="details-card">
                         <div className="details-card-header">
-                            <h2>Descrição</h2>
+                            <h2>{t("ticketDetails.description")}</h2>
                         </div>
 
                         <div className="details-card-content">
@@ -419,7 +442,7 @@ function TicketDetailsPage() {
                     {canManage && (
                         <section className="details-card">
                             <div className="details-card-header">
-                                <h2>Ações do chamado</h2>
+                                <h2>{t("ticketDetails.actions.title")}</h2>
                             </div>
 
                             <div className="details-card-content">
@@ -434,8 +457,8 @@ function TicketDetailsPage() {
                                             disabled={isUpdatingStatus}
                                         >
                                             {isUpdatingStatus
-                                                ? "Atualizando..."
-                                                : "Iniciar análise"}
+                                                ? t("ticketDetails.actions.updating")
+                                                : t("ticketDetails.actions.startReview")}
                                         </button>
                                     )}
 
@@ -448,8 +471,8 @@ function TicketDetailsPage() {
                                             disabled={isAssigning}
                                         >
                                             {isAssigning
-                                                ? "Assumindo..."
-                                                : "Assumir chamado"}
+                                                ? t("ticketDetails.actions.assigning")
+                                                : t("ticketDetails.actions.assign")}
                                         </button>
                                     )}
 
@@ -465,8 +488,8 @@ function TicketDetailsPage() {
                                                 disabled={isUpdatingStatus}
                                             >
                                                 {isUpdatingStatus
-                                                    ? "Atualizando..."
-                                                    : "Marcar como resolvido"}
+                                                    ? t("ticketDetails.actions.updating")
+                                                    : t("ticketDetails.actions.markResolved")}
                                             </button>
 
                                             <button
@@ -476,8 +499,8 @@ function TicketDetailsPage() {
                                                 disabled={isReleasing}
                                             >
                                                 {isReleasing
-                                                    ? "Liberando..."
-                                                    : "Liberar chamado"}
+                                                    ? t("ticketDetails.actions.releasing")
+                                                    : t("ticketDetails.actions.release")}
                                             </button>
                                         </>
                                     )}
@@ -493,7 +516,7 @@ function TicketDetailsPage() {
                                                 }
                                                 disabled={isUpdatingStatus}
                                             >
-                                                Reabrir chamado
+                                                {t("ticketDetails.actions.reopen")}
                                             </button>
 
                                             <button
@@ -504,7 +527,7 @@ function TicketDetailsPage() {
                                                 }
                                                 disabled={isUpdatingStatus}
                                             >
-                                                Fechar chamado
+                                                {t("ticketDetails.actions.close")}
                                             </button>
                                         </>
                                     )}
@@ -517,8 +540,9 @@ function TicketDetailsPage() {
                                             || ticket.status === "resolved"
                                         ) && (
                                         <p className="no-actions-message">
-                                            Este chamado está atribuído a{" "}
-                                            {ticket.assignee?.name ?? "outro responsável"}.
+                                            {t("ticketDetails.actions.assignedTo", {
+                                                name: ticket.assignee?.name ?? t("ticketDetails.actions.anotherAssignee"),
+                                            })}
                                         </p>
                                     )}
 
@@ -529,7 +553,7 @@ function TicketDetailsPage() {
                                             onClick={() => void handleDeleteTicket()}
                                             disabled={isDeleting}
                                         >
-                                            {isDeleting ? "Excluindo..." : "Excluir chamado"}
+                                            {isDeleting ? t("ticketDetails.actions.deleting") : t("ticketDetails.actions.delete")}
                                         </button>
                                     )}
 
@@ -537,8 +561,7 @@ function TicketDetailsPage() {
                                         ticket.status !== "in_progress" &&
                                         ticket.status !== "resolved" && (
                                             <p className="no-actions-message">
-                                                Não há ações disponíveis para o
-                                                status atual.
+                                                {t("ticketDetails.actions.noActions")}
                                             </p>
                                         )}
                                 </div>
@@ -548,12 +571,12 @@ function TicketDetailsPage() {
 
                     <section className="details-card">
                         <div className="details-card-header">
-                            <h2>Histórico</h2>
+                            <h2>{t("ticketDetails.history.title")}</h2>
                         </div>
 
                         <div className="details-card-content">
                             {history.length === 0 ? (
-                                <p>Nenhum evento registrado.</p>
+                                <p>{t("ticketDetails.history.empty")}</p>
                             ) : (
                                 <div className="ticket-history">
                                     {history.map((event) => (
@@ -561,19 +584,21 @@ function TicketDetailsPage() {
                                             <div className="ticket-history-marker" />
 
                                             <div className="ticket-history-content">
-                                                <strong>{formatHistoryEvent(event.event_type)}</strong>
+                                                <strong>{t(`ticketDetails.history.events.${event.event_type}`, {
+                                                    defaultValue: event.event_type,
+                                                })}</strong>
 
                                                 <p className="ticket-history-meta">
-                                                    {event.user?.name ?? "Sistema"} •{" "}
-                                                    {formatDateTime(event.created_at)}
+                                                    {event.user?.name ?? t("ticketDetails.history.system")} •{" "}
+                                                    {formatLocalizedDateTime(event.created_at, locale)}
                                                 </p>
 
                                                 {event.event_type === "status_changed" &&
                                                     event.old_value !== null &&
                                                     event.new_value !== null && (
                                                         <p className="ticket-history-change">
-                                                            {formatStatus(event.old_value as TicketStatus)} →{" "}
-                                                            {formatStatus(event.new_value as TicketStatus)}
+                                                            {t(`dashboard.status.${event.old_value as TicketStatus}`)} →{" "}
+                                                            {t(`dashboard.status.${event.new_value as TicketStatus}`)}
                                                         </p>
                                                     )}
                                             </div>
@@ -586,13 +611,13 @@ function TicketDetailsPage() {
 
                     <section className="details-card">
                         <div className="details-card-header">
-                            <h2>Chat</h2>
+                            <h2>{t("ticketDetails.chat.title")}</h2>
                         </div>
 
                         <div className="details-card-content">
                             {comments.length === 0 ? (
                                 <p className="no-comments-message">
-                                    Ainda não há mensagens nesta conversa.
+                                    {t("ticketDetails.chat.empty")}
                                 </p>
                             ) : (
                                 <div className="comments-list">
@@ -612,7 +637,7 @@ function TicketDetailsPage() {
                                                     <strong>{comment.author.name}</strong>
 
                                                     <time dateTime={comment.created_at}>
-                                                        {formatDateTime(comment.created_at)}
+                                                        {formatLocalizedDateTime(comment.created_at, locale)}
                                                     </time>
                                                 </div>
 
@@ -629,7 +654,8 @@ function TicketDetailsPage() {
                                 ref={commentInputRef}
                                 value={commentContent}
                                 onChange={(event) => handleCommentChange(event.target.value)}
-                                placeholder="Digite uma mensagem..."
+                                onKeyDown={handleCommentKeyDown}
+                                placeholder={t("ticketDetails.chat.placeholder")}
                                 rows={1}
                                 disabled={isCreatingComment}
                             />
@@ -639,65 +665,82 @@ function TicketDetailsPage() {
                                 type="button"
                                 onClick={() => void handleCreateComment()}
                                 disabled={isCreatingComment || !commentContent.trim()}
-                                aria-label="Enviar mensagem"
-                                title="Enviar mensagem"
+                                aria-label={t("ticketDetails.chat.send")}
+                                title={t("ticketDetails.chat.send")}
                             >
-                                {isCreatingComment ? "…" : "➤"}
+                                {isCreatingComment ? (
+                                    <span className="comment-send-loading" aria-hidden="true" />
+                                ) : (
+                                    <svg
+                                        width="19"
+                                        height="19"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="1.9"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        aria-hidden="true"
+                                    >
+                                        <path d="m22 2-7 20-4.5-8.5L2 9l20-7Z" />
+                                        <path d="M22 2 10.5 13.5" />
+                                    </svg>
+                                )}
                             </button>
                         </div>
                     </section>
                 </div>
 
                 <aside className="ticket-info-card">
-                    <h2>Informações</h2>
+                    <h2>{t("ticketDetails.info.title")}</h2>
 
                     <dl className="ticket-info-list">
                         <div>
-                            <dt>Prioridade</dt>
-                            <dd>{formatPriority(ticket.priority)}</dd>
+                            <dt>{t("ticketDetails.info.priority")}</dt>
+                            <dd>{t(`dashboard.priority.${ticket.priority}`)}</dd>
                         </div>
 
                         <div>
-                            <dt>Status</dt>
-                            <dd>{formatStatus(ticket.status)}</dd>
+                            <dt>{t("ticketDetails.info.status")}</dt>
+                            <dd>{t(`dashboard.status.${ticket.status}`)}</dd>
                         </div>
 
                         <div>
-                            <dt>Categoria</dt>
+                            <dt>{t("ticketDetails.info.category")}</dt>
                             <dd>{ticket.category.name}</dd>
                         </div>
 
                         <div>
-                            <dt>Criado por</dt>
+                            <dt>{t("ticketDetails.info.createdBy")}</dt>
                             <dd>{ticket.creator.name}</dd>
                         </div>
 
                         <div>
-                            <dt>Responsável</dt>
+                            <dt>{t("ticketDetails.info.assignee")}</dt>
                             <dd>
-                                {ticket.assignee?.name ?? "Não atribuído"}
+                                {ticket.assignee?.name ?? t("ticketDetails.info.unassigned")}
                             </dd>
                         </div>
 
                         <div>
-                            <dt>Criado em</dt>
+                            <dt>{t("ticketDetails.info.createdAt")}</dt>
                             <dd>
-                                {formatDateTime(ticket.created_at)}
+                                {formatLocalizedDateTime(ticket.created_at, locale)}
                             </dd>
                         </div>
 
                         <div>
-                            <dt>Atualizado em</dt>
+                            <dt>{t("ticketDetails.info.updatedAt")}</dt>
                             <dd>
-                                {formatDateTime(ticket.updated_at)}
+                                {formatLocalizedDateTime(ticket.updated_at, locale)}
                             </dd>
                         </div>
 
                         {ticket.closed_at && (
                             <div>
-                                <dt>Fechado em</dt>
+                                <dt>{t("ticketDetails.info.closedAt")}</dt>
                                 <dd>
-                                    {formatDateTime(ticket.closed_at)}
+                                    {formatLocalizedDateTime(ticket.closed_at, locale)}
                                 </dd>
                             </div>
                         )}
@@ -708,38 +751,11 @@ function TicketDetailsPage() {
     )
 }
 
-function formatPriority(priority: Ticket["priority"]) {
-    const labels: Record<Ticket["priority"], string> = {
-        low: "Baixa",
-        medium: "Média",
-        high: "Alta",
-        critical: "Crítica",
-    }
-
-    return labels[priority]
-}
-
-function formatStatus(status: Ticket["status"]) {
-    const labels: Record<Ticket["status"], string> = {
-        open: "Aberto",
-        under_review: "Em análise",
-        in_progress: "Em andamento",
-        resolved: "Resolvido",
-        closed: "Fechado",
-        canceled: "Cancelado",
-    }
-
-    return labels[status]
-}
-
-function formatHistoryEvent(eventType: string) {
-    const labels: Record<string, string> = {
-        ticket_created: "Chamado criado",
-        assignee_changed: "Responsável alterado",
-        status_changed: "Status alterado",
-    }
-
-    return labels[eventType] ?? eventType
+function formatLocalizedDateTime(value: string, locale: string) {
+    return new Date(value).toLocaleString(locale, {
+        dateStyle: "short",
+        timeStyle: "short",
+    })
 }
 
 export default TicketDetailsPage

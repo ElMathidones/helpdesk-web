@@ -6,6 +6,7 @@ import {
 } from "react"
 
 import Markdown from "react-markdown"
+import { useTranslation } from "react-i18next"
 
 import { useAuth } from "../hooks/useAuth"
 import { sendAssistantMessage } from "../services/assistant"
@@ -20,6 +21,7 @@ interface ChatMessage {
 
 function AssistantWidget() {
     const { token } = useAuth()
+    const { t } = useTranslation()
 
     const [isOpen, setIsOpen] = useState(false)
     const [message, setMessage] = useState("")
@@ -96,7 +98,7 @@ function AssistantWidget() {
         } catch {
             const errorMessage = createMessage(
                 "assistant",
-                "Não consegui responder agora. Tente novamente em alguns instantes.",
+                t("assistant.error"),
             )
 
             setMessages((current) => [
@@ -113,7 +115,7 @@ function AssistantWidget() {
             {isOpen && (
                 <section
                     className="assistant-panel"
-                    aria-label="Assistente do Help Desk"
+                    aria-label={t("assistant.panelLabel")}
                 >
                     <header className="assistant-header">
                         <div className="assistant-header-info">
@@ -126,11 +128,11 @@ function AssistantWidget() {
 
                             <div>
                                 <strong>
-                                    Assistente Help Desk
+                                    {t("assistant.title")}
                                 </strong>
 
                                 <span>
-                                    Tire dúvidas sobre o sistema
+                                    {t("assistant.subtitle")}
                                 </span>
                             </div>
                         </div>
@@ -139,7 +141,7 @@ function AssistantWidget() {
                             type="button"
                             className="assistant-close-button"
                             onClick={() => setIsOpen(false)}
-                            aria-label="Fechar assistente"
+                            aria-label={t("assistant.close")}
                         >
                             ×
                         </button>
@@ -156,14 +158,11 @@ function AssistantWidget() {
 
                             <div className="assistant-message-bubble">
                                 <p>
-                                    Olá! Posso ajudar com dúvidas
-                                    sobre o Help Desk.
+                                    {t("assistant.greeting")}
                                 </p>
 
                                 <p>
-                                    Pergunte sobre chamados,
-                                    prioridades, status, atendimento
-                                    ou funcionamento do sistema.
+                                    {t("assistant.suggestion")}
                                 </p>
                             </div>
                         </div>
@@ -226,10 +225,10 @@ function AssistantWidget() {
                             }
                             placeholder={
                                 isSending
-                                    ? "Aguarde a resposta..."
-                                    : "Digite sua pergunta..."
+                                    ? t("assistant.waiting")
+                                    : t("assistant.placeholder")
                             }
-                            aria-label="Mensagem para o assistente"
+                            aria-label={t("assistant.messageLabel")}
                             maxLength={1000}
                             disabled={isSending}
                         />
@@ -241,8 +240,8 @@ function AssistantWidget() {
                                 || !token
                                 || isSending
                             }
-                            aria-label="Enviar mensagem"
-                            title="Enviar mensagem"
+                            aria-label={t("assistant.send")}
+                            title={t("assistant.send")}
                         >
                             ↑
                         </button>
@@ -260,14 +259,14 @@ function AssistantWidget() {
                 }
                 aria-label={
                     isOpen
-                        ? "Fechar assistente"
-                        : "Abrir assistente"
+                        ? t("assistant.close")
+                        : t("assistant.open")
                 }
             >
                 {isOpen ? "×" : "✦"}
 
                 {!isOpen && (
-                    <span>Assistente</span>
+                    <span>{t("assistant.label")}</span>
                 )}
             </button>
         </div>

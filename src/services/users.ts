@@ -65,6 +65,80 @@ export async function updateCurrentUser(
     return response.json() as Promise<User>
 }
 
+export async function updateCurrentUserEmail(
+    token: string,
+    email: string,
+    currentPassword: string,
+): Promise<void> {
+    const response = await fetch(`${API_URL}/users/me/email`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+            email,
+            current_password: currentPassword,
+        }),
+    })
+
+    if (response.status === 403) {
+        throw new Error("INCORRECT_PASSWORD")
+    }
+
+    if (response.status === 409) {
+        throw new Error("EMAIL_ALREADY_REGISTERED")
+    }
+
+    if (response.status === 429) {
+        const data: { detail?: string } | null = await response
+            .json()
+            .catch(() => null)
+
+        if (data?.detail === "Email change temporarily locked") {
+            throw new Error("EMAIL_CHANGE_LOCKED")
+        }
+
+        if (data?.detail === "Please wait before requesting again") {
+            throw new Error("EMAIL_REQUEST_TOO_SOON")
+        }
+
+        throw new Error("EMAIL_UPDATE_FAILED")
+    }
+
+    if (response.status === 503) {
+        throw new Error("EMAIL_DELIVERY_FAILED")
+    }
+
+    if (response.status !== 202) {
+        throw new Error("EMAIL_UPDATE_FAILED")
+    }
+}
+
+export async function confirmEmailChange(
+    token: string,
+): Promise<void> {
+    const response = await fetch(`${API_URL}/users/confirm-email`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token }),
+    })
+
+    if (response.status === 400 || response.status === 422) {
+        throw new Error("INVALID_CONFIRMATION_TOKEN")
+    }
+
+    if (response.status === 409) {
+        throw new Error("EMAIL_ALREADY_REGISTERED")
+    }
+
+    if (!response.ok) {
+        throw new Error("EMAIL_CONFIRMATION_FAILED")
+    }
+}
+
 export function getAvatarUrl(
     avatarFilename: string,
 ): string {
@@ -72,7 +146,6 @@ export function getAvatarUrl(
         avatarFilename,
     )}`
 }
-
 
 export async function uploadCurrentUserAvatar(
     token: string,
