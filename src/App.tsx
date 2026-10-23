@@ -1,9 +1,11 @@
 import { lazy, Suspense } from "react"
 import { Navigate, Route, Routes } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 import AppLayout from "./components/AppLayout"
 import ProtectedRoute from "./components/ProtectedRoute"
 import RoleProtectedRoute from "./components/RoleProtectedRoute"
+import LoadingSpinner from "./components/LoadingSpinner"
 
 const DashboardPage = lazy(() => import("./pages/DashboardPage"))
 const TicketsPage = lazy(() => import("./pages/TicketsPage"))
@@ -17,12 +19,14 @@ const ConfirmEmailPage = lazy(
 )
 
 function App() {
+    const { t } = useTranslation()
+
     return (
         <Suspense
             fallback={
-                <div className="app-page-loading" role="status">
-                    Carregando...
-                </div>
+                <LoadingSpinner>
+                    {t("route.loading")}
+                </LoadingSpinner>
             }
         >
             <Routes>

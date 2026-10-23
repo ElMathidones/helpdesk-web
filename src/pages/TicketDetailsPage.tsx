@@ -1,9 +1,17 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from "react"
+import {
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState,
+    type KeyboardEvent,
+} from "react"
+
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { translateServiceError } from "../utils/serviceErrors"
 
 import { useAuth } from "../hooks/useAuth"
+
 import {
     assignTicket,
     deleteTicket,
@@ -12,15 +20,19 @@ import {
     releaseTicket,
     updateTicketStatus,
 } from "../services/tickets"
+
 import {
     createComment,
     getComments,
 } from "../services/comments"
+
 import { getTicketHistory } from "../services/ticketHistory"
 
 import type { Ticket, TicketStatus } from "../types/ticket"
 import type { Comment } from "../types/comment"
 import type { TicketHistory } from "../types/ticketHistory"
+
+import LoadingSpinner from "../components/LoadingSpinner"
 
 function TicketDetailsPage() {
     const { id, number } = useParams()
@@ -55,6 +67,29 @@ function TicketDetailsPage() {
 
     const commentInputRef = useRef<HTMLTextAreaElement | null>(null)
     const websocketRef = useRef<WebSocket | null>(null)
+    const commentsListRef = useRef<HTMLDivElement | null>(null)
+    const shouldAutoScrollRef = useRef(true)
+
+    function handleCommentsScroll() {
+        const element = commentsListRef.current
+
+        if (!element) return
+
+        const distanceFromBottom =
+            element.scrollHeight -
+            element.scrollTop -
+            element.clientHeight
+
+        shouldAutoScrollRef.current = distanceFromBottom <= 80
+    }
+
+    useLayoutEffect(() => {
+        const element = commentsListRef.current
+
+        if (!element || !shouldAutoScrollRef.current) return
+
+        element.scrollTop = element.scrollHeight
+    }, [comments])
 
     useEffect(() => {
         if (!token || !ticket) {
@@ -294,8 +329,6 @@ function TicketDetailsPage() {
     }
 
     function handleCommentKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
-        // Shift+Enter keeps the native newline behavior.
-        // Do not submit while the user is composing text with an IME.
         if (
             event.key !== "Enter" ||
             event.shiftKey ||
@@ -330,6 +363,8 @@ function TicketDetailsPage() {
                 ticket.id,
                 commentContent.trim(),
             )
+
+            shouldAutoScrollRef.current = true
 
             setComments((currentComments) => {
                 if (
@@ -369,7 +404,9 @@ function TicketDetailsPage() {
     }
 
     if (isLoading) {
-        return <p>{t("ticketDetails.loading")}</p>
+        return (
+                <LoadingSpinner>{t("ticketDetails.loading")}</LoadingSpinner>
+        )
     }
 
     if (error || !ticket) {
@@ -546,9 +583,20 @@ function TicketDetailsPage() {
                                         </p>
                                     )}
 
+                                    {(ticket.status === "closed" ||
+                                        ticket.status === "canceled") && (
+                                        <p className="ticket-actions-finalized">
+                                            {t("ticketDetails.actions.finalized", {
+                                                status: t(
+                                                    `dashboard.status.${ticket.status}`,
+                                                ).toLowerCase(),
+                                            })}
+                                        </p>
+                                    )}
+
                                     {user?.role === "admin" && (
                                         <button
-                                            className="action-button action-danger"
+                                            className="action-button action-danger ticket-action-delete"
                                             type="button"
                                             onClick={() => void handleDeleteTicket()}
                                             disabled={isDeleting}
@@ -557,13 +605,16 @@ function TicketDetailsPage() {
                                         </button>
                                     )}
 
-                                    {ticket.assignee_id !== null &&
+                                    {user?.role !== "admin" &&
+                                        ticket.assignee_id !== null &&
                                         ticket.status !== "in_progress" &&
-                                        ticket.status !== "resolved" && (
+                                        ticket.status !== "resolved" &&
+                                        ticket.status !== "closed" &&
+                                        ticket.status !== "canceled" && (
                                             <p className="no-actions-message">
                                                 {t("ticketDetails.actions.noActions")}
                                             </p>
-                                        )}
+                                    )}
                                 </div>
                             </div>
                         </section>
@@ -578,7 +629,12 @@ function TicketDetailsPage() {
                             {history.length === 0 ? (
                                 <p>{t("ticketDetails.history.empty")}</p>
                             ) : (
-                                <div className="ticket-history">
+                                <div
+                                    className="ticket-history"
+                                    role="region"
+                                    aria-label={t("ticketDetails.history.title")}
+                                    tabIndex={0}
+                                >
                                     {history.map((event) => (
                                         <div className="ticket-history-item" key={event.id}>
                                             <div className="ticket-history-marker" />
@@ -620,7 +676,14 @@ function TicketDetailsPage() {
                                     {t("ticketDetails.chat.empty")}
                                 </p>
                             ) : (
-                                <div className="comments-list">
+                                <div
+                                    ref={commentsListRef}
+                                    className="comments-list"
+                                    role="region"
+                                    aria-label={t("ticketDetails.chat.title")}
+                                    tabIndex={0}
+                                    onScroll={handleCommentsScroll}
+                                >
                                     {comments.map((comment) => {
                                         const isOwnMessage = comment.author.id === user?.id
 

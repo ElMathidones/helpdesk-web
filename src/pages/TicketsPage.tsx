@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 
@@ -10,12 +10,16 @@ import type { Ticket } from "../types/ticket"
 import type { Category } from "../types/category"
 
 import FilterSelect from "../components/FilterSelect"
+import LoadingSpinner from "../components/LoadingSpinner"
+import TicketsPagination from "../components/TicketsPagination"
 
 interface StoredTicketFilters {
     search: string
     status: string
     priority: string
     category: string
+    currentPage: number
+    pageSize: 5 | 10
 }
 
 function getStoredTicketFilters(
@@ -26,6 +30,8 @@ function getStoredTicketFilters(
         status: "",
         priority: "",
         category: "",
+        currentPage: 1,
+        pageSize: 10,
     }
 
     if (!userId) {
@@ -59,6 +65,16 @@ function getStoredTicketFilters(
                 typeof parsed.category === "string"
                     ? parsed.category
                     : "",
+            currentPage:
+                typeof parsed.currentPage === "number" &&
+                Number.isInteger(parsed.currentPage) &&
+                parsed.currentPage > 0
+                    ? parsed.currentPage
+                    : 1,
+            pageSize:
+                parsed.pageSize === 5 || parsed.pageSize === 10
+                    ? parsed.pageSize
+                    : 10,
         }
     } catch {
         sessionStorage.removeItem(storageKey)
@@ -82,6 +98,54 @@ function TicketsPage() {
     const [categoryFilter, setCategoryFilter] = useState(
         storedFilters.category,
     )
+    const [currentPage, setCurrentPage] = useState(
+        storedFilters.currentPage,
+    )
+
+    const [pageSize, setPageSize] = useState<5 | 10>(
+        storedFilters.pageSize,
+    )
+
+    const paginationRef = useRef<HTMLElement | null>(null)
+
+    const previousPaginationTopRef = useRef<number | null>(null)
+
+    function rememberPaginationPosition() {
+        previousPaginationTopRef.current =
+            paginationRef.current?.getBoundingClientRect().top ?? null
+    }
+
+    function handlePageChange(nextPage: number) {
+        if (nextPage === currentPage) return
+
+        rememberPaginationPosition()
+        setCurrentPage(nextPage)
+    }
+
+    function handlePageSizeChange(nextSize: 5 | 10) {
+        if (nextSize === pageSize) return
+
+        rememberPaginationPosition()
+
+        setPageSize(nextSize)
+        setCurrentPage(1)
+    }
+
+    useLayoutEffect(() => {
+        const previousTop = previousPaginationTopRef.current
+
+        if (previousTop === null) return
+
+        previousPaginationTopRef.current = null
+
+        const pagination = paginationRef.current
+
+        if (!pagination) return
+
+        const currentTop = pagination.getBoundingClientRect().top
+
+        window.scrollBy(0, currentTop - previousTop)
+    }, [currentPage, pageSize])
 
 
     useEffect(() => {
@@ -96,6 +160,8 @@ function TicketsPage() {
                 status: statusFilter,
                 priority: priorityFilter,
                 category: categoryFilter,
+                currentPage,
+                pageSize,
             }),
         )
     }, [
@@ -103,6 +169,8 @@ function TicketsPage() {
         statusFilter,
         priorityFilter,
         categoryFilter,
+        currentPage,
+        pageSize,
         user?.id,
     ])
 
@@ -144,7 +212,9 @@ function TicketsPage() {
     }, [token])
 
     if (isLoading) {
-        return <p>{t("tickets.loading")}</p>
+        return (
+                <LoadingSpinner>{t("tickets.loading")}</LoadingSpinner>
+        )
     }
 
     const filteredTickets = tickets.filter((ticket) => {
@@ -168,6 +238,18 @@ function TicketsPage() {
             matchesCategory
         )
     })
+
+    const totalPages = Math.max(
+        1,
+        Math.ceil(filteredTickets.length / pageSize),
+    )
+
+    const activePage = Math.min(currentPage, totalPages)
+
+    const paginatedTickets = filteredTickets.slice(
+        (activePage - 1) * pageSize,
+        activePage * pageSize,
+    )
 
     return (
         <div className="tickets-page">
@@ -204,7 +286,10 @@ function TicketsPage() {
                         type="search"
                         placeholder={t("tickets.search.placeholder")}
                         value={search}
-                        onChange={(event) => setSearch(event.target.value)}
+                        onChange={(event) => {
+                            setSearch(event.target.value)
+                            setCurrentPage(1)
+                        }}
                     />
                 </div>
 
@@ -214,7 +299,10 @@ function TicketsPage() {
                     <FilterSelect
                         id="status-filter"
                         value={statusFilter}
-                        onChange={setStatusFilter}
+                        onChange={(value) => {
+                            setStatusFilter(value)
+                            setCurrentPage(1)
+                        }}
                         options={[
                             { value: "", label: t("tickets.filters.allStatuses") },
                             { value: "open", label: t("tickets.status.open") },
@@ -233,7 +321,10 @@ function TicketsPage() {
                     <FilterSelect
                         id="priority-filter"
                         value={priorityFilter}
-                        onChange={setPriorityFilter}
+                        onChange={(value) => {
+                            setPriorityFilter(value)
+                            setCurrentPage(1)
+                        }}
                         options={[
                             { value: "", label: t("tickets.filters.allPriorities") },
                             { value: "low", label: t("tickets.priority.low") },
@@ -250,7 +341,10 @@ function TicketsPage() {
                     <FilterSelect
                         id="category-filter"
                         value={categoryFilter}
-                        onChange={setCategoryFilter}
+                        onChange={(value) => {
+                            setCategoryFilter(value)
+                            setCurrentPage(1)
+                        }}
                         options={[
                             { value: "", label: t("tickets.filters.allCategories") },
                             ...categories.map((category) => ({
@@ -296,7 +390,7 @@ function TicketsPage() {
                     </div>
                 ) : (
                     <div className="tickets-list">
-                    {filteredTickets.map((ticket) => (
+                    {paginatedTickets.map((ticket) => (
                         <Link
                             className="ticket-card"
                             key={ticket.id}
@@ -345,6 +439,16 @@ function TicketsPage() {
                         </Link>
                     ))}
                     </div>
+                )}
+                {filteredTickets.length > 0 && (
+                    <TicketsPagination
+                        paginationRef={paginationRef}
+                        totalItems={filteredTickets.length}
+                        currentPage={activePage}
+                        pageSize={pageSize}
+                        onPageChange={handlePageChange}
+                        onPageSizeChange={handlePageSizeChange}
+                    />
                 )}
             </section>
         </div>

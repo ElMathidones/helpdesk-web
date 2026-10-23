@@ -7,6 +7,7 @@ import {
 } from "react-router-dom"
 
 import AssistantWidget from "./AssistantWidget"
+import PageScrollMemory from "./PageScrollMemory"
 
 import { useAuth } from "../hooks/useAuth"
 import { useTheme } from "../contexts/useTheme"
@@ -33,6 +34,13 @@ function AppLayout() {
 
     function handleLogout() {
         closeMobileMenu()
+
+        for (const key of Object.keys(sessionStorage)) {
+            if (key.startsWith("helpdesk_scroll_")) {
+                sessionStorage.removeItem(key)
+            }
+        }
+
         logout()
     }
 
@@ -270,6 +278,8 @@ function AppLayout() {
             </aside>
 
             <main className="main-content">
+                <PageScrollMemory />
+
                 <div
                     className="page-transition"
                     key={location.pathname}

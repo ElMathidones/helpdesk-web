@@ -1,3 +1,4 @@
+import LoadingSpinner from "../components/LoadingSpinner"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
@@ -20,6 +21,8 @@ import type {
     ReportSummary,
     ReportTimelineItem,
 } from "../types/report"
+
+import ChartReveal from "../components/ChartReveal"
 
 function ReportsPage() {
     const { token } = useAuth()
@@ -174,7 +177,7 @@ function ReportsPage() {
             {error && <p className="error-message">{error}</p>}
 
             {isLoading ? (
-                <p>{t("reports.loading")}</p>
+                <LoadingSpinner>{t("reports.loading")}</LoadingSpinner>
             ) : (
                 <>
                     {summary && (
@@ -246,7 +249,9 @@ function ReportsPage() {
                             </div>
                         </div>
 
-                        <ReportTimelineChart items={timeline} />
+                        <ChartReveal>
+                            <ReportTimelineChart items={timeline} />
+                        </ChartReveal>
                     </section>
 
                     <section className="dashboard-charts-grid">
@@ -321,34 +326,36 @@ function ReportDistribution({
                     {t("reports.distribution.empty")}
                 </p>
             ) : (
-                <div className="status-chart">
-                    {items.map((item) => (
-                        <div className="status-chart-row" key={item.key}>
-                            <div className="status-chart-label">
-                                <div>
-                                    <span>{item.label}</span>
-                                    <small>{item.count}</small>
+                <ChartReveal>
+                    <div className="status-chart">
+                        {items.map((item) => (
+                            <div className="status-chart-row" key={item.key}>
+                                <div className="status-chart-label">
+                                    <div>
+                                        <span>{item.label}</span>
+                                        <small>{item.count}</small>
+                                    </div>
+
+                                    <strong>
+                                        {formatPercentage(item.count, total)}
+                                    </strong>
                                 </div>
 
-                                <strong>
-                                    {formatPercentage(item.count, total)}
-                                </strong>
+                                <div className="status-chart-bar">
+                                    <div
+                                        className={`status-chart-fill ${item.barClassName ?? ""}`}
+                                        style={{
+                                            width:
+                                                total > 0
+                                                    ? `${(item.count / total) * 100}%`
+                                                    : "0%",
+                                        }}
+                                    />
+                                </div>
                             </div>
-
-                            <div className="status-chart-bar">
-                                <div
-                                    className={`status-chart-fill ${item.barClassName ?? ""}`}
-                                    style={{
-                                        width:
-                                            total > 0
-                                                ? `${(item.count / total) * 100}%`
-                                                : "0%",
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                </ChartReveal>
             )}
         </section>
     )

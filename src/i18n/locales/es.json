@@ -225,6 +225,7 @@
       "release": "Liberar ticket",
       "reopen": "Reabrir ticket",
       "close": "Cerrar ticket",
+      "finalized": "Este ticket está {{status}}. Ya no se puede modificar su estado.",
       "deleting": "Eliminando...",
       "delete": "Eliminar ticket",
       "assignedTo": "Este ticket está asignado a {{name}}.",
@@ -326,6 +327,15 @@
         "loadCategories": "No se pudieron cargar las categorías.",
         "create": "No se pudo crear el ticket."
       }
+    },
+    "pagination": {
+      "navigation": "Paginación de tickets",
+      "range": "Mostrando {{start}}–{{end}} de {{total}} tickets",
+      "page": "Página",
+      "perPage": "Por página",
+      "previous": "Página anterior",
+      "next": "Página siguiente",
+      "totalPages": "{{count}} páginas"
     }
   },
   "auth": {

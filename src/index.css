@@ -1199,6 +1199,7 @@ html[data-theme="dark"] .form-error {
 .ticket-actions {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 10px;
 }
 
@@ -1258,6 +1259,28 @@ html[data-theme="dark"] .form-error {
     margin: 0;
     color: #94a3b8;
     font-size: 13px;
+}
+
+.ticket-actions-finalized {
+    flex: 1 1 240px;
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.ticket-action-delete {
+    margin-left: auto;
+}
+
+@media (max-width: 480px) {
+    .ticket-actions-finalized {
+        flex-basis: 100%;
+    }
+
+    .ticket-action-delete {
+        margin-left: 0;
+    }
 }
 
 .feedback-card {
@@ -1582,6 +1605,33 @@ html[data-theme="dark"] .form-error {
 .login-form .form-field input:focus {
     border-color: #6366f1;
     box-shadow: 0 0 0 3px rgb(99 102 241 / 12%);
+}
+
+/* Autofill dos campos de Login */
+
+.login-form .form-field input {
+    color-scheme: light;
+}
+
+html[data-theme="dark"] .login-form .form-field input {
+    color-scheme: dark;
+}
+
+.login-form .form-field input:-webkit-autofill,
+.login-form .form-field input:-webkit-autofill:hover,
+.login-form .form-field input:-webkit-autofill:focus,
+.login-form .form-field input:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--color-text-primary);
+    caret-color: var(--color-text-primary);
+
+    box-shadow:
+        0 0 0 1000px var(--color-surface-secondary) inset;
+}
+
+.login-form .form-field input:-webkit-autofill:focus {
+    box-shadow:
+        0 0 0 1000px var(--color-surface-secondary) inset,
+        0 0 0 3px rgb(99 102 241 / 12%);
 }
 
 @media (max-width: 900px) {
@@ -2118,6 +2168,15 @@ html[data-theme="dark"] .form-error {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    max-height: 420px;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    padding: 4px 12px 4px 0;
+    scrollbar-gutter: stable;
+}
+
+@media (max-width: 600px) {
+    .comments-list { max-height: 350px; }
 }
 
 .comment-item {
@@ -2307,6 +2366,15 @@ html[data-theme="dark"] .form-error {
 .ticket-history {
     display: flex;
     flex-direction: column;
+    max-height: 400px;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    padding-right: 12px;
+    scrollbar-gutter: stable;
+}
+
+@media (max-width: 600px) {
+    .ticket-history { max-height: 320px; }
 }
 
 .ticket-history-item {
@@ -3670,13 +3738,15 @@ html[data-theme="dark"] .faq-answer-label {
 
 .assistant-toggle {
     display: flex;
+    width: 54px;
     min-width: 54px;
     height: 54px;
     align-items: center;
     justify-content: center;
     gap: 9px;
-    padding: 0 18px;
+    padding: 0;
     border: 0;
+    gap: 0;
     border-radius: 999px;
     color: #ffffff;
     background: #4f46e5;
@@ -4124,46 +4194,10 @@ html[data-theme="dark"] .faq-answer-label {
     }
 }
 
+
 /* ====================================================================
-    UI refinements: theme palette, locale select, search, ticket chat
+    23. Shared UI refinements - search and chat button
    ==================================================================== */
-
-html[data-theme="dark"] .login-hero {
-    background:
-        radial-gradient(
-            ellipse at 85% 16%,
-            rgb(145 170 255 / 18%),
-            transparent 45%
-        ),
-        linear-gradient(
-            135deg,
-            #4c6292 0%,
-            #3c5184 55%,
-            #2a396a 100%
-        );
-}
-
-html[data-theme="dark"] .login-hero-label {
-    color: #dbeafe;
-}
-
-html[data-theme="dark"] .login-hero-content > p {
-    color: #e0e7ff;
-}
-
-html[data-theme="dark"] .login-features strong {
-    color: #ffffff;
-}
-
-html[data-theme="dark"] .login-features small {
-    color: #dbeafe;
-}
-
-html[data-theme="dark"] .login-features > div > span {
-    color: #ffffff;
-    background: rgb(255 255 255 / 18%);
-    border: 1px solid rgb(255 255 255 / 15%);
-}
 
 html[data-theme="dark"] input[type="search"]::-webkit-search-cancel-button {
     filter: brightness(0) invert(1);
@@ -4225,9 +4259,10 @@ html[data-theme="dark"] input[type="search"]::-webkit-search-cancel-button {
 }
 
 
-/* ================================================
-    HELP DESK — ANIMATED FILTERS
-   ================================================ */
+
+/* ====================================================================
+    24. Animated custom filters (Radix Select)
+   ==================================================================== */
 
 .hd-select-trigger {
     display: flex;
@@ -4373,9 +4408,10 @@ html[data-theme="dark"] .hd-select-check {
 }
 
 
-/* ================================================
-    HELP DESK — DATE PICKER
-   ================================================ */
+
+/* ====================================================================
+    25. Date picker and localized selection controls
+   ==================================================================== */
 
 .hd-date-trigger svg {
     transition: transform 200ms ease;
@@ -4519,9 +4555,10 @@ html[data-theme="dark"] .hd-select-check {
 }
 
 
-/* ============================================
-    LOGIN HERO — DARK SAPPHIRE REFINED
-   ============================================ */
+
+/* ====================================================================
+    26. Dark login hero and search-field icons
+   ==================================================================== */
 
 html[data-theme="dark"] .login-hero {
     background:
@@ -4643,46 +4680,7 @@ html[data-theme="dark"] .login-features > div > span {
 }
 
 
-/* ============================================
-    TICKETS — SEARCH ICON
-   ============================================ */
 
-.tickets-search {
-    position: relative;
-}
-
-.tickets-search-icon {
-    position: absolute;
-    top: 50%;
-    left: 16px;
-    transform: translateY(-50%);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 18px;
-    height: 18px;
-
-    color: var(--color-text-muted);
-    pointer-events: none;
-
-    transition: color 180ms ease;
-}
-
-.tickets-search input {
-    padding-left: 46px;
-    padding-right: 16px;
-}
-
-.tickets-search input::-webkit-search-cancel-button {
-    margin-right: 0;
-    cursor: pointer;
-}
-
-.tickets-search:focus-within .tickets-search-icon {
-    color: #818cf8;
-}
 
 .tickets-search {
     position: relative;
@@ -4707,6 +4705,12 @@ html[data-theme="dark"] .login-features > div > span {
     height: 18px;
     color: var(--color-text-muted);
     pointer-events: none;
+    transition: color 180ms ease;
+}
+
+.tickets-search input::-webkit-search-cancel-button {
+    margin-right: 0;
+    cursor: pointer;
 }
 
 .tickets-search:focus-within .tickets-search-icon {
@@ -4714,9 +4718,10 @@ html[data-theme="dark"] .login-features > div > span {
 }
 
 
-/* ============================================
-    SETTINGS — EMAIL EDITING
-   ============================================ */
+
+/* ====================================================================
+    27. Settings email editor, email confirmation and lazy loading
+   ==================================================================== */
 
 .settings-email-form {
     display: grid;
@@ -4784,9 +4789,9 @@ html[data-theme="dark"] .login-features > div > span {
 }
 
 
-/* ============================================
-    EMAIL CONFIRMATION PAGE
-   ============================================ */
+
+
+
 
 .confirm-email-page {
     display: grid;
@@ -4892,9 +4897,9 @@ html[data-theme="dark"] .confirm-email-error {
     }
 }
 
-/* ============================================
-    APP — LAZY LOADING
-   ============================================ */
+
+
+
 
 .app-page-loading {
     display: flex;
@@ -4909,4 +4914,422 @@ html[data-theme="dark"] .confirm-email-error {
 
     font-size: 14px;
     font-weight: 500;
+}
+
+
+
+/* ====================================================================
+    28. Autofill, chart reveal and motion accessibility
+   ==================================================================== */
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px
+        var(--color-surface-secondary) inset;
+
+    -webkit-text-fill-color: var(--color-text-primary);
+    caret-color: var(--color-text-primary);
+}
+
+
+.hd-chart-reveal .status-chart-fill {
+    transform: scaleX(0);
+    transform-origin: left center;
+}
+
+.hd-chart-reveal .reports-chart-line {
+    clip-path: inset(0 100% 0 0);
+}
+
+.hd-chart-reveal .reports-chart-area {
+    opacity: 0;
+}
+
+.hd-chart-reveal .reports-chart-point {
+    opacity: 0;
+    transform: scale(0.5);
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.hd-chart-revealed .status-chart-fill {
+    animation: hd-chart-bar-enter 1.5s
+        cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.hd-chart-revealed .reports-chart-line {
+    animation: hd-chart-line-enter 1.8s ease-out forwards;
+}
+
+.hd-chart-revealed .reports-chart-area {
+    animation: hd-chart-area-enter 1.5s ease-out forwards;
+}
+
+.hd-chart-revealed .reports-chart-point {
+    animation: hd-chart-point-enter 0.6s ease-out forwards;
+    animation-delay: 0.8s;
+}
+
+@keyframes hd-chart-bar-enter {
+    from {
+        transform: scaleX(0);
+    }
+
+    to {
+        transform: scaleX(1);
+    }
+}
+
+@keyframes hd-chart-line-enter {
+    from {
+        clip-path: inset(0 100% 0 0);
+    }
+
+    to {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+@keyframes hd-chart-area-enter {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes hd-chart-point-enter {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hd-chart-reveal .status-chart-fill,
+    .hd-chart-reveal .reports-chart-point {
+        transform: none;
+    }
+
+    .hd-chart-reveal .reports-chart-line {
+        clip-path: none;
+    }
+
+    .hd-chart-reveal .reports-chart-area,
+    .hd-chart-reveal .reports-chart-point {
+        opacity: 1;
+    }
+
+    .hd-chart-revealed .status-chart-fill,
+    .hd-chart-revealed .reports-chart-line,
+    .hd-chart-revealed .reports-chart-area,
+    .hd-chart-revealed .reports-chart-point {
+        animation: none;
+    }
+}
+
+
+@media (hover: hover) and (pointer: fine) {
+    .ticket-card {
+        transition:
+            background-color 180ms ease,
+            box-shadow 180ms ease,
+            transform 180ms ease;
+    }
+
+    .ticket-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgb(15 23 42 / 8%);
+    }
+
+    .primary-button,
+    .action-button,
+    .comment-send-button {
+        transition:
+            background-color 180ms ease,
+            opacity 180ms ease,
+            box-shadow 180ms ease,
+            transform 180ms ease;
+    }
+
+    .primary-button:hover:not(:disabled),
+    .action-button:hover:not(:disabled),
+    .comment-send-button:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 5px 14px rgb(15 23 42 / 12%);
+    }
+
+    .primary-button:active:not(:disabled),
+    .action-button:active:not(:disabled),
+    .comment-send-button:active:not(:disabled) {
+        transform: translateY(0);
+        box-shadow: none;
+    }
+}
+
+.primary-button:focus-visible,
+.action-button:focus-visible,
+.comment-send-button:focus-visible,
+.ticket-card:focus-visible {
+    outline: 2px solid #6366f1;
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ticket-card,
+    .primary-button,
+    .action-button,
+    .comment-send-button {
+        transition: none;
+    }
+
+    .ticket-card:hover,
+    .primary-button:hover,
+    .action-button:hover,
+    .comment-send-button:hover {
+        transform: none;
+    }
+}
+
+
+html[data-theme="dark"] .section-header > a,
+html[data-theme="dark"] .ticket-card-footer span:last-child,
+html[data-theme="dark"] .ticket-details-link {
+    color: #a5b4fc;
+}
+
+html[data-theme="dark"] .section-header > a:hover,
+html[data-theme="dark"] .ticket-card:hover .ticket-card-footer span:last-child,
+html[data-theme="dark"] .ticket-details-link:hover {
+    color: #c7d2fe;
+}
+
+
+
+/* ====================================================================
+    29. Tickets pagination (custom FilterSelect)
+   ==================================================================== */
+
+.tickets-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 24px;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+.tickets-pagination-summary {
+    color: var(--color-text-muted);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.tickets-pagination-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+    gap: 18px;
+    margin-left: auto;
+}
+
+.tickets-pagination-nav {
+    display: flex;
+    width: auto;
+    min-width: 0;
+    height: auto;
+    align-items: center;
+    gap: 10px;
+    border: 0;
+    background: transparent;
+}
+
+.tickets-pagination-meta {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: 14px;
+}
+
+.tickets-pagination-total-pages {
+    color: var(--color-text-muted);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.tickets-pagination-icon-button {
+    display: inline-flex;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    color: var(--color-text-primary);
+    background: var(--color-surface-secondary);
+    font-size: 19px;
+    line-height: 1;
+    cursor: pointer;
+    transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.tickets-pagination-icon-button svg {
+    display: block;
+    flex-shrink: 0;
+}
+
+.tickets-pagination-icon-button:hover:not(:disabled) {
+    border-color: #6366f1;
+}
+
+.tickets-pagination-icon-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.tickets-pagination-page-input {
+    width: 60px;
+    height: 38px;
+    min-width: 0;
+    padding: 0 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    color: var(--color-text-primary);
+    background: var(--color-surface-secondary);
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    appearance: textfield;
+}
+
+.tickets-pagination-page-input::-webkit-inner-spin-button,
+.tickets-pagination-page-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.tickets-pagination-page-size-group {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: 8px;
+}
+
+.tickets-pagination-page-size-group label {
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.tickets-pagination-page-size-control {
+    width: 82px;
+    min-width: 82px;
+}
+
+.tickets-pagination-page-size-control .hd-select-trigger {
+    width: 100%;
+    min-height: 38px;
+    height: 38px;
+    padding: 0 10px;
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+.tickets-pagination-page-input:focus-visible,
+.tickets-pagination-icon-button:focus-visible {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgb(99 102 241 / 18%);
+}
+
+@media (max-width: 1200px) {
+    .tickets-pagination {
+        flex-wrap: wrap;
+    }
+
+    .tickets-pagination-controls {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 860px) {
+    .tickets-pagination {
+        justify-content: center;
+    }
+
+    .tickets-pagination-summary {
+        width: 100%;
+        text-align: center;
+    }
+
+    .tickets-pagination-controls {
+        margin-left: 0;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .tickets-pagination {
+        padding: 16px;
+    }
+
+    .tickets-pagination-controls {
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .tickets-pagination-nav,
+    .tickets-pagination-meta {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
+
+
+/* ====================================================================
+    30. Assistant floating button - compact style
+   ==================================================================== */
+
+@media (min-width: 601px) {
+    .assistant-toggle {
+        width: 60px;
+        min-width: 60px;
+        height: 60px;
+        padding: 0;
+        gap: 0;
+        border-radius: 50%;
+    }
+
+    .assistant-toggle-open {
+        width: 60px;
+        min-width: 60px;
+    }
+}
+
+.assistant-toggle-icon {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    font-size: 24px;
+    line-height: 1;
+}
+
+.assistant-toggle-open .assistant-toggle-icon {
+    visibility: hidden;
 }

@@ -1,3 +1,4 @@
+import LoadingSpinner from "./LoadingSpinner"
 import { Navigate, Outlet } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 
@@ -8,7 +9,7 @@ function ProtectedRoute() {
     const { t } = useTranslation()
 
     if (isLoading) {
-        return <p>{t("route.loading")}</p>
+        return <LoadingSpinner>{t("route.loading")}</LoadingSpinner>
     }
 
     if (!isAuthenticated) {

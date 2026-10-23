@@ -225,6 +225,7 @@
       "release": "Liberar chamado",
       "reopen": "Reabrir chamado",
       "close": "Fechar chamado",
+      "finalized": "Este chamado está {{status}}. Não é possível alterar seu andamento.",
       "deleting": "Excluindo...",
       "delete": "Excluir chamado",
       "assignedTo": "Este chamado está atribuído a {{name}}.",
@@ -326,6 +327,15 @@
         "loadCategories": "Não foi possível carregar as categorias.",
         "create": "Não foi possível criar o chamado."
       }
+    },
+    "pagination": {
+      "navigation": "Paginação dos chamados",
+      "range": "Mostrando {{start}}–{{end}} de {{total}} chamados",
+      "page": "Página",
+      "perPage": "Por página",
+      "previous": "Página anterior",
+      "next": "Próxima página",
+      "totalPages": "{{count}} páginas"
     }
   },
   "auth": {

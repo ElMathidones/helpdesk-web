@@ -251,23 +251,14 @@ function AssistantWidget() {
 
             <button
                 type="button"
-                className={`assistant-toggle ${
-                    isOpen ? "assistant-toggle-open" : ""
-                }`}
-                onClick={() =>
-                    setIsOpen((current) => !current)
-                }
-                aria-label={
-                    isOpen
-                        ? t("assistant.close")
-                        : t("assistant.open")
-                }
+                className="assistant-toggle"
+                onClick={() => setIsOpen((previous) => !previous)}
+                aria-label={isOpen ? t("assistant.close") : t("assistant.open")}
+                title={isOpen ? t("assistant.close") : t("assistant.open")}
             >
-                {isOpen ? "×" : "✦"}
-
-                {!isOpen && (
-                    <span>{t("assistant.label")}</span>
-                )}
+                <span className="assistant-toggle-icon">
+                    {isOpen ? "×" : "✦"}
+                </span>
             </button>
         </div>
     )

@@ -225,6 +225,7 @@
       "release": "Release ticket",
       "reopen": "Reopen ticket",
       "close": "Close ticket",
+      "finalized": "This ticket is {{status}}. Its workflow can no longer be changed.",
       "deleting": "Deleting...",
       "delete": "Delete ticket",
       "assignedTo": "This ticket is assigned to {{name}}.",
@@ -326,6 +327,15 @@
         "loadCategories": "Unable to load categories.",
         "create": "Unable to create the ticket."
       }
+    },
+    "pagination": {
+      "navigation": "Ticket pagination",
+      "range": "Showing {{start}}–{{end}} of {{total}} tickets",
+      "page": "Page",
+      "perPage": "Per page",
+      "previous": "Previous page",
+      "next": "Next page",
+      "totalPages": "{{count}} pages"
     }
   },
   "auth": {

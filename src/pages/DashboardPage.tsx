@@ -7,6 +7,8 @@ import { getTickets } from "../services/tickets"
 import type { Ticket } from "../types/ticket"
 
 import FilterSelect from "../components/FilterSelect"
+import LoadingSpinner from "../components/LoadingSpinner"
+import ChartReveal from "../components/ChartReveal"
 
 function DashboardPage() {
     const { token, user } = useAuth()
@@ -208,7 +210,9 @@ function DashboardPage() {
     }, [filteredTickets, t])
 
     if (isLoading) {
-        return <p>{t("dashboard.loading")}</p>
+        return (
+                <LoadingSpinner>{t("dashboard.loading")}</LoadingSpinner>
+        )
     }
 
     return (
@@ -337,79 +341,81 @@ function DashboardPage() {
             className="dashboard-charts-wrapper"
             aria-label={t("dashboard.charts.ariaLabel")}
         >
-            <div className="dashboard-charts-grid">
-                <section className="dashboard-chart-section">
-                    <div className="section-header">
-                        <div>
-                            <h2>{t("dashboard.charts.status.title")}</h2>
-                            <p>{t("dashboard.charts.status.description")}</p>
+            <ChartReveal>
+                <div className="dashboard-charts-grid">
+                    <section className="dashboard-chart-section">
+                        <div className="section-header">
+                            <div>
+                                <h2>{t("dashboard.charts.status.title")}</h2>
+                                <p>{t("dashboard.charts.status.description")}</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="status-chart">
-                        {statusStatistics.map((item) => (
-                            <div className="status-chart-row" key={item.status}>
-                                <div className="status-chart-label">
-                                    <div>
-                                        <span>{item.label}</span>
-                                        <small>{item.total}</small>
+                        <div className="status-chart">
+                            {statusStatistics.map((item) => (
+                                <div className="status-chart-row" key={item.status}>
+                                    <div className="status-chart-label">
+                                        <div>
+                                            <span>{item.label}</span>
+                                            <small>{item.total}</small>
+                                        </div>
+
+                                        <strong>{formatPercentage(item.total, statistics.total)}</strong>
                                     </div>
 
-                                    <strong>{formatPercentage(item.total, statistics.total)}</strong>
+                                    <div className="status-chart-bar">
+                                        <div
+                                            className={`status-chart-fill status-${item.status}`}
+                                            style={{
+                                                width:
+                                                    statistics.total > 0
+                                                        ? `${(item.total / statistics.total) * 100}%`
+                                                        : "0%",
+                                            }}
+                                        />
+                                    </div>
                                 </div>
-
-                                <div className="status-chart-bar">
-                                    <div
-                                        className={`status-chart-fill status-${item.status}`}
-                                        style={{
-                                            width:
-                                                statistics.total > 0
-                                                    ? `${(item.total / statistics.total) * 100}%`
-                                                    : "0%",
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-
-                <section className="dashboard-chart-section">
-                    <div className="section-header">
-                        <div>
-                            <h2>{t("dashboard.charts.priority.title")}</h2>
-                            <p>{t("dashboard.charts.priority.description")}</p>
+                            ))}
                         </div>
-                    </div>
+                    </section>
 
-                    <div className="status-chart">
-                        {priorityStatistics.map((item) => (
-                            <div className="status-chart-row" key={item.priority}>
-                                <div className="status-chart-label">
-                                    <div>
-                                        <span>{item.label}</span>
-                                        <small>{item.total}</small>
+                    <section className="dashboard-chart-section">
+                        <div className="section-header">
+                            <div>
+                                <h2>{t("dashboard.charts.priority.title")}</h2>
+                                <p>{t("dashboard.charts.priority.description")}</p>
+                            </div>
+                        </div>
+
+                        <div className="status-chart">
+                            {priorityStatistics.map((item) => (
+                                <div className="status-chart-row" key={item.priority}>
+                                    <div className="status-chart-label">
+                                        <div>
+                                            <span>{item.label}</span>
+                                            <small>{item.total}</small>
+                                        </div>
+
+                                        <strong>{formatPercentage(item.total, statistics.total)}</strong>
                                     </div>
 
-                                    <strong>{formatPercentage(item.total, statistics.total)}</strong>
+                                    <div className="status-chart-bar">
+                                        <div
+                                            className={`status-chart-fill priority-${item.priority}`}
+                                            style={{
+                                                width:
+                                                    statistics.total > 0
+                                                        ? `${(item.total / statistics.total) * 100}%`
+                                                        : "0%",
+                                            }}
+                                        />
+                                    </div>
                                 </div>
-
-                                <div className="status-chart-bar">
-                                    <div
-                                        className={`status-chart-fill priority-${item.priority}`}
-                                        style={{
-                                            width:
-                                                statistics.total > 0
-                                                    ? `${(item.total / statistics.total) * 100}%`
-                                                    : "0%",
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-            </div>
+                            ))}
+                        </div>
+                    </section>
+                </div>
+            </ChartReveal>
         </section>
         </div>
     )

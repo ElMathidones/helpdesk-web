@@ -1,3 +1,4 @@
+import LoadingSpinner from "../components/LoadingSpinner"
 import {
     type DragEvent,
     type FormEvent,
@@ -1070,7 +1071,9 @@ function SettingsPage() {
                     )}
 
                     {isLoadingCategories ? (
-                        <p>{t("settings.categories.loading")}</p>
+                        <LoadingSpinner compact>
+                            {t("settings.categories.loading")}
+                        </LoadingSpinner>
                     ) : categories.length === 0 ? (
                         <p className="settings-empty-message">
                             {t("settings.categories.empty")}
